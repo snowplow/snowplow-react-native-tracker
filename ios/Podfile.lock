@@ -1,0 +1,41 @@
+PODS:
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+  - ReachabilitySwift (4.3.1)
+  - React (0.59.8):
+    - React/Core (= 0.59.8)
+  - React/Core (0.59.8):
+    - yoga (= 0.59.8.React)
+  - SnowplowTracker (1.1.2):
+    - FMDB (= 2.6.2)
+    - ReachabilitySwift
+  - yoga (0.59.8.React)
+
+DEPENDENCIES:
+  - React (from `../node_modules/react-native`)
+  - SnowplowTracker (~> 1.1)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FMDB
+    - ReachabilitySwift
+    - SnowplowTracker
+
+EXTERNAL SOURCES:
+  React:
+    :path: "../node_modules/react-native"
+  yoga:
+    :path: "../node_modules/react-native/ReactCommon/yoga"
+
+SPEC CHECKSUMS:
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
+  React: 76e6aa2b87d05eb6cccb6926d72685c9a07df152
+  SnowplowTracker: a311c5506abf6aef25417bfbb6b8612293438a2c
+  yoga: 92b2102c3d373d1a790db4ab761d2b0ffc634f64
+
+PODFILE CHECKSUM: cf2184e03dc0e24c2801005b55f7f23502fdb07f
+
+COCOAPODS: 1.6.1

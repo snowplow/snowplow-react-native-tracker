@@ -1,0 +1,5 @@
+rootProject.name = 'DemoApp'
+include ':@snowplow_react-native-tracker'
+project(':@snowplow_react-native-tracker').projectDir = new File(rootProject.projectDir, '../node_modules/@snowplow/react-native-tracker/android')
+
+include ':app'

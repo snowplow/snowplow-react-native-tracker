@@ -1,0 +1,6 @@
+framework module RNSnowplowTracker {
+  umbrella header "RNSnowplowTracker-umbrella.h"
+
+  export *
+  module * { export * }
+}

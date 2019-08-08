@@ -1,0 +1,50 @@
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.1'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+repositories {
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
+    }
+    mavenCentral()
+    google()
+    jcenter()
+}
+
+dependencies {
+    def lifecycle_version = "2.0.0"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    // Required Dependency for the Tracker
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.snowplowanalytics:snowplow-android-tracker:1.1.0'
+}
+  
