@@ -1,6 +1,10 @@
 
 # @snowplow/react-native-tracker
 
+# Disclaimer
+
+**This project is under development in the proof-of-concept stage. It is not yet supported nor recommended for use in production.**
+
 ## Getting started
 
 `$ npm install @snowplow/react-native-tracker --save`
@@ -48,4 +52,3 @@ RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsons
 `initialize(string endpoint, string method (post or get), string protocol (https or http), string namespace, string appId)`
 
 `trackSelfDescribingEvent(JSON event, Array<JSON> contexts)`
-
