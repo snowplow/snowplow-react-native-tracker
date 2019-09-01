@@ -3,7 +3,9 @@
 
 # Disclaimer
 
-**This project is under development in the proof-of-concept stage. It is not yet supported nor recommended for use in production.**
+**This project is currently in beta status. It is unknown how dependable it will be for use for production analytics.**
+
+We include this disclaimer as we have had limited opportunity to test and QA the tracker for usage in production. We encourage users to try it and report on the outcomes by raising issues, or submitting a thread on [our discourse forum](https://discourse.snowplowanalytics.com/) to let us know of successful usage, or suggest changes.
 
 ## Getting started
 
@@ -14,7 +16,6 @@
 `$ react-native link @snowplow/react-native-tracker`
 
 ### Manual installation
-
 
 #### iOS
 
