@@ -56,7 +56,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void trackStructuredEvent(String category, String action, String label,
-                                     String property, Number value, ReadableArray contexts) {
+                                     String property, Float value, ReadableArray contexts) {
         Structured trackerEvent = EventUtil.getStructuredEvent(category, action, label,
                 property, value, contexts);
         if (trackerEvent != null) {
