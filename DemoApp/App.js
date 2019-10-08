@@ -20,7 +20,8 @@ type Props = {};
 export default class App extends Component<Props> {
   render() {
     let RNSnowplowTracker = NativeModules.RNSnowplowTracker;
-    RNSnowplowTracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'app-id');
+    RNSnowplowTracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'app-id', {autoScreenView: false});
+    RNSnowplowTracker.trackScreenViewEvent('Name', null, null, null, null, null, null);
     let onPressSendEvent = () => {
       RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
       RNSnowplowTracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, []);
