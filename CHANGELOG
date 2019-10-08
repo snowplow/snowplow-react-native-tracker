@@ -1,0 +1,12 @@
+Version 0.1.0-alpha.12 (2019-10-08)
+-----------------------------------
+Fix path in Android package export (close # 8)
+Fix high severity vulnerabilities in DemoApp (close #7)
+Bump DemoApp react-native version (close #6)
+Fix import in Demo Application (close #3)
+Fix Android Numeric type bug (close #4)
+
+
+Version 0.1.0-alpha.9 (2019-08-08)
+----------------------------------
+Initial Release
