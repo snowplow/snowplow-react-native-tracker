@@ -3,6 +3,7 @@
 #import <SnowplowTracker/SPEmitter.h>
 #import <SnowplowTracker/SPEvent.h>
 #import <SnowplowTracker/SPSelfDescribingJson.h>
+#import <SnowplowTracker/SPSubject.h>
 
 @implementation RNSnowplowTracker
 
@@ -19,6 +20,8 @@ RCT_EXPORT_METHOD(initialize
                   :(nonnull NSString *)protocol
                   :(nonnull NSString *)namespace
                   :(nonnull NSString *)appId) {
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
+
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -28,6 +31,7 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
+        [builder setSubject:subject];
     }];
 }
 
@@ -64,4 +68,3 @@ RCT_EXPORT_METHOD(trackStructuredEvent
 }
 
 @end
-  
