@@ -42,6 +42,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 .base64(false)
+                .mobileContext(true)
                 .build()
         );
     }
