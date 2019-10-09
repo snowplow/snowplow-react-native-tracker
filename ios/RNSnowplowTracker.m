@@ -19,7 +19,9 @@ RCT_EXPORT_METHOD(initialize
                   :(nonnull NSString *)method
                   :(nonnull NSString *)protocol
                   :(nonnull NSString *)namespace
-                  :(nonnull NSString *)appId) {
+                  :(nonnull NSString *)appId
+                  :(NSString *)autoScreenView
+                ) {
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
 
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
@@ -31,6 +33,7 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
+        [builder setAutotrackScreenViews:([@"true" caseInsensitiveCompare:autoScreenView] == NSOrderedSame) ? YES : NO];
         [builder setSubject:subject];
     }];
 }
@@ -65,6 +68,30 @@ RCT_EXPORT_METHOD(trackStructuredEvent
         }
     }];
     [self.tracker trackStructuredEvent:trackerEvent];
+}
+
+RCT_EXPORT_METHOD(trackSceenViewEvent
+                  :(nonnull NSString *)screenName
+                  :(NSString *)screenId
+                  :(NSString *)screenType
+                  :(NSString *)previousScreenName
+                  :(NSString *)previousScreenType
+                  :(NSString *)previousScreenId
+                  :(NSString *)transitionType) { // All but screenName should be a dict.
+
+    NSUUID *uuid = [NSUUID UUID];
+    NSString *fallbackScreenViewId = [uuid UUIDString];
+
+    SPScreenView *event = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
+        [builder setName:screenName];
+        if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:fallbackScreenViewId];
+        if (screenType != nil) [builder setType:screenType];
+        if (previousScreenName != nil) [builder setPreviousScreenName:previousScreenName];
+        if (previousScreenType != nil) [builder setPreviousScreenType:previousScreenType];
+        if (previousScreenId != nil) [builder setPreviousScreenId:previousScreenId];
+        if (transitionType != nil) [builder setTransitionType:transitionType];
+      }];
+      [self.tracker trackScreenViewEvent:event];
 }
 
 @end
