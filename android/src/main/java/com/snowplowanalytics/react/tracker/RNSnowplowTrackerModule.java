@@ -70,8 +70,8 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void trackScreenViewEvent(String screenName, String screenId, String screenType,
-                                 String previousScreenName, String previousScreenType,
-                                 String previousScreenId, String transitionType) {
+                                     String previousScreenName, String previousScreenType,
+                                     String previousScreenId, String transitionType) {
 
         if (screenId == null) {
           screenId = UUID.randomUUID().toString();
