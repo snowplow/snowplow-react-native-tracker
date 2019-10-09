@@ -77,7 +77,7 @@ RCT_EXPORT_METHOD(trackSceenViewEvent
                   :(NSString *)previousScreenName
                   :(NSString *)previousScreenType
                   :(NSString *)previousScreenId
-                  :(NSString *)transitionType) { // All but screenName should be a dict.
+                  :(NSString *)transitionType) { 
 
     NSUUID *uuid = [NSUUID UUID];
     NSString *fallbackScreenViewId = [uuid UUIDString];
