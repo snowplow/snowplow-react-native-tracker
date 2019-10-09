@@ -1,6 +1,7 @@
 
 package com.snowplowanalytics.react.tracker;
 
+import java.util.UUID;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -14,6 +15,7 @@ import com.snowplowanalytics.snowplow.tracker.emitter.HttpMethod;
 import com.snowplowanalytics.snowplow.tracker.emitter.RequestSecurity;
 import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
+import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
@@ -33,7 +35,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initialize(String endpoint, String method, String protocol,
-                           String namespace, String appId) {
+                           String namespace, String appId, ReadableMap options) {
         this.emitter = new Emitter.EmitterBuilder(endpoint, this.reactContext)
                 .method(method.equalsIgnoreCase("post") ? HttpMethod.POST : HttpMethod.GET)
                 .security(protocol.equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
@@ -43,6 +45,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 .base64(false)
                 .mobileContext(true)
+                .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .build()
         );
     }
@@ -63,5 +66,24 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         if (trackerEvent != null) {
             tracker.track(trackerEvent);
         }
+    }
+
+    @ReactMethod
+    public void trackScreenViewEvent(String screenName, String screenId, String screenType,
+                                     String previousScreenName, String previousScreenType,
+                                     String previousScreenId, String transitionType) {
+
+        if (screenId == null) {
+          screenId = UUID.randomUUID().toString();
+        }
+        tracker.track(ScreenView.builder()
+          .name(screenName)
+          .id(screenId)
+          .type(screenType)
+          .previousName(previousScreenName)
+          .previousId(previousScreenId)
+          .previousType(previousScreenType)
+          .transitionType(transitionType)
+          .build());
     }
 }
