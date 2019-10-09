@@ -70,14 +70,14 @@ RCT_EXPORT_METHOD(trackStructuredEvent
     [self.tracker trackStructuredEvent:trackerEvent];
 }
 
-RCT_EXPORT_METHOD(trackSceenViewEvent
+RCT_EXPORT_METHOD(trackScreenViewEvent
                   :(nonnull NSString *)screenName
                   :(NSString *)screenId
                   :(NSString *)screenType
                   :(NSString *)previousScreenName
                   :(NSString *)previousScreenType
                   :(NSString *)previousScreenId
-                  :(NSString *)transitionType) { 
+                  :(NSString *)transitionType) {
 
     NSUUID *uuid = [NSUUID UUID];
     NSString *fallbackScreenViewId = [uuid UUIDString];
