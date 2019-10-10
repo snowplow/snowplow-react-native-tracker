@@ -79,10 +79,6 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
                   :(NSString *)previousScreenType
                   :(NSString *)previousScreenId
                   :(NSString *)transitionType) {
-
-    NSUUID *uuid = [NSUUID UUID];
-    NSString *fallbackScreenViewId = [uuid UUIDString];
-
     SPScreenView *event = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
         [builder setName:screenName];
         if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:[[NSUUID UUID] UUIDString]];
