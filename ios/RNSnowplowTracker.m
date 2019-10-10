@@ -54,8 +54,8 @@ RCT_EXPORT_METHOD(trackSelfDescribingEvent
 RCT_EXPORT_METHOD(trackStructuredEvent
                   :(nonnull NSString *)category // required (non-empty string)
                   :(nonnull NSString *)action // required
-                  :(nonnull NSString *)label
-                  :(nonnull NSString *)property
+                  :(NSString *)label
+                  :(NSString *)property
                   :(double)value
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
     SPStructured * trackerEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
