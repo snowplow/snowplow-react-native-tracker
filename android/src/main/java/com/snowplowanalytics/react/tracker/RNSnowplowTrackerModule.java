@@ -35,7 +35,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initialize(String endpoint, String method, String protocol,
-                           String namespace, String appId, String autoScreenView) {
+                           String namespace, String appId, ReadableMap options) {
         this.emitter = new Emitter.EmitterBuilder(endpoint, this.reactContext)
                 .method(method.equalsIgnoreCase("post") ? HttpMethod.POST : HttpMethod.GET)
                 .security(protocol.equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
@@ -45,7 +45,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 .base64(false)
                 .mobileContext(true)
-                .screenviewEvents(autoScreenView.equalsIgnoreCase("true"))
+                .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .build()
         );
     }

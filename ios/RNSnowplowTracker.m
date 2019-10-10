@@ -20,7 +20,8 @@ RCT_EXPORT_METHOD(initialize
                   :(nonnull NSString *)protocol
                   :(nonnull NSString *)namespace
                   :(nonnull NSString *)appId
-                  :(NSString *)autoScreenView
+                  :(NSDictionary *)options
+                  //:(BOOL *)autoScreenView
                 ) {
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
 
@@ -33,7 +34,7 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
-        [builder setAutotrackScreenViews:([@"true" caseInsensitiveCompare:autoScreenView] == NSOrderedSame) ? YES : NO];
+        [builder setAutotrackScreenViews:options[@"autoScreenView"]];
         [builder setSubject:subject];
     }];
 }
@@ -84,7 +85,7 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
 
     SPScreenView *event = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
         [builder setName:screenName];
-        if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:fallbackScreenViewId];
+        if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:[[NSUUID UUID] UUIDString]];
         if (screenType != nil) [builder setType:screenType];
         if (previousScreenName != nil) [builder setPreviousScreenName:previousScreenName];
         if (previousScreenType != nil) [builder setPreviousScreenType:previousScreenType];
