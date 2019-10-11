@@ -11,17 +11,10 @@ import java.util.List;
 
 public class EventUtil {
     public static List<SelfDescribingJson> getContexts(ReadableArray contexts) {
-        ArrayList<Object> reactContexts = contexts.toArrayList();
-        ArrayList<SelfDescribingJson> nativeContexts = new ArrayList<>();
-        for (Object context : reactContexts) {
-            if (context instanceof ReadableMap) {
-                SelfDescribingJson json = getSelfDescribingJson((ReadableMap) context);
-                if (json != null) {
-                    nativeContexts.add(json);
-                } else {
-                    // log errors
-                }
-            }
+        List<SelfDescribingJson> nativeContexts = new ArrayList<>();
+        for (int i = 0; i < contexts.size(); i++) {
+          SelfDescribingJson json = EventUtil.getSelfDescribingJson(contexts.getMap(i));
+          nativeContexts.add(json);
         }
         return nativeContexts;
     }
