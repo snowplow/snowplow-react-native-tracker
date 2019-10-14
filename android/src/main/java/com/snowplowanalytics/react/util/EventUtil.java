@@ -5,23 +5,17 @@ import com.facebook.react.bridge.ReadableArray;
 import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
 import com.snowplowanalytics.snowplow.tracker.payload.SelfDescribingJson;
+import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventUtil {
     public static List<SelfDescribingJson> getContexts(ReadableArray contexts) {
-        ArrayList<Object> reactContexts = contexts.toArrayList();
-        ArrayList<SelfDescribingJson> nativeContexts = new ArrayList<>();
-        for (Object context : reactContexts) {
-            if (context instanceof ReadableMap) {
-                SelfDescribingJson json = getSelfDescribingJson((ReadableMap) context);
-                if (json != null) {
-                    nativeContexts.add(json);
-                } else {
-                    // log errors
-                }
-            }
+        List<SelfDescribingJson> nativeContexts = new ArrayList<>();
+        for (int i = 0; i < contexts.size(); i++) {
+          SelfDescribingJson json = EventUtil.getSelfDescribingJson(contexts.getMap(i));
+          nativeContexts.add(json);
         }
         return nativeContexts;
     }
@@ -57,6 +51,24 @@ public class EventUtil {
                 .value(value.doubleValue())
                 .property(property)
                 .label(label);
+        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
+        if (nativeContexts != null) {
+            eventBuilder.customContext(nativeContexts);
+        }
+        return eventBuilder.build();
+    }
+
+    public static ScreenView getScreenViewEvent(String screenName, String screenId, String screenType,
+            String previousScreenName, String previousScreenType, String previousScreenId,
+            String transitionType, ReadableArray contexts) {
+        ScreenView.Builder eventBuilder = ScreenView.builder()
+                .name(screenName)
+                .id(screenId)
+                .type(screenType)
+                .previousName(previousScreenName)
+                .previousId(previousScreenId)
+                .previousType(previousScreenType)
+                .transitionType(transitionType);
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
         if (nativeContexts != null) {
             eventBuilder.customContext(nativeContexts);

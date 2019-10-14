@@ -1,0 +1,16 @@
+Version 0.1.0-alpha.13 (2019-10-14)
+-----------------------------------
+Make optional StructEvent parameters nullable for iOS (#12)
+Add ScreenViews (#14)
+Fix bug in android getContexts (#16)
+Add mobile context (#13)
+Update README.md (#5)
+Fix path in Android package export (#8)
+Fix high severity vulnerabilities in DemoApp (#7)
+Bump DemoApp react-native version (#6)
+Fix import in Demo Application (#3)
+Fix Android Numeric type bug (#4)
+
+Version 0.1.0-alpha.9 (2019-08-08)
+----------------------------------
+Initial Release

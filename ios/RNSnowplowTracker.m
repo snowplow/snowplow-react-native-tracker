@@ -3,6 +3,7 @@
 #import <SnowplowTracker/SPEmitter.h>
 #import <SnowplowTracker/SPEvent.h>
 #import <SnowplowTracker/SPSelfDescribingJson.h>
+#import <SnowplowTracker/SPSubject.h>
 
 @implementation RNSnowplowTracker
 
@@ -18,7 +19,12 @@ RCT_EXPORT_METHOD(initialize
                   :(nonnull NSString *)method
                   :(nonnull NSString *)protocol
                   :(nonnull NSString *)namespace
-                  :(nonnull NSString *)appId) {
+                  :(nonnull NSString *)appId
+                  :(NSDictionary *)options
+                  //:(BOOL *)autoScreenView
+                ) {
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
+
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -28,6 +34,8 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
+        [builder setAutotrackScreenViews:options[@"autoScreenView"]];
+        [builder setSubject:subject];
     }];
 }
 
@@ -46,8 +54,8 @@ RCT_EXPORT_METHOD(trackSelfDescribingEvent
 RCT_EXPORT_METHOD(trackStructuredEvent
                   :(nonnull NSString *)category // required (non-empty string)
                   :(nonnull NSString *)action // required
-                  :(nonnull NSString *)label
-                  :(nonnull NSString *)property
+                  :(NSString *)label
+                  :(NSString *)property
                   :(double)value
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
     SPStructured * trackerEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
@@ -63,5 +71,28 @@ RCT_EXPORT_METHOD(trackStructuredEvent
     [self.tracker trackStructuredEvent:trackerEvent];
 }
 
+RCT_EXPORT_METHOD(trackScreenViewEvent
+                  :(nonnull NSString *)screenName
+                  :(NSString *)screenId
+                  :(NSString *)screenType
+                  :(NSString *)previousScreenName
+                  :(NSString *)previousScreenType
+                  :(NSString *)previousScreenId
+                  :(NSString *)transitionType
+                  :(NSArray<SPSelfDescribingJson *> *)contexts) {
+    SPScreenView * SVevent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
+        [builder setName:screenName];
+        if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:[[NSUUID UUID] UUIDString]];
+        if (screenType != nil) [builder setType:screenType];
+        if (previousScreenName != nil) [builder setPreviousScreenName:previousScreenName];
+        if (previousScreenType != nil) [builder setPreviousScreenType:previousScreenType];
+        if (previousScreenId != nil) [builder setPreviousScreenId:previousScreenId];
+        if (transitionType != nil) [builder setTransitionType:transitionType];
+        if (contexts) {
+            [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
+        }
+      }];
+      [self.tracker trackScreenViewEvent:SVevent];
+}
+
 @end
-  

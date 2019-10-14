@@ -7,9 +7,9 @@
     "test": "jest"
   },
   "dependencies": {
-    "@snowplow/react-native-tracker": "0.1.0-alpha.9",
+    "@snowplow/react-native-tracker": "0.1.0-alpha.13",
     "react": "^16.8.3",
-    "react-native": "^0.59.8"
+    "react-native": "^0.59.9"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
