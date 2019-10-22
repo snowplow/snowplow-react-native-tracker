@@ -16,9 +16,7 @@ Pod::Spec.new do |s|
 
 
   s.dependency "React"
-  s.dependency "SnowplowTracker", "1.1.2"
+  s.dependency "SnowplowTracker", "~> 1.1"
   #s.dependency "others"
 
 end
-
-  
