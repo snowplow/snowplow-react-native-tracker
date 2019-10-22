@@ -17,14 +17,13 @@ From the root of your react-js project:
 
 ### Instrumentation
 
-The tracker will be imported as a NativeModule. Initialise it then call the relevant tracking method:
+The tracker can be imported from the `@snowplow/react-native-tracker` module. Initialise it then call the relevant tracking method:
 
 ```
-import {NativeModules} from 'react-native';
+import Tracker from '@snowplow/react-native-tracker';
 
-let RNSnowplowTracker = NativeModules.RNSnowplowTracker;
-RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {});
-RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
+Tracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {});
+Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
 ```
 
 ### Running on iOS
