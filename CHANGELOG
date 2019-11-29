@@ -1,3 +1,7 @@
+Version 0.1.0-alpha.14 (2019-10-22)
+----------------------------------
+Update iOS to incorporate patch release (close #23)
+
 Version 0.1.0-alpha.13 (2019-10-14)
 -----------------------------------
 Make optional StructEvent parameters nullable for iOS (#12)
