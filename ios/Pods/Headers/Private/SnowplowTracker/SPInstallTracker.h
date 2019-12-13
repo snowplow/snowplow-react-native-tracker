@@ -1,0 +1,1 @@
+../../../SnowplowTracker/Snowplow/SPInstallTracker.h

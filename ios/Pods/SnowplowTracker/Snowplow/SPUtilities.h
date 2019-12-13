@@ -21,6 +21,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#include "SPDevicePlatform.h"
 
 @class SPPayload;
 @class SPSelfDescribingJson;
@@ -53,11 +54,11 @@
 + (NSString *) getLanguage;
 
 /*!
- @brief Returns the platform type of the device. This is always going to be "mob".
+ @brief Returns the platform type of the device..
 
  @return A string of the platform type.
  */
-+ (NSString *) getPlatform;
++ (SPDevicePlatform) getPlatform;
 
 /*!
  @brief Returns a randomly generated UUID (type 4).
@@ -74,7 +75,7 @@
 + (NSString *) getOpenIdfa;
 
 /*!
- @brief Returns a generated string unique to each device, used only for serving advertisements. This works only if you have the AdSupport library in your project. If you have it, but do not want to use IDFA, add the complier flag <code>SNOWPLOW_NO_IFA</code> to your build settings.
+ @brief Returns a generated string unique to each device, used only for serving advertisements. This works only if you have the AdSupport library in your project. If you have it, but do not want to use IDFA, add the compiler flag <code>SNOWPLOW_NO_IFA</code> to your build settings.
 
  @return A string containing a formatted UUID for example E621E1F8-C36C-495A-93FC-0C247A3E6E5F.
  */
@@ -195,13 +196,6 @@
  @return The byte size of the string.
  */
 + (NSInteger) getByteSizeWithString:(NSString *)str;
-
-/*!
- @brief Returns whether or not the device is currently online.
-
- @return The network status of the device.
- */
-+ (BOOL) isOnline;
 
 /*!
  @brief Checks an expression and will log if it is false.

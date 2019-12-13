@@ -21,10 +21,12 @@
 //
 
 #import "Snowplow.h"
+#import "SPDevicePlatform.h"
 #import "SPUtilities.h"
 #import "SPPayload.h"
 #import "SPSelfDescribingJson.h"
 #import "SPScreenState.h"
+#include <sys/sysctl.h>
 
 #if SNOWPLOW_TARGET_IOS
 
@@ -33,17 +35,21 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
-#import <SnowplowTracker/SnowplowTracker-Swift.h>
+#import "SNOWReachability.h"
 
 #elif SNOWPLOW_TARGET_OSX
 
 #import <AppKit/AppKit.h>
 #import <Carbon/Carbon.h>
-#include <sys/sysctl.h>
+#import "SNOWReachability.h"
 
 #elif SNOWPLOW_TARGET_TV
 
 #import <UIKit/UIScreen.h>
+
+#elif SNOWPLOW_TARGET_WATCHOS
+
+#import <WatchKit/WatchKit.h>
 
 #endif
 
@@ -58,11 +64,11 @@
     return [[NSLocale preferredLanguages] objectAtIndex:0];
 }
 
-+ (NSString *) getPlatform {
++ (SPDevicePlatform) getPlatform {
 #if SNOWPLOW_TARGET_IOS
-    return @"mob";
+    return SPDevicePlatformMobile;
 #else
-    return @"pc";
+    return SPDevicePlatformDesktop;
 #endif
 }
 
@@ -83,21 +89,41 @@
     return idfa;
 }
 
+/*
+ The IDFA can be retrieved using selectors rather than proper instance methods because
+ the compiler would complain about the missing AdSupport framework.
+ As stated in the header file, this only works if you have the AdSupport library in your project.
+ If you have it, but do not want to use IDFA, add the compiler flag <code>SNOWPLOW_NO_IFA</code> to your build settings.
+ If you haven't AdSupport framework in your project it just compiles returning a nil advertisingIdentifier.
+ 
+ Note that `advertisingIdentifier` returns a sequence of 0s when used in the simulator.
+ Use a real device if you want a proper IDFA.
+ */
 + (NSString *) getAppleIdfa {
-    NSString* idfa = nil;
 #if SNOWPLOW_TARGET_IOS || SNOWPLOW_TARGET_TV
 #ifndef SNOWPLOW_NO_IFA
     Class ASIdentifierManagerClass = NSClassFromString(@"ASIdentifierManager");
-    if (ASIdentifierManagerClass) {
-        SEL sharedManagerSelector = NSSelectorFromString(@"sharedManager");
-        id sharedManager = ((id (*)(id, SEL))[ASIdentifierManagerClass methodForSelector:sharedManagerSelector])(ASIdentifierManagerClass, sharedManagerSelector);
-        SEL advertisingIdentifierSelector = NSSelectorFromString(@"advertisingIdentifier");
-        NSUUID *uuid = ((NSUUID* (*)(id, SEL))[sharedManager methodForSelector:advertisingIdentifierSelector])(sharedManager, advertisingIdentifierSelector);
-        idfa = [uuid UUIDString];
-    }
+    if (!ASIdentifierManagerClass) return nil;
+
+    SEL sharedManagerSelector = NSSelectorFromString(@"sharedManager");
+    if (![ASIdentifierManagerClass respondsToSelector:sharedManagerSelector]) return nil;
+
+    id sharedManager = ((id (*)(id, SEL))[ASIdentifierManagerClass methodForSelector:sharedManagerSelector])(ASIdentifierManagerClass, sharedManagerSelector);
+
+    SEL isAdvertisingTrackingEnabledSelector = NSSelectorFromString(@"isAdvertisingTrackingEnabled");
+    if (![sharedManager respondsToSelector:isAdvertisingTrackingEnabledSelector]) return nil;
+
+    BOOL isAdvertisingTrackingEnabled = ((BOOL (*)(id, SEL))[sharedManager methodForSelector:isAdvertisingTrackingEnabledSelector])(sharedManager, isAdvertisingTrackingEnabledSelector);
+    if (!isAdvertisingTrackingEnabled) return nil;
+
+    SEL advertisingIdentifierSelector = NSSelectorFromString(@"advertisingIdentifier");
+    if (![sharedManager respondsToSelector:advertisingIdentifierSelector]) return nil;
+
+    NSUUID *uuid = ((NSUUID* (*)(id, SEL))[sharedManager methodForSelector:advertisingIdentifierSelector])(sharedManager, advertisingIdentifierSelector);
+    return [uuid UUIDString];
 #endif
 #endif
-    return idfa;
+    return nil;
 }
 
 + (NSString *) getAppleIdfv {
@@ -121,11 +147,18 @@
 }
 
 + (NSString *) getNetworkType {
-    NSString * type = @"offline";
 #if SNOWPLOW_TARGET_IOS
-    type = [ReachabilityBridge connectionType];
+    SNOWNetworkStatus networkStatus = [SNOWReachability reachabilityForInternetConnection].networkStatus;
+    switch (networkStatus) {
+        case SNOWNetworkStatusOffline:
+            return @"offline";
+        case SNOWNetworkStatusWifi:
+            return @"wifi";
+        case SNOWNetworkStatusWWAN:
+            return @"mobile";
+    }
 #endif
-    return type;
+    return @"offline";
 }
 
 + (NSString *) getNetworkTechnology {
@@ -150,6 +183,9 @@
 #if SNOWPLOW_TARGET_IOS || SNOWPLOW_TARGET_TV
     CGRect mainScreen = [[UIScreen mainScreen] bounds];
     CGFloat screenScale = [[UIScreen mainScreen] scale];
+#elif SNOWPLOW_TARGET_WATCHOS
+    CGRect mainScreen = [[WKInterfaceDevice currentDevice] screenBounds];
+    CGFloat screenScale = [[WKInterfaceDevice currentDevice] screenScale];
 #else
     CGRect mainScreen = [[NSScreen mainScreen] frame];
     CGFloat screenScale = [[NSScreen mainScreen] backingScaleFactor];
@@ -170,35 +206,34 @@
 }
 
 + (NSString *) getDeviceModel {
-#if SNOWPLOW_TARGET_IOS || SNOWPLOW_TARGET_TV
-    return [[UIDevice currentDevice] model];
-#else
+    NSString *simulatorModel = [NSProcessInfo.processInfo.environment objectForKey: @"SIMULATOR_MODEL_IDENTIFIER"];
+    if (simulatorModel) return simulatorModel;
+
     size_t size;
-    char *model = nil;
-    sysctlbyname("hw.model", NULL, &size, NULL, 0);
-    model = malloc(size);
-    sysctlbyname("hw.model", model, &size, NULL, 0);
-    NSString *hwString = [NSString stringWithCString:model encoding:NSUTF8StringEncoding];
-    free(model);
-    return hwString;
-#endif
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithUTF8String:machine];
+    free(machine);
+    return platform;
 }
 
 + (NSString *) getOSVersion {
 #if SNOWPLOW_TARGET_IOS || SNOWPLOW_TARGET_TV
     return [[UIDevice currentDevice] systemVersion];
+#elif SNOWPLOW_TARGET_WATCHOS
+    return [[WKInterfaceDevice currentDevice] systemVersion];
 #else
     SInt32 osxMajorVersion;
     SInt32 osxMinorVersion;
     SInt32 osxPatchFixVersion;
     NSProcessInfo *info = [NSProcessInfo processInfo];
-    if ([info respondsToSelector:@selector(operatingSystemVersion)]) {
+    if (@available(macOS 10.10, *)) {
         NSOperatingSystemVersion systemVersion = [info operatingSystemVersion];
         osxMajorVersion = (int)systemVersion.majorVersion;
         osxMinorVersion = (int)systemVersion.minorVersion;
         osxPatchFixVersion = (int)systemVersion.patchVersion;
-    }
-    else {
+    } else {
         // TODO eliminate this block once minimum version is OS X 10+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -218,6 +253,8 @@
     return @"ios";
 #elif SNOWPLOW_TARGET_TV
     return @"tvos";
+#elif SNOWPLOW_TARGET_WATCHOS
+    return @"watchos";
 #else
     return @"osx";
 #endif
@@ -250,14 +287,6 @@
 
 + (NSInteger) getByteSizeWithString:(NSString *)str {
     return [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-}
-
-+ (BOOL) isOnline {
-    BOOL online = YES;
-#if SNOWPLOW_TARGET_IOS
-    online = [ReachabilityBridge isOnline];
-#endif
-    return online;
 }
 
 + (void) checkArgument:(BOOL)argument withMessage:(NSString *)message {
@@ -312,7 +341,7 @@
 + (NSDictionary *) replaceHyphenatedKeysWithCamelcase:(NSDictionary *)dict{
     NSMutableDictionary * newDictionary = [[NSMutableDictionary alloc] init];
     for (NSString * key in dict) {
-        if ([key containsString:@"-"]) {
+        if ([self string:key contains:@"-"]) {
             if ([dict[key] isKindOfClass:[NSDictionary class]]) {
                 newDictionary[[self camelcaseParsedKey:key]] = [self replaceHyphenatedKeysWithCamelcase:dict[key]];
             } else {
@@ -326,8 +355,17 @@
             }
         }
     }
-
+    
     return [[NSDictionary alloc] initWithDictionary:newDictionary copyItems:YES];
+}
+
++ (BOOL) string:(NSString *)string contains:(NSString *)subString {
+    if (!subString) return false;
+    if (@available(macOS 10.10, *)) {
+        return [string containsString:subString];
+    } else {
+        return ([string rangeOfString:subString].location != NSNotFound);
+    }
 }
 
 + (NSString *) camelcaseParsedKey:(NSString *)key {

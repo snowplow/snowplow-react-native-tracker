@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		336ED1F3AC368EDE312FE3B2 /* Pods_RNSnowplowTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1A80A9E813A1A9EAA9269A8 /* Pods_RNSnowplowTracker.framework */; };
+		0562F54E146600A44BDEF45D /* libPods-RNSnowplowTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E15379B78A468FF69B0BDCA /* libPods-RNSnowplowTracker.a */; };
 		75D5EB7C2293B157005C8629 /* RCTConvert+Snowplow.m in Sources */ = {isa = PBXBuildFile; fileRef = 75D5EB7B2293B157005C8629 /* RCTConvert+Snowplow.m */; };
 		75D5EB7E2293B206005C8629 /* RCTConvert+Snowplow.h in Headers */ = {isa = PBXBuildFile; fileRef = 75D5EB7A2293B157005C8629 /* RCTConvert+Snowplow.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		75D5EB7F2293B206005C8629 /* RNSnowplowTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = B3E7B5881CC2AC0600A0062D /* RNSnowplowTracker.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -32,7 +32,7 @@
 		75D5EB7A2293B157005C8629 /* RCTConvert+Snowplow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Snowplow.h"; sourceTree = "<group>"; };
 		75D5EB7B2293B157005C8629 /* RCTConvert+Snowplow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Snowplow.m"; sourceTree = "<group>"; };
 		7D2A97B8BEC452B270B0AA54 /* Pods-RNSnowplowTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNSnowplowTracker.debug.xcconfig"; path = "Target Support Files/Pods-RNSnowplowTracker/Pods-RNSnowplowTracker.debug.xcconfig"; sourceTree = "<group>"; };
-		A1A80A9E813A1A9EAA9269A8 /* Pods_RNSnowplowTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNSnowplowTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E15379B78A468FF69B0BDCA /* libPods-RNSnowplowTracker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNSnowplowTracker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNSnowplowTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSnowplowTracker.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNSnowplowTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSnowplowTracker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				336ED1F3AC368EDE312FE3B2 /* Pods_RNSnowplowTracker.framework in Frameworks */,
+				0562F54E146600A44BDEF45D /* libPods-RNSnowplowTracker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,7 +60,7 @@
 		47AD2C542223E36A7CFE72AE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A1A80A9E813A1A9EAA9269A8 /* Pods_RNSnowplowTracker.framework */,
+				8E15379B78A468FF69B0BDCA /* libPods-RNSnowplowTracker.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
