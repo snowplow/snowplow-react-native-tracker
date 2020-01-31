@@ -1,3 +1,9 @@
+Version 0.1.0-alpha.15 (2020-02-06)
+-----------------------------------
+6363ea1 Cleanup Repo (#29)
+4a681f5 Update DemoApp (#21)
+067bc92 Update ios Tracker dependency to remove mandatory dynamic build (#22)
+
 Version 0.1.0-alpha.14 (2019-10-22)
 ----------------------------------
 Update iOS to incorporate patch release (close #23)
