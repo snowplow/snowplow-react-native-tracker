@@ -1,1 +1,0 @@
-../../../SnowplowTracker/Snowplow/SPScreenState.h
