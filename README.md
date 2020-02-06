@@ -29,10 +29,6 @@ RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsons
 
 ### Running on iOS
 
-For iOS, the tracker's dependencies must be installed as frameworks.
-
-First add `use_frameworks!` to your app's Podfile. Then:
-
 `cd ios && pod install && cd ..`
 
 Run the app with: `react-native run-ios` from the root of the project.
