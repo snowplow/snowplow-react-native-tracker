@@ -35,6 +35,17 @@ RCT_EXPORT_METHOD(initialize
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];
+        if (options[@"setSessionContext"] == @YES ) {
+            [builder setSessionContext:YES];
+            if (options[@"setForegroundTimeout"] != nil) {
+                 [builder setSessionContext:options[@"setForegroundTimeout"]];
+            }else [builder setForegroundTimeout:600];
+            if (options[@"backgroundTimeout"] != nil) {
+                 [builder setSessionContext:options[@"backgroundTimeout"]];
+            }else [builder setBackgroundTimeout:300];
+        }else{
+           [builder setSessionContext:NO]; 
+        } 
         [builder setSubject:subject];
     }];
 }
