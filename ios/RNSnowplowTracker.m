@@ -35,6 +35,13 @@ RCT_EXPORT_METHOD(initialize
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];
+        if (options[@"setInstallEvent"] == @YES ) {
+            [builder setInstallEvent:YES];
+        }else [builder setInstallEvent:NO];
+        if (options[@"setExceptionEvents"] == @YES ) {
+            [builder setExceptionEvents:YES];
+        }else [builder setExceptionEvents:NO];
+        [builder setSubject:subject];
         [builder setSubject:subject];
     }];
 }

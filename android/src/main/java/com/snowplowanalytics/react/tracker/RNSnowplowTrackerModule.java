@@ -46,6 +46,8 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .base64(false)
                 .mobileContext(true)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
+                .installTracking(options.hasKey("setInstallEvent") ? options.getBoolean("setInstallEvent") : false)
+                .applicationCrash( options.hasKey("setExceptionEvents") ? options.getBoolean("setExceptionEvents") : false)
                 .build()
         );
     }
