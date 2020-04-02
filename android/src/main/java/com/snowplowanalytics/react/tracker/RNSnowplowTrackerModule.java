@@ -44,7 +44,8 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 .base64(false)
-                .mobileContext(true)
+                .mobileContext(options.hasKey("setPlatformContext") ? options.getBoolean("setPlatformContext") : false)
+                .geoLocationContext(options.hasKey("setGeoLocationContext") ? options.getBoolean("setGeoLocationContext") : false)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .build()
         );

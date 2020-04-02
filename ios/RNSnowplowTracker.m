@@ -23,7 +23,11 @@ RCT_EXPORT_METHOD(initialize
                   :(NSDictionary *)options
                   //:(BOOL *)autoScreenView
                 ) {
-    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
+    BOOL setPlatformContext = NO;
+    BOOL setGeoLocationContext = NO;
+    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
+    if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
 
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
