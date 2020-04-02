@@ -95,4 +95,20 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
       [self.tracker trackScreenViewEvent:SVevent];
 }
 
+RCT_EXPORT_METHOD(trackPageView
+                  :(nonnull NSString *)pageUrl // required (non-empty string)
+                  :(NSString *)pageTitle
+                  :(NSString *)pageReferrer
+                  :(NSArray<SPSelfDescribingJson *> *)contexts) {
+    SPPageView * trackerEvent = [SPPageView build:^(id<SPPageViewBuilder> builder) {
+        [builder setPageUrl:pageUrl];
+        if (pageTitle != nil) [builder setPageTitle:pageTitle];
+        if (pageReferrer != nil) [builder setReferrer:pageReferrer];
+        if (contexts) {
+            [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
+        }
+    }];
+    [self.tracker trackPageViewEvent:trackerEvent];
+}
+
 @end

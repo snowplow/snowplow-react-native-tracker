@@ -16,6 +16,7 @@ import com.snowplowanalytics.snowplow.tracker.emitter.RequestSecurity;
 import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
 import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
+import com.snowplowanalytics.snowplow.tracker.events.PageView;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
@@ -43,7 +44,6 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.emitter.waitForEventStore();
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
-                .base64(false)
                 .mobileContext(true)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .build()
@@ -81,6 +81,15 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 transitionType, contexts);
         if (trackerEvent != null) {
             tracker.track(trackerEvent);
+        }
+    }
+    
+    @ReactMethod
+    public void trackPageView(String pageUrl, String pageTitle, String referrer, ReadableArray contexts) {
+        PageView trackerEvent = EventUtil.getPageViewEvent(pageUrl, pageTitle, referrer, contexts);
+        if (trackerEvent != null) {
+            tracker.track(trackerEvent);
+
         }
     }
 }
