@@ -41,6 +41,10 @@ build/
 .gradle
 local.properties
 *.iml
+android/.project
+android/.settings/org.eclipse.buildship.core.prefs
+DemoApp/android/.settings/org.eclipse.buildship.core.prefs
+DemoApp/android/.project
 
 # BUCK
 buck-out/
