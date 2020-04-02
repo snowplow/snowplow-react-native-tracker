@@ -22,9 +22,48 @@ RCT_EXPORT_METHOD(initialize
                   :(nonnull NSString *)appId
                   :(NSDictionary *)options
                   //:(BOOL *)autoScreenView
+                  //:(BOOL *)setPlatformContext
+                  //:(BOOL *)setBase64Encoded
+                  //:(BOOL *)setApplicationContext
+                  //:(BOOL *)setLifecycleEvents
+                  //:(BOOL *)setScreenContext
+                  //:(BOOL *)setInstallEvent
+                  //:(BOOL *)setSessionContext
+                  //:(INT *)foregroundTimeout
+                  //:(INT *)backgroundTimeout
+                  //:(STRING *)userId
                 ) {
-    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
-
+    BOOL setPlatformContext = NO;
+    BOOL setGeoLocationContext = NO;
+    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+    if (options[@"userId"] != nil) {
+            [subject setUserId:options[@"userId"]];
+    }
+    if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
+        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
+    }
+    if (options[@"colorDepth"] != nil) {
+        [subject setColorDepth:[options[@"colorDepth"] integerValue]];
+    }
+    if (options[@"timezone"] != nil) {
+        [subject setTimezone:options[@"timezone"]];
+    }
+    if (options[@"language"] != nil) {
+        [subject setLanguage:options[@"language"]];
+    }
+    if (options[@"ipAddress"] != nil) {
+        [subject setIpAddress:options[@"ipAddress"]];
+    }
+    if (options[@"useragent"] != nil) {
+        [subject setUseragent:options[@"useragent"]];
+    }
+    if (options[@"networkUserId"] != nil) {
+        [subject setNetworkUserId:options[@"networkUserId"]];
+    }
+    if (options[@"domainUserId"] != nil) {
+        [subject setDomainUserId:options[@"domainUserId"]];
+    }
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -33,8 +72,41 @@ RCT_EXPORT_METHOD(initialize
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
         [builder setAppId:appId];
+        // setBase64Encoded
+        if (options[@"setBase64Encoded"] == @YES ) {
+            [builder setBase64Encoded:YES];
+        }else [builder setBase64Encoded:NO];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];
+        // setApplicationContext
+        if (options[@"setApplicationContext"] == @YES ) {
+            [builder setApplicationContext:YES];
+        }else [builder setApplicationContext:NO];
+        // setSessionContextui
+        if (options[@"setSessionContext"] == @YES ) {
+            [builder setSessionContext:YES];
+            if (options[@"checkInterval"] != nil) {
+                [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
+            }else [builder setCheckInterval:15];
+            if (options[@"foregroundTimeout"] != nil) {
+                 [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
+            }else [builder setForegroundTimeout:600];
+            if (options[@"backgroundTimeout"] != nil) {
+                 [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
+            }else [builder setBackgroundTimeout:300];
+        }else [builder setSessionContext:NO];
+        // setLifecycleEvents
+        if (options[@"setLifecycleEvents"] == @YES ) {
+            [builder setLifecycleEvents:YES];
+        }else [builder setLifecycleEvents:NO];
+        // setScreenContext
+        if (options[@"setScreenContext"] == @YES ) {
+            [builder setScreenContext:YES];
+        }else [builder setScreenContext:NO];
+        //setInstallEvent
+        if (options[@"setInstallEvent"] == @YES ) {
+            [builder setInstallEvent:YES];
+        }else [builder setInstallEvent:NO];
         [builder setSubject:subject];
     }];
 }
@@ -93,6 +165,16 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
         }
       }];
       [self.tracker trackScreenViewEvent:SVevent];
+}
+
+RCT_EXPORT_METHOD(setUserId
+                  :(nonnull NSString *)userId // required (non-empty string)
+                ) {
+    SPSubject * s = self.tracker.subject;
+    if (userId != nil) {
+        [s setUserId:userId];
+        [self.tracker setSubject:s];
+    }
 }
 
 @end
