@@ -47,7 +47,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .mobileContext(true)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .sessionContext(options.hasKey("setSessionContext") ? options.getBoolean("setSessionContext") : false)
-                .sessionCheckInterval(options.hasKey("sessionCheckInterval") ? options.getInt("sessionCheckInterval") : 15)
+                .sessionCheckInterval(options.hasKey("checkInterval") ? options.getInt("checkInterval") : 15)
                 .foregroundTimeout(options.hasKey("foregroundTimeout") ? options.getInt("foregroundTimeout") : 600)
                 .backgroundTimeout(options.hasKey("backgroundTimeout") ? options.getInt("backgroundTimeout") : 300)
                 .build()
