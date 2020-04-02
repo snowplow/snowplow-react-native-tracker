@@ -34,7 +34,7 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         if (options[@"setBase64Encoded"] == @YES ) {
             [builder setBase64Encoded:YES];
-        }else [setBase64Encoded:NO];
+        }else [builder setBase64Encoded:NO];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];
