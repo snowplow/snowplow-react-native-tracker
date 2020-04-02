@@ -32,6 +32,9 @@ RCT_EXPORT_METHOD(initialize
     }];
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
+        if (options[@"setBase64Encoded"] == @YES ) {
+            [blder setBase64Encoded:YES];
+        }else [setBase64Encoded:NO];
         [builder setAppId:appId];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];

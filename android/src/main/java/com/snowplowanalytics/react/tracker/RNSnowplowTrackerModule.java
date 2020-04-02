@@ -43,7 +43,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.emitter.waitForEventStore();
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
-                .base64(false)
+                .base64(options.hasKey("setBase64Encoded") ? options.getBoolean("setBase64Encoded") : false)
                 .mobileContext(true)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
                 .build()
