@@ -43,9 +43,28 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.emitter.waitForEventStore();
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
-                .base64(false)
-                .mobileContext(true)
+                // setBase64Encoded
+                .base64(options.hasKey("setBase64Encoded") ? options.getBoolean("setBase64Encoded") : false)
+                // setPlatformContext
+                .mobileContext(options.hasKey("setPlatformContext") ? options.getBoolean("setPlatformContext") : false)
                 .screenviewEvents(options.hasKey("autoScreenView") ? options.getBoolean("autoScreenView") : false)
+                // setApplicationContext
+                .applicationContext(options.hasKey("setApplicationContext") ? options.getBoolean("setApplicationContext") : false)
+                // setSessionContext
+                .sessionContext(options.hasKey("setSessionContext") ? options.getBoolean("setSessionContext") : false)
+                .sessionCheckInterval(options.hasKey("checkInterval") ? options.getInt("checkInterval") : 15)
+                .foregroundTimeout(options.hasKey("foregroundTimeout") ? options.getInt("foregroundTimeout") : 600)
+                .backgroundTimeout(options.hasKey("backgroundTimeout") ? options.getInt("backgroundTimeout") : 300)
+                // setLifecycleEvents
+                .lifecycleEvents(options.hasKey("setLifecycleEvents") ? options.getBoolean("setLifecycleEvents") : false)
+                // setScreenContext
+                .screenContext(options.hasKey("setScreenContext") ? options.getBoolean("setScreenContext") : false)
+                // setGeoLocationContext
+                .geoLocationContext(options.hasKey("setGeoLocationContext") ? options.getBoolean("setGeoLocationContext") : false)
+                // setInstallEvent
+                .installTracking(options.hasKey("setInstallEvent") ? options.getBoolean("setInstallEvent") : false)
+                // setExceptionEvents
+                .applicationCrash(options.hasKey("setExceptionEvents") ? options.getBoolean("setExceptionEvents") : false)
                 .build()
         );
     }
