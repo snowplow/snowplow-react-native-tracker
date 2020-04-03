@@ -28,8 +28,8 @@ RCT_EXPORT_METHOD(initialize
     if (options[@"userId"] != nil) {
         [subject setUserId:options[@"userId"]];
     }
-    if (options[@"screenWidth"] != nil && options[@"screenHeigh"] != nil) {
-        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeigh"] integerValue]];
+    if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
+        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
     }
     if (options[@"colorDepth"] != nil) {
         [subject setColorDepth:[options[@"colorDepth"] integerValue]];
