@@ -25,11 +25,33 @@ RCT_EXPORT_METHOD(initialize
                   //:(STRING *)userId
                 ) {
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:YES andGeoContext:NO];
-
     if (options[@"userId"] != nil) {
         [subject setUserId:options[@"userId"]];
     }
-    
+    if (options[@"screenWidth"] != nil && options[@"screenHeigh"] != nil) {
+        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeigh"] integerValue]];
+    }
+    if (options[@"colorDepth"] != nil) {
+        [subject setColorDepth:[options[@"colorDepth"] integerValue]];
+    }
+    if (options[@"timezone"] != nil) {
+        [subject setTimezone:options[@"timezone"]];
+    }
+    if (options[@"language"] != nil) {
+        [subject setLanguage:options[@"language"]];
+    }
+    if (options[@"ipAddress"] != nil) {
+        [subject setIpAddress:options[@"ipAddress"]];
+    }
+    if (options[@"useragent"] != nil) {
+        [subject setUseragent:options[@"useragent"]];
+    }
+    if (options[@"networkUserId"] != nil) {
+        [subject setNetworkUserId:options[@"networkUserId"]];
+    }
+    if (options[@"domainUserId"] != nil) {
+        [subject setDomainUserId:options[@"domainUserId"]];
+    }
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -101,18 +123,14 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
 }
 
 RCT_EXPORT_METHOD(setUserId
-                  :(nonnull NSString *)userId // required (non-empty string),
-                  :(NSDictionary *)options
+                  :(nonnull NSString *)userId // required (non-empty string)
                 ) {
-    BOOL setPlatformContext = NO;
-    BOOL setGeoLocationContext = NO;
-    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
-    if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
-    SPSubject * subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+    SPSubject * s = self.tracker.subject;
     if (userId != nil) {
-        [subject setUserId:userId];
-        [self.tracker setSubject:subject];
+        [s setUserId:userId];
+        [self.tracker setSubject:s];
     }
 }
+
 
 @end
