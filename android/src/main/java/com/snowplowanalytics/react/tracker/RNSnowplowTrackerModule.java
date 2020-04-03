@@ -41,8 +41,15 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .security(protocol.equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
                 .build();
         this.emitter.waitForEventStore();
+        com.snowplowanalytics.snowplow.tracker.Subject subject = new com.snowplowanalytics.snowplow.tracker.Subject.SubjectBuilder()
+                .build();
+        if (options.hasKey("userId") && options.getString("userId") != null && !options.getString("userId").isEmpty()) {
+            subject.setUserId(options.getString("userId"));
+        }
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
+                // setSubject/UserID
+                .subject(subject)
                 // setBase64Encoded
                 .base64(options.hasKey("setBase64Encoded") ? options.getBoolean("setBase64Encoded") : false)
                 // setPlatformContext
@@ -101,5 +108,10 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         if (trackerEvent != null) {
             tracker.track(trackerEvent);
         }
+    }
+    
+    @ReactMethod
+    public void setUserId(String userId, ReadableMap options) {
+        tracker.instance().getSubject().setUserId(userId);
     }
 }

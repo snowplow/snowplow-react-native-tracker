@@ -33,13 +33,17 @@ RCT_EXPORT_METHOD(initialize
                   //:(BOOL *)setSessionContext
                   //:(INT *)setForegroundTimeout
                   //:(INT *)setBackgroundTimeout
+                  //:(STRING *)userId
                 ) {
     BOOL setPlatformContext = NO;
     BOOL setGeoLocationContext = NO;
     if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
     if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
-
+    if (options[@"userId"] != nil) {
+            [subject setUserId:options[@"userId"]];
+    }
+    
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -145,6 +149,21 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
         }
       }];
       [self.tracker trackScreenViewEvent:SVevent];
+}
+
+RCT_EXPORT_METHOD(setUserId
+                  :(nonnull NSString *)userId // required (non-empty string),
+                  :(NSDictionary *)options
+                ) {
+    BOOL setPlatformContext = NO;
+    BOOL setGeoLocationContext = NO;
+    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
+    if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
+    SPSubject * subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+    if (userId != nil) {
+        [subject setUserId:userId];
+        [self.tracker setSubject:subject];
+    }
 }
 
 @end
