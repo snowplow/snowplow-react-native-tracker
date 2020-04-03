@@ -43,7 +43,30 @@ RCT_EXPORT_METHOD(initialize
     if (options[@"userId"] != nil) {
             [subject setUserId:options[@"userId"]];
     }
-    
+    if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
+        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
+    }
+    if (options[@"colorDepth"] != nil) {
+        [subject setColorDepth:[options[@"colorDepth"] integerValue]];
+    }
+    if (options[@"timezone"] != nil) {
+        [subject setTimezone:options[@"timezone"]];
+    }
+    if (options[@"language"] != nil) {
+        [subject setLanguage:options[@"language"]];
+    }
+    if (options[@"ipAddress"] != nil) {
+        [subject setIpAddress:options[@"ipAddress"]];
+    }
+    if (options[@"useragent"] != nil) {
+        [subject setUseragent:options[@"useragent"]];
+    }
+    if (options[@"networkUserId"] != nil) {
+        [subject setNetworkUserId:options[@"networkUserId"]];
+    }
+    if (options[@"domainUserId"] != nil) {
+        [subject setDomainUserId:options[@"domainUserId"]];
+    }
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -66,13 +89,13 @@ RCT_EXPORT_METHOD(initialize
         if (options[@"setSessionContext"] == @YES ) {
             [builder setSessionContext:YES];
             if (options[@"checkInterval"] != nil) {
-                [builder setCheckInterval:options[@"checkInterval"]];
+                [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
             }else [builder setCheckInterval:15];
             if (options[@"foregroundTimeout"] != nil) {
-                 [builder setSessionContext:options[@"foregroundTimeout"]];
+                 [builder setSessionContext:[options[@"foregroundTimeout"] integerValue]];
             }else [builder setForegroundTimeout:600];
             if (options[@"backgroundTimeout"] != nil) {
-                 [builder setSessionContext:options[@"backgroundTimeout"]];
+                 [builder setSessionContext:[options[@"backgroundTimeout"] integerValue]];
             }else [builder setBackgroundTimeout:300];
         }else [builder setSessionContext:NO];
         // setLifecycleEvents
@@ -152,17 +175,12 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
 }
 
 RCT_EXPORT_METHOD(setUserId
-                  :(nonnull NSString *)userId // required (non-empty string),
-                  :(NSDictionary *)options
+                  :(nonnull NSString *)userId // required (non-empty string)
                 ) {
-    BOOL setPlatformContext = NO;
-    BOOL setGeoLocationContext = NO;
-    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
-    if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
-    SPSubject * subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+    SPSubject * s = self.tracker.subject;
     if (userId != nil) {
-        [subject setUserId:userId];
-        [self.tracker setSubject:subject];
+        [s setUserId:userId];
+        [self.tracker setSubject:s];
     }
 }
 

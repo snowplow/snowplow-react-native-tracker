@@ -46,6 +46,36 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         if (options.hasKey("userId") && options.getString("userId") != null && !options.getString("userId").isEmpty()) {
             subject.setUserId(options.getString("userId"));
         }
+        if (options.hasKey("screenWidth") && options.hasKey("screenHeight")) {
+            subject.setScreenResolution(options.getInt("screenWidth"), options.getInt("screenHeight"));
+        }
+        if (options.hasKey("colorDepth")) {
+            subject.setColorDepth(options.getInt("colorDepth"));
+        }
+        if (options.hasKey("timezone") && options.getString("timezone") != null
+                && !options.getString("timezone").isEmpty()) {
+            subject.setTimezone(options.getString("timezone"));
+        }
+        if (options.hasKey("language") && options.getString("language") != null
+                && !options.getString("language").isEmpty()) {
+            subject.setLanguage(options.getString("language"));
+        }
+        if (options.hasKey("ipAddress") && options.getString("ipAddress") != null
+                && !options.getString("ipAddress").isEmpty()) {
+            subject.setIpAddress(options.getString("ipAddress"));
+        }
+        if (options.hasKey("useragent") && options.getString("useragent") != null
+                && !options.getString("useragent").isEmpty()) {
+            subject.setUseragent(options.getString("useragent"));
+        }
+        if (options.hasKey("networkUserId") && options.getString("networkUserId") != null
+                && !options.getString("networkUserId").isEmpty()) {
+            subject.setNetworkUserId(options.getString("networkUserId"));
+        }
+        if (options.hasKey("domainUserId") && options.getString("domainUserId") != null
+                && !options.getString("domainUserId").isEmpty()) {
+            subject.setDomainUserId(options.getString("domainUserId"));
+        }
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 // setSubject/UserID
