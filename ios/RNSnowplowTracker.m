@@ -38,13 +38,13 @@ RCT_EXPORT_METHOD(initialize
         if (options[@"setSessionContext"] == @YES ) {
             [builder setSessionContext:YES];
             if (options[@"checkInterval"] != nil) {
-                [builder setCheckInterval:options[@"checkInterval"]];
+                [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
             }else [builder setCheckInterval:15];
             if (options[@"foregroundTimeout"] != nil) {
-                 [builder setSessionContext:options[@"foregroundTimeout"]];
+                 [builder setSessionContext:[options[@"foregroundTimeout"] integerValue]];
             }else [builder setForegroundTimeout:600];
             if (options[@"backgroundTimeout"] != nil) {
-                 [builder setSessionContext:options[@"backgroundTimeout"]];
+                 [builder setSessionContext:[options[@"backgroundTimeout"] integerValue]];
             }else [builder setBackgroundTimeout:300];
         }else [builder setSessionContext:NO]; 
         [builder setSubject:subject];
