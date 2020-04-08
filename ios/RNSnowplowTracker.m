@@ -37,33 +37,7 @@ RCT_EXPORT_METHOD(initialize
     BOOL setGeoLocationContext = NO;
     if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
-    if (options[@"userId"] != nil) {
-            [subject setUserId:options[@"userId"]];
-    }
-    if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
-        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
-    }
-    if (options[@"colorDepth"] != nil) {
-        [subject setColorDepth:[options[@"colorDepth"] integerValue]];
-    }
-    if (options[@"timezone"] != nil) {
-        [subject setTimezone:options[@"timezone"]];
-    }
-    if (options[@"language"] != nil) {
-        [subject setLanguage:options[@"language"]];
-    }
-    if (options[@"ipAddress"] != nil) {
-        [subject setIpAddress:options[@"ipAddress"]];
-    }
-    if (options[@"useragent"] != nil) {
-        [subject setUseragent:options[@"useragent"]];
-    }
-    if (options[@"networkUserId"] != nil) {
-        [subject setNetworkUserId:options[@"networkUserId"]];
-    }
-    if (options[@"domainUserId"] != nil) {
-        [subject setDomainUserId:options[@"domainUserId"]];
-    }
+
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:endpoint];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -109,6 +83,39 @@ RCT_EXPORT_METHOD(initialize
         }else [builder setInstallEvent:NO];
         [builder setSubject:subject];
     }];
+}
+
+RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options) {
+      if (options[@"userId"] != nil) {
+              [self.self.tracker.subject setUserId:options[@"userId"]];
+      }
+      if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
+          [self.self.tracker.subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
+      }
+      if (options[@"viewportWidth"] != nil && options[@"viewportHeight"] != nil) {
+          [self.self.tracker.subject setViewPortWithWidth:[options[@"viewportWidth"] integerValue] andHeight:[options[@"viewportHeight"] integerValue]];
+      }
+      if (options[@"colorDepth"] != nil) {
+          [self.self.tracker.subject setColorDepth:[options[@"colorDepth"] integerValue]];
+      }
+      if (options[@"timezone"] != nil) {
+          [self.self.tracker.subject setTimezone:options[@"timezone"]];
+      }
+      if (options[@"language"] != nil) {
+          [self.self.tracker.subject setLanguage:options[@"language"]];
+      }
+      if (options[@"ipAddress"] != nil) {
+          [self.self.tracker.subject setIpAddress:options[@"ipAddress"]];
+      }
+      if (options[@"useragent"] != nil) {
+          [self.self.tracker.subject setUseragent:options[@"useragent"]];
+      }
+      if (options[@"networkUserId"] != nil) {
+          [self.self.tracker.subject setNetworkUserId:options[@"networkUserId"]];
+      }
+      if (options[@"domainUserId"] != nil) {
+          [self.self.tracker.subject setDomainUserId:options[@"domainUserId"]];
+      }
 }
 
 RCT_EXPORT_METHOD(trackSelfDescribingEvent
@@ -165,16 +172,6 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
         }
       }];
       [self.tracker trackScreenViewEvent:SVevent];
-}
-
-RCT_EXPORT_METHOD(setUserId
-                  :(nonnull NSString *)userId // required (non-empty string)
-                ) {
-    SPSubject * s = self.tracker.subject;
-    if (userId != nil) {
-        [s setUserId:userId];
-        [self.tracker setSubject:s];
-    }
 }
 
 @end

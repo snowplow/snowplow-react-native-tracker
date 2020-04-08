@@ -41,41 +41,10 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .security(protocol.equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
                 .build();
         this.emitter.waitForEventStore();
+
         com.snowplowanalytics.snowplow.tracker.Subject subject = new com.snowplowanalytics.snowplow.tracker.Subject.SubjectBuilder()
                 .build();
-        if (options.hasKey("userId") && options.getString("userId") != null && !options.getString("userId").isEmpty()) {
-            subject.setUserId(options.getString("userId"));
-        }
-        if (options.hasKey("screenWidth") && options.hasKey("screenHeight")) {
-            subject.setScreenResolution(options.getInt("screenWidth"), options.getInt("screenHeight"));
-        }
-        if (options.hasKey("colorDepth")) {
-            subject.setColorDepth(options.getInt("colorDepth"));
-        }
-        if (options.hasKey("timezone") && options.getString("timezone") != null
-                && !options.getString("timezone").isEmpty()) {
-            subject.setTimezone(options.getString("timezone"));
-        }
-        if (options.hasKey("language") && options.getString("language") != null
-                && !options.getString("language").isEmpty()) {
-            subject.setLanguage(options.getString("language"));
-        }
-        if (options.hasKey("ipAddress") && options.getString("ipAddress") != null
-                && !options.getString("ipAddress").isEmpty()) {
-            subject.setIpAddress(options.getString("ipAddress"));
-        }
-        if (options.hasKey("useragent") && options.getString("useragent") != null
-                && !options.getString("useragent").isEmpty()) {
-            subject.setUseragent(options.getString("useragent"));
-        }
-        if (options.hasKey("networkUserId") && options.getString("networkUserId") != null
-                && !options.getString("networkUserId").isEmpty()) {
-            subject.setNetworkUserId(options.getString("networkUserId"));
-        }
-        if (options.hasKey("domainUserId") && options.getString("domainUserId") != null
-                && !options.getString("domainUserId").isEmpty()) {
-            subject.setDomainUserId(options.getString("domainUserId"));
-        }
+
         this.tracker = Tracker.init(new Tracker
                 .TrackerBuilder(this.emitter, namespace, appId, this.reactContext)
                 // setSubject/UserID
@@ -100,6 +69,46 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .installTracking(options.hasKey("setInstallEvent") ? options.getBoolean("setInstallEvent") : false)
                 .build()
         );
+    }
+
+    @ReactMethod
+    public void setSubjectData(ReadableMap options) {
+      if (options.hasKey("userId") && options.getString("userId") != null && !options.getString("userId").isEmpty()) {
+          tracker.instance().getSubject().setUserId(options.getString("userId"));
+      }
+      if (options.hasKey("viewportWidth") && options.hasKey("viewportHeight")) {
+          tracker.instance().getSubject().setViewPort(options.getInt("viewportWidth"), options.getInt("viewportHeight"));
+      }
+      if (options.hasKey("screenWidth") && options.hasKey("screenHeight")) {
+          tracker.instance().getSubject().setScreenResolution(options.getInt("screenWidth"), options.getInt("screenHeight"));
+      }
+      if (options.hasKey("colorDepth")) {
+          tracker.instance().getSubject().setColorDepth(options.getInt("colorDepth"));
+      }
+      if (options.hasKey("timezone") && options.getString("timezone") != null
+              && !options.getString("timezone").isEmpty()) {
+          tracker.instance().getSubject().setTimezone(options.getString("timezone"));
+      }
+      if (options.hasKey("language") && options.getString("language") != null
+              && !options.getString("language").isEmpty()) {
+          tracker.instance().getSubject().setLanguage(options.getString("language"));
+      }
+      if (options.hasKey("ipAddress") && options.getString("ipAddress") != null
+              && !options.getString("ipAddress").isEmpty()) {
+          tracker.instance().getSubject().setIpAddress(options.getString("ipAddress"));
+      }
+      if (options.hasKey("useragent") && options.getString("useragent") != null
+              && !options.getString("useragent").isEmpty()) {
+          tracker.instance().getSubject().setUseragent(options.getString("useragent"));
+      }
+      if (options.hasKey("networkUserId") && options.getString("networkUserId") != null
+              && !options.getString("networkUserId").isEmpty()) {
+          tracker.instance().getSubject().setNetworkUserId(options.getString("networkUserId"));
+      }
+      if (options.hasKey("domainUserId") && options.getString("domainUserId") != null
+              && !options.getString("domainUserId").isEmpty()) {
+          tracker.instance().getSubject().setDomainUserId(options.getString("domainUserId"));
+      }
     }
 
     @ReactMethod
@@ -134,10 +143,5 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         if (trackerEvent != null) {
             tracker.track(trackerEvent);
         }
-    }
-
-    @ReactMethod
-    public void setUserId(String userId, ReadableMap options) {
-        tracker.instance().getSubject().setUserId(userId);
     }
 }
