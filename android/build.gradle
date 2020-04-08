@@ -6,11 +6,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath "com.android.tools.build:gradle:3.4.1"
     }
 }
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 android {
     compileSdkVersion 28
@@ -39,12 +39,11 @@ repositories {
 
 dependencies {
     def lifecycle_version = "2.0.0"
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     // Required Dependency for the Tracker
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'com.facebook.react:react-native:+'
-    implementation 'com.snowplowanalytics:snowplow-android-tracker:1.1.0'
+    implementation "com.squareup.okhttp3:okhttp:3.12.1"
+    implementation "com.facebook.react:react-native:+"
+    implementation "com.snowplowanalytics:snowplow-android-tracker:1.+"
 }
-  
