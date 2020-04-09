@@ -23,6 +23,7 @@
     "flow-bin": "^0.117.0",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
+    "react-native-cli": "^2.0.1",
     "react-test-renderer": "16.9.0"
   },
   "jest": {
