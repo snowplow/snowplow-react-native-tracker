@@ -28,11 +28,39 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
-  Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'app-id', {autoScreenView: false});
+  Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'my-app-id', {
+    setPlatformContext: true,
+    setBase64Encoded: true,
+    setApplicationContext:true,
+    setLifecycleEvents: true,
+    setScreenContext: true,
+    setSessionContext: true,
+    foregroundTimeout: 10, // set unreasonably low for testing purposes
+    backgroundTimeout: 10, // set unreasonably low for testing purposes
+    checkInterval: 5,
+    setInstallEvent: true
+    });
+
+    Tracker.setSubjectData({
+      userId: 'test-userId',
+      screenWidth: 123,
+      screenHeight: 456,
+      colorDepth: 20,
+      timezone: 'EST',
+      language: 'en',
+      ipAddress: '12.345.67',
+      useragent: '[some-user-agent-string]',
+      networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
+      domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
+      viewportWidth: 123,
+      viewportHeight: 456
+    });
+
   Tracker.trackScreenViewEvent('Name', null, null, null, null, null, null, []);
   const onPressSendEvent = () => {
     Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
     Tracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, []);
+    Tracker.trackPageViewEvent('acme.com', 'some title', 'refr.com', []);
   }
   return (
     <>
