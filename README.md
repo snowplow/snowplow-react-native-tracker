@@ -5,7 +5,7 @@
 
 **This project is currently in alpha status.**
 
-Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/). Be sure to reply to our [feedback thread](https://discourse.snowplowanalytics.com/t/react-feedback-thread/3239) to tell us how it's all working!
+Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
 
 Due to pending design decisions, breaking changes in how the methods are called may be introduced before a beta/v1 release.
 
@@ -19,12 +19,23 @@ From the root of your react-js project:
 
 The tracker will be imported as a NativeModule. Initialise it then call the relevant tracking method:
 
-```
-import {NativeModules} from 'react-native';
+```JavaScript
+import Tracker from '@snowplow/react-native-tracker';
 
-let RNSnowplowTracker = NativeModules.RNSnowplowTracker;
-RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {});
-RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
+Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'my-app-id', {
+  setPlatformContext: true,
+  setBase64Encoded: true,
+  setApplicationContext:true,
+  setLifecycleEvents: true,
+  setScreenContext: true,
+  setSessionContext: true,
+  foregroundTimeout: 600, // 10 minutes
+  backgroundTimeout: 300, // 5 minutes
+  checkInterval: 15,
+  setInstallEvent: true
+  });
+
+Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
 ```
 
 ### Running on iOS
@@ -38,102 +49,95 @@ Run the app with: `react-native run-ios` from the root of the project.
 
 `react-native run-android` from the root of the project.
 
-
 ## Available methods
-
-Note:
-
-Optional string arguments if not set must be specified as `null`.
-
-Optional object arguments must be provided as an empty object if none are set.
-
-Optional keys within an object argument can be omitted if not set.
-
-Optional array arguments must be provided as empty arrays if not set.
 
 ### Instantiate the tracker:
 
-`initialize(string endpoint, string method (post or get), string protocol (https or http), string namespace, string appId, JSON options<boolean autoScreenView>)`
+```JavaScript
+initialize('endpoint', // required, collector endpoint, string
+            'method', // required, http method, string enum ('get' or 'post')
+            'protocol', // required, http protocol, string enum ('http' or 'https')
+            'namespace', // required, tracker namespace, string
+            'my-app-id', // required, app id, string
+            {
+              // optional arguments passed as json. Defaults are values provided
+              autoScreenView: false,
+              setPlatformContext: false,
+              setBase64Encoded: false,
+              setApplicationContext: false,
+              setLifecycleEvents: false,
+              setScreenContext: false,
+              setSessionContext: false,
+              foregroundTimeout: 600, // 10 minutes
+              backgroundTimeout: 300, // 5 minutes
+              checkInterval: 15,
+              setInstallEvent: false
+            });
+````
 
-**Arguments:**
+### Set the subject data:
 
-endpoint - required, collector endpoint string (without protocol)
+Setting custom subject data is optional, can be called any time, and can be called again to update the subject. Once set, the specified parameters are set for all subsequent events. (For example, a userid may be set after login, and once set all subsequent events will contain the userid).
 
-method - required, http method (`get`/`post`)
-
-protocol - required, http protocol (`http`/`https`)
-
-namespace - required, tracker namespace
-
-appId - required, appId
-
-options - JSON object of optional parameter key value pairs.
-
-Available options:
-
-autoScreenView - boolean, if enabled the tracker will attempt to autotrack screen views via the same method as the native iOS and Android trackers. Note that this feature depends on Activities/ViewDidAppear within the native app itself.
-
-`RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {autoScreenView:false})`
+```JavaScript
+setSubjectData({ // All parameters optional
+  userId: 'my-userId', // user id, string
+  screenWidth: 123, // screen width, integer
+  screenHeight: 456, // screen height, integer
+  colorDepth: 20, // colour depth, integer
+  timezone: 'EST', // timezone, string enum
+  language: 'en', // language, string enum
+  ipAddress: '12.345.67', // IP address, string
+  useragent: '[some-user-agent-string]', // user agent, string
+  networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e', // network user id, UUID4 string
+  domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',// domain user id, UUID4 string
+  viewportWidth: 123, // viewport width, integer
+  viewportHeight: 456 // viewport height, integer
+});
+```
 
 
 ### Track a custom event:
 
-`trackSelfDescribingEvent(JSON event, Array<JSON> contexts)`
-
-**Arguments:**
-
-event - required, Snowplow self-describing JSON for the custom event.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-**Example**
-
-`RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);`
+```JavaScript
+trackSelfDescribingEvent({ // Self-describing JSON for the custom event
+  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
+  'data': {'message': 'hello world'}
+  },
+  []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+```
 
 ### Track a structured event:
 
-`trackStructuredEvent(string category, string action, string label, string property, number value, Array<JSON> contexts)`
+```JavaScript
+trackStructuredEvent('my-category', // required, category, string
+                    'my-action', // required, action, string
+                    'my-label', // optional - set to null if not needed, label, string
+                    'my-property', // optional - set to null if not needed, property, string
+                    50.00, // optional - set to null if not needed, value, number
+                    []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+```
 
-**Arguments:**
+### Track a Screen View:
 
-category - required, structured event category.
+Note - for the track Screen View method, if previous screen values aren't set, they should be automatically set by the tracker.
 
-action - required, structured event action.
+```JavaScript
+trackScreenViewEvent('my-screen-name', // required, screen name, string
+                    '63ddebea-a948-4e0c-b458-96467d46f230', // optional - set to null if not needed (recommended), screen id, /uuid4 string
+                    'my-screen-type' // optional - set to null if not needed (recommended), screen type, string
+                    'my-previous-screen', // optional - set to null if not needed (recommended), previous screen name, string
+                    'my-previous-screen-type', // optional - set to null if not needed (recommended), previous screen type, string
+                    'e4711a72-c721-4dfa-b51a-a2e201dcec09', // optional - set to null if not needed (recommended), previous screen id, UUID4 string
+                    'my-transition-type', // optional - set to null if not needed (recommended), transition type, string
+                    []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+```
 
-label - optional, structured event label.
+### Track a Page View:
 
-property - optional, structured event property.
-
-value - optional, structured event value.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-**Example**
-
-`RNSnowplowTracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, [])`
-
-### Track a Screen View (manually):
-
-`trackScreenViewEvent(string screenName, UUID4 string screenId, string screenType, string previousScreenName, string previousScreenType, UUID4 string previousScreenId, string transitionType, Array<JSON> contexts)`
-
-**Arguments:**
-
-screenName - required, name of current screen.
-
-screenId - optional UUID4 string to be used as screen View identifier. Denotes one instance of a screen. view (not one instance of a screen). The react-native tracker will provide a UUID4 if not set.
-screenType - optional type of current screen.
-
-previousScreenName - optional, name of previous screen (user must define logic to grab last screen name).
-
-previousScreenType - optional, type of previous screen (user must define logic to grab last screen type).
-
-previousScreenId - optional, screenId of previous screen (user must define logic to grab last screen id). The react-native tracker will leave this value empty if not set.
-
-transitionType - optional, the transition type between the last screen and current.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-
-**Example**
-
-`RNSnowplowTracker.trackScreenViewEvent('Name', null, null, null, null, null, null, [])`
+```JavaScript
+trackPageViewEvent('my-page-url.com', // required, page url, string
+                  'my page title', // optional - set to null if not needed, page title, string
+                  'my-page-referrer.com', // optional - set to null if not needed, referrer url, string
+                  []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+```
