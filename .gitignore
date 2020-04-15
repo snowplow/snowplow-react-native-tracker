@@ -54,3 +54,4 @@ buck-out/
 # Local testing workflow
 
 tmp/
+DemoApp/package-lock.json
