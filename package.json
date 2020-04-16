@@ -1,6 +1,6 @@
 {
   "name": "@snowplow/react-native-tracker",
-  "version": "0.1.0-alpha.15",
+  "version": "0.1.0-alpha.16",
   "description": "A library for tracking Snowplow events in React Native",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,10 @@
   "keywords": [
     "react-native"
   ],
-  "author": "Michael Hadam",
+  "author": "Michael Hadam, Colm O Griobhtha",
+  "contributors": [
+    "Max Bondarenko"
+  ],
   "license": "Apache-2.0",
   "peerDependencies": {
     "react-native": "^0.59.8",

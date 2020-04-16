@@ -6,6 +6,7 @@ import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
 import com.snowplowanalytics.snowplow.tracker.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
+import com.snowplowanalytics.snowplow.tracker.events.PageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,15 @@ public class EventUtil {
                 .previousId(previousScreenId)
                 .previousType(previousScreenType)
                 .transitionType(transitionType);
+        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
+        if (nativeContexts != null) {
+            eventBuilder.customContext(nativeContexts);
+        }
+        return eventBuilder.build();
+    }
+    
+    public static PageView getPageViewEvent(String pageUrl, String pageTitle, String referrer, ReadableArray contexts) {
+        PageView.Builder eventBuilder = PageView.builder().pageUrl(pageUrl).pageTitle(pageTitle).referrer(referrer);
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
         if (nativeContexts != null) {
             eventBuilder.customContext(nativeContexts);

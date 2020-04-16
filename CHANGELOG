@@ -1,8 +1,19 @@
+Version 0.1.0-alpha.15 (2020-04-16)
+-----------------------------------
+Update .npmignore and .gitignore (close #51)
+Update README (close #50)
+Update Demo App (close #48)
+Add trackPageView (close #33)
+Add script for clean build (close #47)
+Add setSubjectData method (close #46)
+Update android tracker version (close #45)
+Add Standard Settings (close #34)
+
 Version 0.1.0-alpha.15 (2020-02-06)
 -----------------------------------
-6363ea1 Cleanup Repo (#29)
-4a681f5 Update DemoApp (#21)
-067bc92 Update ios Tracker dependency to remove mandatory dynamic build (#22)
+Cleanup Repo (#29)
+Update DemoApp (#21)
+Update ios Tracker dependency to remove mandatory dynamic build (#22)
 
 Version 0.1.0-alpha.14 (2019-10-22)
 ----------------------------------
