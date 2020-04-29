@@ -85,9 +85,9 @@ setSubjectData({ // All parameters optional
   screenWidth: 123, // screen width, integer
   screenHeight: 456, // screen height, integer
   colorDepth: 20, // colour depth, integer
-  timezone: 'EST', // timezone, string enum
+  timezone: 'Europe/London', // timezone, string enum
   language: 'en', // language, string enum
-  ipAddress: '12.345.67', // IP address, string
+  ipAddress: '123.45.67.89', // IP address, string
   useragent: '[some-user-agent-string]', // user agent, string
   networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e', // network user id, UUID4 string
   domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',// domain user id, UUID4 string
