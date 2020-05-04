@@ -23,11 +23,11 @@ cd $root_path/DemoApp
 
 # js
 rm -rf package-lock.json
-npm install $root_path/tmp/snowplow-react-native-tracker-test-asset.tgz
 
 rm -rf node_modules
 yarn cache clean
 rm -rf yarn.lock
+yarn add $root_path/tmp/snowplow-react-native-tracker-test-asset.tgz
 yarn
 
 if [ "$1" == "android" ]; then
