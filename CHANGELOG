@@ -1,13 +1,18 @@
+Version 0.1.0-alpha.17 (2020-05-04)
+-----------------------------------
+Use yarn everywhere for testing (#55)
+Update ios tracker version to 1.3.0 (#54)
+
 Version 0.1.0-alpha.16 (2020-04-16)
 -----------------------------------
-Update .npmignore and .gitignore (close #51)
-Update README (close #50)
-Update Demo App (close #48)
-Add trackPageView (close #33)
-Add script for clean build (close #47)
-Add setSubjectData method (close #46)
-Update android tracker version (close #45)
-Add Standard Settings (close #34)
+Update .npmignore and .gitignore (#51)
+Update README (#50)
+Update Demo App (#48)
+Add trackPageView (#33)
+Add script for clean build (#47)
+Add setSubjectData method (#46)
+Update android tracker version (#45)
+Add Standard Settings (#34)
 
 Version 0.1.0-alpha.15 (2020-02-06)
 -----------------------------------
@@ -17,7 +22,7 @@ Update ios Tracker dependency to remove mandatory dynamic build (#22)
 
 Version 0.1.0-alpha.14 (2019-10-22)
 ----------------------------------
-Update iOS to incorporate patch release (close #23)
+Update iOS to incorporate patch release (#23)
 
 Version 0.1.0-alpha.13 (2019-10-14)
 -----------------------------------
