@@ -15,73 +15,54 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(initialize
-                  :(nonnull NSString *)endpoint
-                  :(nonnull NSString *)method
-                  :(nonnull NSString *)protocol
-                  :(nonnull NSString *)namespace
-                  :(nonnull NSString *)appId
                   :(NSDictionary *)options
-                  //:(BOOL *)autoScreenView
-                  //:(BOOL *)setPlatformContext
-                  //:(BOOL *)setBase64Encoded
-                  //:(BOOL *)setApplicationContext
-                  //:(BOOL *)setLifecycleEvents
-                  //:(BOOL *)setScreenContext
-                  //:(BOOL *)setInstallEvent
-                  //:(BOOL *)setSessionContext
-                  //:(INT *)foregroundTimeout
-                  //:(INT *)backgroundTimeout
-                  //:(STRING *)userId
+                  :rejecter:(RCTPromiseRejectBlock)reject
                 ) {
-    BOOL setPlatformContext = NO;
-    BOOL setGeoLocationContext = NO;
-    if ([options[@"setPlatformContext"] boolValue]) setPlatformContext = YES;
-    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+
+    // throw if index.js has failed to pass a complete options object
+    if (!(options[@"endpoint"] != nil &&
+          options[@"namespace"] != nil &&
+          options[@"appId"] != nil &&
+          options[@"method"] != nil &&
+          options[@"protocol"] != nil &&
+          options[@"setBase64Encoded"] != nil &&
+          options[@"setPlatformContext"] != nil &&
+          // options[@"autoScreenView"] != nil && -- to be removed
+          options[@"setApplicationContext"] != nil &&
+          options[@"setLifecycleEvents"] != nil &&
+          options[@"setScreenContext"] != nil &&
+          options[@"setSessionContext"] != nil &&
+          options[@"foregroundTimeout"] != nil &&
+          options[@"backgroundTimeout"] != nil &&
+          options[@"checkInterval"] != nil &&
+          options[@"setInstallEvent"] != nil
+        )) {
+      NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
+      reject(@"ERROR", @"SnowplowTracker: initialize() method - missing parameter with no default found", error);
+    }
+
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:[options[@"setPlatformContext"] boolValue] andGeoContext:NO];
 
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
-        [builder setUrlEndpoint:endpoint];
-        [builder setHttpMethod:([@"post" caseInsensitiveCompare:method] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
-        [builder setProtocol:([@"https" caseInsensitiveCompare:protocol] == NSOrderedSame) ? SPHttps : SPHttp];
+        [builder setUrlEndpoint:options[@"endpoint"]];
+        [builder setHttpMethod:([@"post" caseInsensitiveCompare:options[@"method"]] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
+        [builder setProtocol:([@"https" caseInsensitiveCompare:options[@"protocol"]] == NSOrderedSame) ? SPHttps : SPHttp];
     }];
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
-        [builder setAppId:appId];
-        // setBase64Encoded
-        if ([options[@"setBase64Encoded"] boolValue]) {
-            [builder setBase64Encoded:YES];
-        }else [builder setBase64Encoded:NO];
-        [builder setTrackerNamespace:namespace];
-        [builder setAutotrackScreenViews:options[@"autoScreenView"]];
-        // setApplicationContext
-        if ([options[@"setApplicationContext"] boolValue]) {
-            [builder setApplicationContext:YES];
-        }else [builder setApplicationContext:NO];
-        // setSessionContextui
-        if ([options[@"setSessionContext"] boolValue]) {
-            [builder setSessionContext:YES];
-            if (options[@"checkInterval"] != nil) {
-                [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
-            }else [builder setCheckInterval:15];
-            if (options[@"foregroundTimeout"] != nil) {
-                 [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
-            }else [builder setForegroundTimeout:600];
-            if (options[@"backgroundTimeout"] != nil) {
-                 [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
-            }else [builder setBackgroundTimeout:300];
-        }else [builder setSessionContext:NO];
-        // setLifecycleEvents
-        if ([options[@"setLifecycleEvents"] boolValue]) {
-            [builder setLifecycleEvents:YES];
-        }else [builder setLifecycleEvents:NO];
-        // setScreenContext
-        if ([options[@"setScreenContext"] boolValue]) {
-            [builder setScreenContext:YES];
-        }else [builder setScreenContext:NO];
-        //setInstallEvent
-        if ([options[@"setInstallEvent"] boolValue]) {
-            [builder setInstallEvent:YES];
-        }else [builder setInstallEvent:NO];
+        [builder setAppId:options[@"appId"]];
+        [builder setBase64Encoded:[options[@"setBase64Encoded"] boolValue]];
+        [builder setTrackerNamespace:options[@"namespace"]];
+        // [builder setAutotrackScreenViews:options[@"autoScreenView"]]; -- to be removed
+        [builder setApplicationContext:[options[@"setApplicationContext"] boolValue]];
+        [builder setLifecycleEvents:[options[@"setLifecycleEvents"] boolValue]];
+        [builder setScreenContext:[options[@"setScreenContext"] boolValue]];
+        [builder setInstallEvent:[options[@"setInstallEvent"] boolValue]];
         [builder setSubject:subject];
+        [builder setSessionContext:[options[@"setSessionContext"] boolValue]];
+        [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
+        [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
+        [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
     }];
 }
 
@@ -131,18 +112,17 @@ RCT_EXPORT_METHOD(trackSelfDescribingEvent
 }
 
 RCT_EXPORT_METHOD(trackStructuredEvent
-                  :(nonnull NSString *)category // required (non-empty string)
-                  :(nonnull NSString *)action // required
-                  :(NSString *)label
-                  :(NSString *)property
-                  :(double)value
+                  :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
+
     SPStructured * trackerEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
-        [builder setCategory:category];
-        [builder setAction:action];
-        [builder setValue:value];
-        if (label != nil) [builder setLabel:label];
-        if (property != nil) [builder setProperty:property];
+        [builder setCategory:details[@"category"]];
+        [builder setAction:details[@"action"]];
+        if (details[@"label"] != nil) [builder setLabel:details[@"label"]];
+        if (details[@"property"] != nil) [builder setProperty:details[@"property"]];
+
+        // doubleValue cannot be NSNull, and falsey value evaluates to 0 in objective-c. Only set 'value' parameter where neither are the case.
+        if (details[@"value"] != (id)[NSNull null] && details[@"value"] != nil)  [builder setValue:[details[@"value"] doubleValue]];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
@@ -151,22 +131,20 @@ RCT_EXPORT_METHOD(trackStructuredEvent
 }
 
 RCT_EXPORT_METHOD(trackScreenViewEvent
-                  :(nonnull NSString *)screenName
-                  :(NSString *)screenId
-                  :(NSString *)screenType
-                  :(NSString *)previousScreenName
-                  :(NSString *)previousScreenType
-                  :(NSString *)previousScreenId
-                  :(NSString *)transitionType
+
+                  :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
+
     SPScreenView * SVevent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
-        [builder setName:screenName];
-        if (screenId != nil) [builder setScreenId:screenId];
-        if (screenType != nil) [builder setType:screenType];
-        if (previousScreenName != nil) [builder setPreviousScreenName:previousScreenName];
-        if (previousScreenType != nil) [builder setPreviousScreenType:previousScreenType];
-        if (previousScreenId != nil) [builder setPreviousScreenId:previousScreenId];
-        if (transitionType != nil) [builder setTransitionType:transitionType];
+        [builder setName:details[@"screenName"]];
+
+        // screenId and screenType must not be NSNull.
+        if (details[@"screenId"] != (id)[NSNull null] && details[@"screenId"] != nil) [builder setScreenId:details[@"screenId"]];
+        if (details[@"screenType"] != (id)[NSNull null] && details[@"screenType"] != nil) [builder setType:details[@"screenType"]];
+        if (details[@"previousScreenName"] != nil) [builder setPreviousScreenName:details[@"previousScreenName"]];
+        if (details[@"previousScreenType"] != nil) [builder setPreviousScreenType:details[@"previousScreenType"]];
+        if (details[@"previousScreenId"] != nil) [builder setPreviousScreenId:details[@"previousScreenId"]];
+        if (details[@"transitionType"] != nil) [builder setTransitionType:details[@"transitionType"]];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
@@ -175,14 +153,13 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
 }
 
 RCT_EXPORT_METHOD(trackPageViewEvent
-                  :(nonnull NSString *)pageUrl // required (non-empty string)
-                  :(NSString *)pageTitle
-                  :(NSString *)pageReferrer
+                  :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
+
     SPPageView * trackerEvent = [SPPageView build:^(id<SPPageViewBuilder> builder) {
-        [builder setPageUrl:pageUrl];
-        if (pageTitle != nil) [builder setPageTitle:pageTitle];
-        if (pageReferrer != nil) [builder setReferrer:pageReferrer];
+        [builder setPageUrl:details[@"pageUrl"]];
+        if (details[@"pageTitle"] != nil) [builder setPageTitle:details[@"pageTitle"]];
+        if (details[@"pageReferrer"] != nil) [builder setReferrer:details[@"pageReferrer"]];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }

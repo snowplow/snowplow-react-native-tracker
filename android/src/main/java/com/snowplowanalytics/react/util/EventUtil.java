@@ -44,14 +44,20 @@ public class EventUtil {
         return eventBuilder.build();
     }
 
-    public static Structured getStructuredEvent(String category, String action, String label,
-            String property, Number value, ReadableArray contexts) {
+    public static Structured getStructuredEvent(ReadableMap details, ReadableArray contexts) {
+
+        // build with required arguments
         Structured.Builder eventBuilder = Structured.builder()
-                .action(action)
-                .category(category)
-                .value(value.doubleValue())
-                .property(property)
-                .label(label);
+            .category(details.getString("category"))
+            .action(details.getString("action"));
+
+        // add any optional arguments
+        if (details.hasKey("label")) eventBuilder.label(details.getString("label"));
+        if (details.hasKey("property")) eventBuilder.property(details.getString("property"));
+
+        // React Native forces primitive double type - so null "value" parameter is handled by not setting at all
+        if (details.hasKey("value") && !details.isNull("value")) eventBuilder.value(details.getDouble("value"));
+
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
         if (nativeContexts != null) {
             eventBuilder.customContext(nativeContexts);
@@ -59,26 +65,37 @@ public class EventUtil {
         return eventBuilder.build();
     }
 
-    public static ScreenView getScreenViewEvent(String screenName, String screenId, String screenType,
-            String previousScreenName, String previousScreenType, String previousScreenId,
-            String transitionType, ReadableArray contexts) {
+    public static ScreenView getScreenViewEvent(ReadableMap details, ReadableArray contexts) {
+
+        // build with required arguments
         ScreenView.Builder eventBuilder = ScreenView.builder()
-                .name(screenName)
-                .id(screenId)
-                .type(screenType)
-                .previousName(previousScreenName)
-                .previousId(previousScreenId)
-                .previousType(previousScreenType)
-                .transitionType(transitionType);
+                .name(details.getString("screenName"));
+
+        // add any optional arguments
+        if (details.hasKey("screenId")) eventBuilder.id(details.getString("screenId"));
+        if (details.hasKey("screenType")) eventBuilder.type(details.getString("screenType"));
+        if (details.hasKey("previousScreenName")) eventBuilder.previousName(details.getString("previousScreenName"));
+        if (details.hasKey("previousScreenId")) eventBuilder.previousId(details.getString("previousScreenId"));
+        if (details.hasKey("previousScreenType")) eventBuilder.previousType(details.getString("previousScreenType"));
+        if (details.hasKey("transitionType")) eventBuilder.transitionType(details.getString("transitionType"));
+
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
         if (nativeContexts != null) {
             eventBuilder.customContext(nativeContexts);
         }
         return eventBuilder.build();
     }
-    
-    public static PageView getPageViewEvent(String pageUrl, String pageTitle, String referrer, ReadableArray contexts) {
-        PageView.Builder eventBuilder = PageView.builder().pageUrl(pageUrl).pageTitle(pageTitle).referrer(referrer);
+
+    public static PageView getPageViewEvent(ReadableMap details, ReadableArray contexts) {
+
+        // build with required arguments
+        PageView.Builder eventBuilder = PageView.builder()
+            .pageUrl(details.getString("pageUrl"));
+
+        // add any optional arguments
+        if (details.hasKey("pageTitle")) eventBuilder.pageTitle(details.getString("pageTitle"));
+        if (details.hasKey("pageReferrer")) eventBuilder.referrer(details.getString("pageReferrer"));
+
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
         if (nativeContexts != null) {
             eventBuilder.customContext(nativeContexts);
