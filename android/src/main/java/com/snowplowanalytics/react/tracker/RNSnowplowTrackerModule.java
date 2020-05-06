@@ -1,7 +1,6 @@
 
 package com.snowplowanalytics.react.tracker;
 
-import java.util.UUID;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -135,9 +134,6 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                      String previousScreenName, String previousScreenType,
                                      String previousScreenId, String transitionType,
                                      ReadableArray contexts) {
-        if (screenId == null) {
-          screenId = UUID.randomUUID().toString();
-        }
         ScreenView trackerEvent = EventUtil.getScreenViewEvent(screenName,
                 screenId, screenType, previousScreenName, previousScreenId, previousScreenType,
                 transitionType, contexts);
