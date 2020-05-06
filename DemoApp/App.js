@@ -28,13 +28,21 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
-  Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'my-app-id', {
+  Tracker.initialize({
+    // required
+    endpoint: 'test-endpoint',
+    method: 'post',
+    protocol: 'https',
+    namespace: 'namespace',
+    appId: 'my-app-id',
+
+    // optional
     setPlatformContext: true,
     setBase64Encoded: true,
     setApplicationContext:true,
     setLifecycleEvents: true,
     setScreenContext: true,
-    setSessionContext: true,
+    setSessionContext: false,
     foregroundTimeout: 10, // set unreasonably low for testing purposes
     backgroundTimeout: 10, // set unreasonably low for testing purposes
     checkInterval: 5,
@@ -56,12 +64,36 @@ const App: () => React$Node = () => {
       viewportHeight: 456
     });
 
-  Tracker.trackScreenViewEvent('Name', null, null, null, null, null, null, []);
-  const onPressSendEvent = () => {
-    Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
-    Tracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, []);
-    Tracker.trackPageViewEvent('acme.com', 'some title', 'refr.com', []);
-    Tracker.trackScreenViewEvent('Other Name', null, null, null, null, null, null, []);
+  Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}, []);
+
+  const onPresstrackStructuredEvent = () => {
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsFloat', property: 'property', value: 50.00});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsNullAndSoIsProperty', property: null, value: null});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsUndefined', property: 'property', value: undefined});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
+  }
+  const onPresstrackScreenViewEvent = () => {
+    Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
+    Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenId: '96081614-fbbb-4fce-87c6-92078d5026ac', screenType: 'allPopulated', previousScreenName: 'test1', previousScreenType: 'test1', previousScreenId: '8f7b1887-f273-44d4-a67b-d9fbfa90cedb', transitionType: 'test' });
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenId: null, screenType: null, previousScreenName: null, previousScreenType: null, previousScreenId: null, transitionType: null});
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsUndefined', screenId: undefined, screenType: undefined, previousScreenName: undefined, previousScreenType: undefined, previousScreenId: undefined, transitionType: undefined});
+    Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [{schema: "iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0", data: {basisForProcessing: "consent"}}]);
+    Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
+  }
+  const onPresstrackSelfDescribingEvent = () => {
+    Tracker.trackSelfDescribingEvent({schema: 'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0', data: {'impressionId': 'test_imp_id'}});
+  }
+  const onPresstrackPageViewEvent = () => {
+    Tracker.trackPageViewEvent({pageUrl: 'https://allpopulated.com', pageTitle: 'some title', pageReferrer: 'http://refr.com'});
+    Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
+    Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsnull.com', pageTitle: null, pageReferrer: null});
+    Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsundefined.com', pageTitle: undefined, pageReferrer: undefined});
+  }
+  const onPressShowMeSomeWarnings = () => {
+    Tracker.trackSelfDescribingEvent({});
+    Tracker.trackStructuredEvent({});
+    Tracker.trackPageViewEvent({});
+    Tracker.trackScreenViewEvent({});
   }
   return (
     <>
@@ -78,37 +110,50 @@ const App: () => React$Node = () => {
           )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
+              <Text style={styles.sectionTitle}>Test trackScreenViewEvent:</Text>
               <Button
-                  onPress={onPressSendEvent}
-                  title="Send event"
+                  onPress={onPresstrackScreenViewEvent}
+                  title="Track some Screen View Events"
                   color="#841584"
-                  accessibilityLabel="Send an event"
+                  accessibilityLabel="testScreenView"
               />
             </View>
-            <LearnMoreLinks />
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackSelfDescribingEvent (custom events):</Text>
+              <Button
+                  onPress={onPresstrackSelfDescribingEvent}
+                  title="Track some Self-Describing Events"
+                  color="#841584"
+                  accessibilityLabel="testSelfDesc"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackStructuredEvent:</Text>
+              <Button
+                  onPress={onPresstrackStructuredEvent}
+                  title="Track some Structured Events"
+                  color="#841584"
+                  accessibilityLabel="testStruct"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackPageViewEvent:</Text>
+              <Button
+                  onPress={onPresstrackPageViewEvent}
+                  title="Track some Page View Events"
+                  color="#841584"
+                  accessibilityLabel="testPageView"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test throwing warnings due to missing input:</Text>
+              <Button
+                  onPress={onPressShowMeSomeWarnings}
+                  title="Show me some warnings"
+                  color="#ADFF2F"
+                  accessibilityLabel="testWrongInputs"
+              />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
