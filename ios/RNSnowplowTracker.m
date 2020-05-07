@@ -35,7 +35,7 @@ RCT_EXPORT_METHOD(initialize
                 ) {
     BOOL setPlatformContext = NO;
     BOOL setGeoLocationContext = NO;
-    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
+    if ([options[@"setPlatformContext"] boolValue]) setPlatformContext = YES;
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
 
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
@@ -47,17 +47,17 @@ RCT_EXPORT_METHOD(initialize
         [builder setEmitter:emitter];
         [builder setAppId:appId];
         // setBase64Encoded
-        if (options[@"setBase64Encoded"] == @YES ) {
+        if ([options[@"setBase64Encoded"] boolValue]) {
             [builder setBase64Encoded:YES];
         }else [builder setBase64Encoded:NO];
         [builder setTrackerNamespace:namespace];
         [builder setAutotrackScreenViews:options[@"autoScreenView"]];
         // setApplicationContext
-        if (options[@"setApplicationContext"] == @YES ) {
+        if ([options[@"setApplicationContext"] boolValue]) {
             [builder setApplicationContext:YES];
         }else [builder setApplicationContext:NO];
         // setSessionContextui
-        if (options[@"setSessionContext"] == @YES ) {
+        if ([options[@"setSessionContext"] boolValue]) {
             [builder setSessionContext:YES];
             if (options[@"checkInterval"] != nil) {
                 [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
@@ -70,15 +70,15 @@ RCT_EXPORT_METHOD(initialize
             }else [builder setBackgroundTimeout:300];
         }else [builder setSessionContext:NO];
         // setLifecycleEvents
-        if (options[@"setLifecycleEvents"] == @YES ) {
+        if ([options[@"setLifecycleEvents"] boolValue]) {
             [builder setLifecycleEvents:YES];
         }else [builder setLifecycleEvents:NO];
         // setScreenContext
-        if (options[@"setScreenContext"] == @YES ) {
+        if ([options[@"setScreenContext"] boolValue]) {
             [builder setScreenContext:YES];
         }else [builder setScreenContext:NO];
         //setInstallEvent
-        if (options[@"setInstallEvent"] == @YES ) {
+        if ([options[@"setInstallEvent"] boolValue]) {
             [builder setInstallEvent:YES];
         }else [builder setInstallEvent:NO];
         [builder setSubject:subject];
