@@ -87,34 +87,34 @@ RCT_EXPORT_METHOD(initialize
 
 RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options) {
       if (options[@"userId"] != nil) {
-              [self.self.tracker.subject setUserId:options[@"userId"]];
+              [self.tracker.subject setUserId:options[@"userId"]];
       }
       if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
-          [self.self.tracker.subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
+          [self.tracker.subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
       }
       if (options[@"viewportWidth"] != nil && options[@"viewportHeight"] != nil) {
-          [self.self.tracker.subject setViewPortWithWidth:[options[@"viewportWidth"] integerValue] andHeight:[options[@"viewportHeight"] integerValue]];
+          [self.tracker.subject setViewPortWithWidth:[options[@"viewportWidth"] integerValue] andHeight:[options[@"viewportHeight"] integerValue]];
       }
       if (options[@"colorDepth"] != nil) {
-          [self.self.tracker.subject setColorDepth:[options[@"colorDepth"] integerValue]];
+          [self.tracker.subject setColorDepth:[options[@"colorDepth"] integerValue]];
       }
       if (options[@"timezone"] != nil) {
-          [self.self.tracker.subject setTimezone:options[@"timezone"]];
+          [self.tracker.subject setTimezone:options[@"timezone"]];
       }
       if (options[@"language"] != nil) {
-          [self.self.tracker.subject setLanguage:options[@"language"]];
+          [self.tracker.subject setLanguage:options[@"language"]];
       }
       if (options[@"ipAddress"] != nil) {
-          [self.self.tracker.subject setIpAddress:options[@"ipAddress"]];
+          [self.tracker.subject setIpAddress:options[@"ipAddress"]];
       }
       if (options[@"useragent"] != nil) {
-          [self.self.tracker.subject setUseragent:options[@"useragent"]];
+          [self.tracker.subject setUseragent:options[@"useragent"]];
       }
       if (options[@"networkUserId"] != nil) {
-          [self.self.tracker.subject setNetworkUserId:options[@"networkUserId"]];
+          [self.tracker.subject setNetworkUserId:options[@"networkUserId"]];
       }
       if (options[@"domainUserId"] != nil) {
-          [self.self.tracker.subject setDomainUserId:options[@"domainUserId"]];
+          [self.tracker.subject setDomainUserId:options[@"domainUserId"]];
       }
 }
 
