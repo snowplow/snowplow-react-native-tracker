@@ -61,6 +61,7 @@ const App: () => React$Node = () => {
     Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
     Tracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, []);
     Tracker.trackPageViewEvent('acme.com', 'some title', 'refr.com', []);
+    Tracker.trackScreenViewEvent('Other Name', null, null, null, null, null, null, []);
   }
   return (
     <>

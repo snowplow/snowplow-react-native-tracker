@@ -161,7 +161,7 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
     SPScreenView * SVevent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
         [builder setName:screenName];
-        if (screenId != nil) [builder setScreenId:screenId]; else [builder setScreenId:[[NSUUID UUID] UUIDString]];
+        if (screenId != nil) [builder setScreenId:screenId];
         if (screenType != nil) [builder setType:screenType];
         if (previousScreenName != nil) [builder setPreviousScreenName:previousScreenName];
         if (previousScreenType != nil) [builder setPreviousScreenType:previousScreenType];
