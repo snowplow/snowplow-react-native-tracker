@@ -30,7 +30,7 @@ rm -rf yarn.lock
 yarn add $root_path/tmp/snowplow-react-native-tracker-test-asset.tgz
 yarn
 
-if [ "$1" == "android" ]; then
+if [ "$1" == "android" ] || [ "$1" == "both" ]; then
 
   rm -rf android/app/build
   cd android
@@ -43,7 +43,7 @@ else
   echo 'skipping android'
 fi
 
-if [ "$1" == "ios" ]; then
+if [ "$1" == "ios" ] || [ "$1" == "both" ]; then
 
   rm -rf ios/build
 
