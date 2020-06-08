@@ -14,9 +14,10 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(initialize
-                  :(NSDictionary *)options
-                  :rejecter:(RCTPromiseRejectBlock)reject
+RCT_EXPORT_METHOD(initialize:
+                  (NSDictionary *)options
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
                 ) {
 
     // throw if index.js has failed to pass a complete options object
@@ -34,10 +35,10 @@ RCT_EXPORT_METHOD(initialize
           options[@"foregroundTimeout"] != nil &&
           options[@"backgroundTimeout"] != nil &&
           options[@"checkInterval"] != nil &&
-          options[@"setInstallEvent"] != nil
-        )) {
-      NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
-      reject(@"ERROR", @"SnowplowTracker: initialize() method - missing parameter with no default found", error);
+          options[@"setInstallEvent"] != nil)) {
+
+        NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
+        return reject(@"ERROR", @"SnowplowTracker: initialize() method - missing parameter with no default found", error);
     }
 
     SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:[options[@"setPlatformContext"] boolValue] andGeoContext:NO];
@@ -62,11 +63,17 @@ RCT_EXPORT_METHOD(initialize
         [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
         [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
     }];
+    if (self.tracker) {
+      resolve(@YES);
+    } else {
+        NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        return reject(@"ERROR", @"SnowplowTracker: initialize() method - tracker initialisation failed", error);
+    }
 }
 
 RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options) {
       if (options[@"userId"] != nil) {
-              [self.tracker.subject setUserId:options[@"userId"]];
+          [self.tracker.subject setUserId:options[@"userId"]];
       }
       if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
           [self.tracker.subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
