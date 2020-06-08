@@ -46,7 +46,6 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             options.hasKey("protocol") &&
             options.hasKey("setBase64Encoded") &&
             options.hasKey("setPlatformContext") &&
-            // options.hasKey("autoScreenView") && -- autoScreenView to be removed
             options.hasKey("setApplicationContext") &&
             options.hasKey("setLifecycleEvents") &&
             options.hasKey("setScreenContext") &&
@@ -73,7 +72,6 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .subject(subject)
                 .base64(options.getBoolean("setBase64Encoded"))
                 .mobileContext(options.getBoolean("setPlatformContext"))
-                // .screenviewEvents(options.getBoolean("autoScreenView")) // autoScreenView to be removed
                 .applicationContext(options.getBoolean("setApplicationContext"))
                 .sessionContext(options.getBoolean("setSessionContext"))
                 .sessionCheckInterval(options.getInt("checkInterval"))

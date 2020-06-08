@@ -74,9 +74,9 @@ const App: () => React$Node = () => {
   }
   const onPresstrackScreenViewEvent = () => {
     Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
-    Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenId: '96081614-fbbb-4fce-87c6-92078d5026ac', screenType: 'allPopulated', previousScreenName: 'test1', previousScreenType: 'test1', previousScreenId: '8f7b1887-f273-44d4-a67b-d9fbfa90cedb', transitionType: 'test' });
-    Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenId: null, screenType: null, previousScreenName: null, previousScreenType: null, previousScreenId: null, transitionType: null});
-    Tracker.trackScreenViewEvent({screenName: 'allOptionalsUndefined', screenId: undefined, screenType: undefined, previousScreenName: undefined, previousScreenType: undefined, previousScreenId: undefined, transitionType: undefined});
+    Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenType: 'allPopulated', transitionType: 'test' });
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenType: null, transitionType: null});
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsUndefined', screenType: undefined,transitionType: undefined});
     Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [{schema: "iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0", data: {basisForProcessing: "consent"}}]);
     Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
   }

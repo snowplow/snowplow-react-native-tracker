@@ -27,7 +27,6 @@ RCT_EXPORT_METHOD(initialize
           options[@"protocol"] != nil &&
           options[@"setBase64Encoded"] != nil &&
           options[@"setPlatformContext"] != nil &&
-          // options[@"autoScreenView"] != nil && -- to be removed
           options[@"setApplicationContext"] != nil &&
           options[@"setLifecycleEvents"] != nil &&
           options[@"setScreenContext"] != nil &&
@@ -53,7 +52,6 @@ RCT_EXPORT_METHOD(initialize
         [builder setAppId:options[@"appId"]];
         [builder setBase64Encoded:[options[@"setBase64Encoded"] boolValue]];
         [builder setTrackerNamespace:options[@"namespace"]];
-        // [builder setAutotrackScreenViews:options[@"autoScreenView"]]; -- to be removed
         [builder setApplicationContext:[options[@"setApplicationContext"] boolValue]];
         [builder setLifecycleEvents:[options[@"setLifecycleEvents"] boolValue]];
         [builder setScreenContext:[options[@"setScreenContext"] boolValue]];
@@ -138,12 +136,8 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
     SPScreenView * SVevent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
         [builder setName:details[@"screenName"]];
 
-        // screenId and screenType must not be NSNull.
-        if (details[@"screenId"] != (id)[NSNull null] && details[@"screenId"] != nil) [builder setScreenId:details[@"screenId"]];
+        // screenType must not be NSNull.
         if (details[@"screenType"] != (id)[NSNull null] && details[@"screenType"] != nil) [builder setType:details[@"screenType"]];
-        if (details[@"previousScreenName"] != nil) [builder setPreviousScreenName:details[@"previousScreenName"]];
-        if (details[@"previousScreenType"] != nil) [builder setPreviousScreenType:details[@"previousScreenType"]];
-        if (details[@"previousScreenId"] != nil) [builder setPreviousScreenId:details[@"previousScreenId"]];
         if (details[@"transitionType"] != nil) [builder setTransitionType:details[@"transitionType"]];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];

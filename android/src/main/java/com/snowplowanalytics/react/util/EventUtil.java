@@ -72,11 +72,7 @@ public class EventUtil {
                 .name(details.getString("screenName"));
 
         // add any optional arguments
-        if (details.hasKey("screenId")) eventBuilder.id(details.getString("screenId"));
         if (details.hasKey("screenType")) eventBuilder.type(details.getString("screenType"));
-        if (details.hasKey("previousScreenName")) eventBuilder.previousName(details.getString("previousScreenName"));
-        if (details.hasKey("previousScreenId")) eventBuilder.previousId(details.getString("previousScreenId"));
-        if (details.hasKey("previousScreenType")) eventBuilder.previousType(details.getString("previousScreenType"));
         if (details.hasKey("transitionType")) eventBuilder.transitionType(details.getString("transitionType"));
 
         List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
