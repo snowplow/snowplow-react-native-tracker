@@ -4,7 +4,7 @@ const { RNSnowplowTracker } = NativeModules;
 
 export default class Tracker {
 
-  static initialize(argmap) {
+  static async initialize(argmap) {
 
     let defaults = {// defaults for optional params
                  method: 'post',
@@ -20,9 +20,8 @@ export default class Tracker {
                  checkInterval : 15,
                  setInstallEvent : false}
 
-
     if (typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined' ) {
-      return RNSnowplowTracker.initialize({...defaults, ...argmap});
+      return await RNSnowplowTracker.initialize({...defaults, ...argmap});
     } else if (__DEV__) {
       console.warn("SnowplowTracker: initialize() requires endpoint, namespace and appId parameter to be set")
       return;

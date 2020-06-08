@@ -82,6 +82,12 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 .installTracking(options.getBoolean("setInstallEvent"))
                 .build()
         );
+
+        if (this.tracker != null) {
+          promise.resolve(true);
+        } else {
+          promise.reject("ERROR", "SnowplowTracker: initialize() method - tracker initialisation failed");
+        }
     }
 
     @ReactMethod

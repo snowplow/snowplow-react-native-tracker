@@ -28,7 +28,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
-  Tracker.initialize({
+  const initPromise = Tracker.initialize({
     // required
     endpoint: 'test-endpoint',
     method: 'post',
@@ -48,6 +48,8 @@ const App: () => React$Node = () => {
     checkInterval: 5,
     setInstallEvent: true
     });
+
+    initPromise.then(() => Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}));
 
     Tracker.setSubjectData({
       userId: 'test-userId',
