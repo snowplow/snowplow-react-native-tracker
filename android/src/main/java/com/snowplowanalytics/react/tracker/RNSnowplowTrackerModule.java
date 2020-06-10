@@ -36,7 +36,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initialize(ReadableMap options,
-                           Promise promise) {
+                          Promise promise) {
 
         // throw if index.js has failed to pass a complete options object
         if (!(options.hasKey("endpoint") &&
@@ -91,42 +91,51 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setSubjectData(ReadableMap options) {
-        if (options.hasKey("userId") && options.getString("userId") != null && !options.getString("userId").isEmpty()) {
+    public void setSubjectData(ReadableMap options,
+                              Promise promise) {
+
+        if (options.hasKey("userId")) {
             tracker.instance().getSubject().setUserId(options.getString("userId"));
         }
-        if (options.hasKey("viewportWidth") && options.hasKey("viewportHeight")) {
-            tracker.instance().getSubject().setViewPort(options.getInt("viewportWidth"), options.getInt("viewportHeight"));
-        }
-        if (options.hasKey("screenWidth") && options.hasKey("screenHeight")) {
-            tracker.instance().getSubject().setScreenResolution(options.getInt("screenWidth"), options.getInt("screenHeight"));
-        }
-        if (options.hasKey("colorDepth")) {
-            tracker.instance().getSubject().setColorDepth(options.getInt("colorDepth"));
-        }
-        if (options.hasKey("timezone") && options.getString("timezone") != null
-                && !options.getString("timezone").isEmpty()) {
+        if (options.hasKey("timezone")) {
             tracker.instance().getSubject().setTimezone(options.getString("timezone"));
         }
-        if (options.hasKey("language") && options.getString("language") != null
-                && !options.getString("language").isEmpty()) {
+        if (options.hasKey("language")) {
             tracker.instance().getSubject().setLanguage(options.getString("language"));
         }
-        if (options.hasKey("ipAddress") && options.getString("ipAddress") != null
-                && !options.getString("ipAddress").isEmpty()) {
+        if (options.hasKey("ipAddress")) {
             tracker.instance().getSubject().setIpAddress(options.getString("ipAddress"));
         }
-        if (options.hasKey("useragent") && options.getString("useragent") != null
-                && !options.getString("useragent").isEmpty()) {
+        if (options.hasKey("useragent")) {
             tracker.instance().getSubject().setUseragent(options.getString("useragent"));
         }
-        if (options.hasKey("networkUserId") && options.getString("networkUserId") != null
-                && !options.getString("networkUserId").isEmpty()) {
+        if (options.hasKey("networkUserId")) {
             tracker.instance().getSubject().setNetworkUserId(options.getString("networkUserId"));
         }
-        if (options.hasKey("domainUserId") && options.getString("domainUserId") != null
-                && !options.getString("domainUserId").isEmpty()) {
+        if (options.hasKey("domainUserId")) {
             tracker.instance().getSubject().setDomainUserId(options.getString("domainUserId"));
+        }
+        // integer values will throw an exception if set to null explicitly
+        if (options.hasKey("viewportWidth") && options.hasKey("viewportHeight")) {
+            if (options.isNull("viewportWidth") || options.isNull("viewportHeight")) {
+                promise.reject("ERROR", "SnowplowTracker: setSubjectData() method - viewportWidth and viewportHeight cannot be null");
+            } else {
+                tracker.instance().getSubject().setViewPort(options.getInt("viewportWidth"), options.getInt("viewportHeight"));
+            }
+        }
+        if (options.hasKey("screenWidth") && options.hasKey("screenHeight")) {
+            if (options.isNull("screenWidth") || options.isNull("screenHeight")) {
+                promise.reject("ERROR", "SnowplowTracker: setSubjectData() method - screenWidth and screenHeight cannot be null");
+            } else {
+                tracker.instance().getSubject().setScreenResolution(options.getInt("screenWidth"), options.getInt("screenHeight"));
+            }
+        }
+        if (options.hasKey("colorDepth")) {
+            if (options.isNull("colorDepth")) {
+                promise.reject("ERROR", "SnowplowTracker: setSubjectData() method - colorDepth cannot be null");
+            } else {
+                tracker.instance().getSubject().setColorDepth(options.getInt("colorDepth"));
+            }
         }
     }
 
