@@ -17,8 +17,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(initialize:
                   (NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject
-                ) {
+                  rejecter:(RCTPromiseRejectBlock)reject) {
 
     // throw if index.js has failed to pass a complete options object
     if (!(options[@"endpoint"] != nil &&
@@ -48,6 +47,7 @@ RCT_EXPORT_METHOD(initialize:
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:options[@"method"]] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
         [builder setProtocol:([@"https" caseInsensitiveCompare:options[@"protocol"]] == NSOrderedSame) ? SPHttps : SPHttp];
     }];
+
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
         [builder setAppId:options[@"appId"]];
@@ -63,8 +63,9 @@ RCT_EXPORT_METHOD(initialize:
         [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
         [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
     }];
+
     if (self.tracker) {
-      resolve(@YES);
+        resolve(@YES);
     } else {
         NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
         return reject(@"ERROR", @"SnowplowTracker: initialize() method - tracker initialisation failed", error);
@@ -90,38 +91,38 @@ RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options
     NSNumber *colorDepth = options[@"colorDepth"];
 
     if (userId) {
-       NSString *newUserId = userId == [NSNull null] ? nil : userId;
-       [self.tracker.subject setUserId:newUserId];
+        NSString *newUserId = userId == [NSNull null] ? nil : userId;
+        [self.tracker.subject setUserId:newUserId];
     }
 
     if (timezone) {
-       NSString *newTimezone = timezone == [NSNull null] ? nil : timezone;
-       [self.tracker.subject setTimezone:newTimezone];
+        NSString *newTimezone = timezone == [NSNull null] ? nil : timezone;
+        [self.tracker.subject setTimezone:newTimezone];
     }
 
     if (ipAddress) {
-       NSString *newIpAddress = ipAddress == [NSNull null] ? nil : ipAddress;
-       [self.tracker.subject setIpAddress:newIpAddress];
+        NSString *newIpAddress = ipAddress == [NSNull null] ? nil : ipAddress;
+        [self.tracker.subject setIpAddress:newIpAddress];
     }
 
     if (language) {
-       NSString *newLanguage = language == [NSNull null] ? nil : language;
-       [self.tracker.subject setLanguage:newLanguage];
+        NSString *newLanguage = language == [NSNull null] ? nil : language;
+        [self.tracker.subject setLanguage:newLanguage];
     }
 
     if (useragent) {
-       NSString *newUseragent = useragent == [NSNull null] ? nil : useragent;
-       [self.tracker.subject setUseragent:newUseragent];
+        NSString *newUseragent = useragent == [NSNull null] ? nil : useragent;
+        [self.tracker.subject setUseragent:newUseragent];
     }
 
     if (networkUserId) {
-       NSString *newNetworkUserId = networkUserId == [NSNull null] ? nil : networkUserId;
-       [self.tracker.subject setNetworkUserId:newNetworkUserId];
+        NSString *newNetworkUserId = networkUserId == [NSNull null] ? nil : networkUserId;
+        [self.tracker.subject setNetworkUserId:newNetworkUserId];
     }
 
     if (domainUserId) {
-       NSString *newDomainUserId = domainUserId == [NSNull null] ? nil : domainUserId;
-       [self.tracker.subject setDomainUserId:newDomainUserId];
+        NSString *newDomainUserId = domainUserId == [NSNull null] ? nil : domainUserId;
+        [self.tracker.subject setDomainUserId:newDomainUserId];
     }
 
     if (screenWidth && screenHeight) {
@@ -155,12 +156,14 @@ RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options
 RCT_EXPORT_METHOD(trackSelfDescribingEvent
                   :(nonnull SPSelfDescribingJson *)event
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
+
     SPUnstructured * unstructEvent = [SPUnstructured build:^(id<SPUnstructuredBuilder> builder) {
         [builder setEventData:event];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
     }];
+
     [self.tracker trackUnstructuredEvent:unstructEvent];
 }
 
@@ -171,20 +174,25 @@ RCT_EXPORT_METHOD(trackStructuredEvent
     SPStructured * trackerEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
         [builder setCategory:details[@"category"]];
         [builder setAction:details[@"action"]];
-        if (details[@"label"] != nil) [builder setLabel:details[@"label"]];
-        if (details[@"property"] != nil) [builder setProperty:details[@"property"]];
-
+        if (details[@"label"] != nil) {
+            [builder setLabel:details[@"label"]];
+        }
+        if (details[@"property"] != nil) {
+            [builder setProperty:details[@"property"]];
+        }
         // doubleValue cannot be NSNull, and falsey value evaluates to 0 in objective-c. Only set 'value' parameter where neither are the case.
-        if (details[@"value"] != (id)[NSNull null] && details[@"value"] != nil)  [builder setValue:[details[@"value"] doubleValue]];
+        if (details[@"value"] != (id)[NSNull null] && details[@"value"] != nil) {
+            [builder setValue:[details[@"value"] doubleValue]];
+        }
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
     }];
+
     [self.tracker trackStructuredEvent:trackerEvent];
 }
 
 RCT_EXPORT_METHOD(trackScreenViewEvent
-
                   :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
 
@@ -198,6 +206,7 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
       }];
+
       [self.tracker trackScreenViewEvent:SVevent];
 }
 
