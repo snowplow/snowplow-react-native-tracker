@@ -61,23 +61,23 @@ All methods take a JSON of named arguments.
 
 initialize({
   // required
-  endpoint: 'my-endpoint',
-  method: 'post',
-  protocol: 'https',
+  endpoint: 'my-endpoint.com',
   namespace: 'my-namespace',
   appId: 'my-app-id',
 
   // optional
-  setPlatformContext: true,
-  setBase64Encoded: true,
-  setApplicationContext:true,
-  setLifecycleEvents: true,
-  setScreenContext: true,
-  setSessionContext: true,
+  method: 'post',
+  protocol: 'https',
+  platformContext: true,
+  base64Encoded: true,
+  applicationContext: true,
+  lifecycleEvents: true,
+  screenContext: true,
+  sessionContext: true,
   foregroundTimeout: 600,
   backgroundTimeout: 300,
   checkInterval: 15,
-  setInstallEvent: true
+  installTracking: true
   }
 );
 ```

@@ -31,22 +31,22 @@ const App: () => React$Node = () => {
   const initPromise = Tracker.initialize({
     // required
     endpoint: 'test-endpoint',
-    method: 'post',
-    protocol: 'https',
     namespace: 'namespace',
     appId: 'my-app-id',
 
     // optional
-    setPlatformContext: true,
-    setBase64Encoded: true,
-    setApplicationContext:true,
-    setLifecycleEvents: true,
-    setScreenContext: true,
-    setSessionContext: false,
+    method: 'post',
+    protocol: 'https',
+    platformContext: true,
+    base64Encoded: true,
+    applicationContext:true,
+    lifecycleEvents: true,
+    screenContext: true,
+    sessionContext: true,
     foregroundTimeout: 10, // set unreasonably low for testing purposes
     backgroundTimeout: 10, // set unreasonably low for testing purposes
     checkInterval: 5,
-    setInstallEvent: true
+    installTracking: true
     });
 
     initPromise.then(() => Tracker.setSubjectData({
