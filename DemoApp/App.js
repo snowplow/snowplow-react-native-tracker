@@ -49,7 +49,7 @@ const App: () => React$Node = () => {
     setInstallEvent: true
     });
 
-    Tracker.setSubjectData({
+    initPromise.then(() => Tracker.setSubjectData({
       userId: 'test-userId',
       screenWidth: 123,
       screenHeight: 456,
@@ -62,17 +62,19 @@ const App: () => React$Node = () => {
       domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
       viewportWidth: 123,
       viewportHeight: 456
-    });
+    }));
 
   initPromise.then(() => Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}));
 
-  const onPresstrackStructuredEvent = () => {
+  const onPressTrackStructuredEvent = async () => {
+    await initPromise;
     Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsFloat', property: 'property', value: 50.00});
     Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsNullAndSoIsProperty', property: null, value: null});
     Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsUndefined', property: 'property', value: undefined});
     Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
   }
-  const onPresstrackScreenViewEvent = () => {
+  const onPressTrackScreenViewEvent = async () => {
+    await initPromise;
     Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
     Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenType: 'allPopulated', transitionType: 'test' });
     Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenType: null, transitionType: null});
@@ -80,22 +82,26 @@ const App: () => React$Node = () => {
     Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [{schema: "iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0", data: {basisForProcessing: "consent"}}]);
     Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
   }
-  const onPresstrackSelfDescribingEvent = () => {
+  const onPressTrackSelfDescribingEvent = async () => {
+    await initPromise;
     Tracker.trackSelfDescribingEvent({schema: 'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0', data: {'impressionId': 'test_imp_id'}});
   }
-  const onPresstrackPageViewEvent = () => {
+  const onPressTrackPageViewEvent = async () => {
+    await initPromise;
     Tracker.trackPageViewEvent({pageUrl: 'https://allpopulated.com', pageTitle: 'some title', pageReferrer: 'http://refr.com'});
     Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
     Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsnull.com', pageTitle: null, pageReferrer: null});
     Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsundefined.com', pageTitle: undefined, pageReferrer: undefined});
   }
-  const onPressShowMeSomeWarnings = () => {
+  const onPressShowMeSomeWarnings = async () => {
+    await initPromise;
     Tracker.trackSelfDescribingEvent({});
     Tracker.trackStructuredEvent({});
     Tracker.trackPageViewEvent({});
     Tracker.trackScreenViewEvent({});
   }
-  const onPressTestSetSubject = () => {
+  const onPressTestSetSubject = async () => {
+    await initPromise;
     Tracker.setSubjectData({
       userId: null,
       timezone: null,
@@ -128,7 +134,7 @@ const App: () => React$Node = () => {
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Test trackScreenViewEvent:</Text>
               <Button
-                  onPress={onPresstrackScreenViewEvent}
+                  onPress={onPressTrackScreenViewEvent}
                   title="Track some Screen View Events"
                   color="#841584"
                   accessibilityLabel="testScreenView"
@@ -137,7 +143,7 @@ const App: () => React$Node = () => {
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Test trackSelfDescribingEvent (custom events):</Text>
               <Button
-                  onPress={onPresstrackSelfDescribingEvent}
+                  onPress={onPressTrackSelfDescribingEvent}
                   title="Track some Self-Describing Events"
                   color="#841584"
                   accessibilityLabel="testSelfDesc"
@@ -146,7 +152,7 @@ const App: () => React$Node = () => {
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Test trackStructuredEvent:</Text>
               <Button
-                  onPress={onPresstrackStructuredEvent}
+                  onPress={onPressTrackStructuredEvent}
                   title="Track some Structured Events"
                   color="#841584"
                   accessibilityLabel="testStruct"
@@ -155,7 +161,7 @@ const App: () => React$Node = () => {
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Test trackPageViewEvent:</Text>
               <Button
-                  onPress={onPresstrackPageViewEvent}
+                  onPress={onPressTrackPageViewEvent}
                   title="Track some Page View Events"
                   color="#841584"
                   accessibilityLabel="testPageView"
@@ -166,7 +172,7 @@ const App: () => React$Node = () => {
               <Button
                   onPress={onPressShowMeSomeWarnings}
                   title="Show me some warnings"
-                  color="#ADFF2F"
+                  color="#f6bd3b"
                   accessibilityLabel="testWrongInputs"
               />
             </View>
