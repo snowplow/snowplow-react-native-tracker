@@ -25,22 +25,22 @@ RCT_EXPORT_METHOD(initialize:
           options[@"appId"] != nil &&
           options[@"method"] != nil &&
           options[@"protocol"] != nil &&
-          options[@"setBase64Encoded"] != nil &&
-          options[@"setPlatformContext"] != nil &&
-          options[@"setApplicationContext"] != nil &&
-          options[@"setLifecycleEvents"] != nil &&
-          options[@"setScreenContext"] != nil &&
-          options[@"setSessionContext"] != nil &&
+          options[@"base64Encoded"] != nil &&
+          options[@"platformContext"] != nil &&
+          options[@"applicationContext"] != nil &&
+          options[@"lifecycleEvents"] != nil &&
+          options[@"screenContext"] != nil &&
+          options[@"sessionContext"] != nil &&
           options[@"foregroundTimeout"] != nil &&
           options[@"backgroundTimeout"] != nil &&
           options[@"checkInterval"] != nil &&
-          options[@"setInstallEvent"] != nil)) {
+          options[@"installTracking"] != nil)) {
 
         NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
         return reject(@"ERROR", @"SnowplowTracker: initialize() method - missing parameter with no default found", error);
     }
 
-    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:[options[@"setPlatformContext"] boolValue] andGeoContext:NO];
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:[options[@"platformContext"] boolValue] andGeoContext:NO];
 
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:options[@"endpoint"]];
@@ -51,14 +51,14 @@ RCT_EXPORT_METHOD(initialize:
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
         [builder setAppId:options[@"appId"]];
-        [builder setBase64Encoded:[options[@"setBase64Encoded"] boolValue]];
+        [builder setBase64Encoded:[options[@"base64Encoded"] boolValue]];
         [builder setTrackerNamespace:options[@"namespace"]];
-        [builder setApplicationContext:[options[@"setApplicationContext"] boolValue]];
-        [builder setLifecycleEvents:[options[@"setLifecycleEvents"] boolValue]];
-        [builder setScreenContext:[options[@"setScreenContext"] boolValue]];
-        [builder setInstallEvent:[options[@"setInstallEvent"] boolValue]];
+        [builder setApplicationContext:[options[@"applicationContext"] boolValue]];
+        [builder setLifecycleEvents:[options[@"lifecycleEvents"] boolValue]];
+        [builder setScreenContext:[options[@"screenContext"] boolValue]];
+        [builder setInstallEvent:[options[@"installTracking"] boolValue]];
         [builder setSubject:subject];
-        [builder setSessionContext:[options[@"setSessionContext"] boolValue]];
+        [builder setSessionContext:[options[@"sessionContext"] boolValue]];
         [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
         [builder setForegroundTimeout:[options[@"foregroundTimeout"] integerValue]];
         [builder setBackgroundTimeout:[options[@"backgroundTimeout"] integerValue]];
@@ -171,7 +171,7 @@ RCT_EXPORT_METHOD(trackStructuredEvent
                   :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
 
-    SPStructured * trackerEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
+    SPStructured * structuredEvent = [SPStructured build:^(id<SPStructuredBuilder> builder) {
         [builder setCategory:details[@"category"]];
         [builder setAction:details[@"action"]];
         if (details[@"label"] != nil) {
@@ -189,14 +189,14 @@ RCT_EXPORT_METHOD(trackStructuredEvent
         }
     }];
 
-    [self.tracker trackStructuredEvent:trackerEvent];
+    [self.tracker trackStructuredEvent:structuredEvent];
 }
 
 RCT_EXPORT_METHOD(trackScreenViewEvent
                   :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
 
-    SPScreenView * SVevent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
+    SPScreenView * screenViewEvent = [SPScreenView build:^(id<SPScreenViewBuilder> builder) {
         [builder setName:details[@"screenName"]];
 
         // screenType must not be NSNull.
@@ -207,14 +207,14 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
         }
       }];
 
-      [self.tracker trackScreenViewEvent:SVevent];
+      [self.tracker trackScreenViewEvent:screenViewEvent];
 }
 
 RCT_EXPORT_METHOD(trackPageViewEvent
                   :(NSDictionary *)details
                   :(NSArray<SPSelfDescribingJson *> *)contexts) {
 
-    SPPageView * trackerEvent = [SPPageView build:^(id<SPPageViewBuilder> builder) {
+    SPPageView * pageViewEvent = [SPPageView build:^(id<SPPageViewBuilder> builder) {
         [builder setPageUrl:details[@"pageUrl"]];
         if (details[@"pageTitle"] != nil) [builder setPageTitle:details[@"pageTitle"]];
         if (details[@"pageReferrer"] != nil) [builder setReferrer:details[@"pageReferrer"]];
@@ -222,7 +222,7 @@ RCT_EXPORT_METHOD(trackPageViewEvent
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
     }];
-    [self.tracker trackPageViewEvent:trackerEvent];
+    [self.tracker trackPageViewEvent:pageViewEvent];
 }
 
 @end

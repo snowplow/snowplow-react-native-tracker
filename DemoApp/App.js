@@ -37,16 +37,16 @@ const App: () => React$Node = () => {
     appId: 'my-app-id',
 
     // optional
-    setPlatformContext: true,
-    setBase64Encoded: true,
-    setApplicationContext:true,
-    setLifecycleEvents: true,
-    setScreenContext: true,
-    setSessionContext: false,
+    platformContext: true,
+    base64Encoded: true,
+    applicationContext:true,
+    lifecycleEvents: true,
+    screenContext: true,
+    sessionContext: true,
     foregroundTimeout: 10, // set unreasonably low for testing purposes
     backgroundTimeout: 10, // set unreasonably low for testing purposes
     checkInterval: 5,
-    setInstallEvent: true
+    installTracking: true
     });
 
     initPromise.then(() => Tracker.setSubjectData({

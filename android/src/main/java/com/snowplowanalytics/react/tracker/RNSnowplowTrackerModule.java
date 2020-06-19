@@ -44,16 +44,16 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             options.hasKey("appId") &&
             options.hasKey("method") &&
             options.hasKey("protocol") &&
-            options.hasKey("setBase64Encoded") &&
-            options.hasKey("setPlatformContext") &&
-            options.hasKey("setApplicationContext") &&
-            options.hasKey("setLifecycleEvents") &&
-            options.hasKey("setScreenContext") &&
-            options.hasKey("setSessionContext") &&
+            options.hasKey("base64Encoded") &&
+            options.hasKey("platformContext") &&
+            options.hasKey("applicationContext") &&
+            options.hasKey("lifecycleEvents") &&
+            options.hasKey("screenContext") &&
+            options.hasKey("sessionContext") &&
             options.hasKey("foregroundTimeout") &&
             options.hasKey("backgroundTimeout") &&
             options.hasKey("checkInterval") &&
-            options.hasKey("setInstallEvent"))) {
+            options.hasKey("installTracking"))) {
 
             promise.reject("ERROR", "SnowplowTracker: initialize() method - missing parameter with no default found");
         }
@@ -71,16 +71,16 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.tracker = Tracker.init(new Tracker
             .TrackerBuilder(this.emitter, options.getString("namespace"), options.getString("appId"), this.reactContext)
             .subject(subject)
-            .base64(options.getBoolean("setBase64Encoded"))
-            .mobileContext(options.getBoolean("setPlatformContext"))
-            .applicationContext(options.getBoolean("setApplicationContext"))
-            .sessionContext(options.getBoolean("setSessionContext"))
+            .base64(options.getBoolean("base64Encoded"))
+            .mobileContext(options.getBoolean("platformContext"))
+            .applicationContext(options.getBoolean("applicationContext"))
+            .sessionContext(options.getBoolean("sessionContext"))
             .sessionCheckInterval(options.getInt("checkInterval"))
             .foregroundTimeout(options.getInt("foregroundTimeout"))
             .backgroundTimeout(options.getInt("backgroundTimeout"))
-            .lifecycleEvents(options.getBoolean("setLifecycleEvents"))
-            .screenContext(options.getBoolean("setScreenContext"))
-            .installTracking(options.getBoolean("setInstallEvent"))
+            .lifecycleEvents(options.getBoolean("lifecycleEvents"))
+            .screenContext(options.getBoolean("screenContext"))
+            .installTracking(options.getBoolean("installTracking"))
             .build()
         );
 

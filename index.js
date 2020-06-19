@@ -10,16 +10,15 @@ export default class Tracker {
                  method: 'post',
                  protocol: 'https',
                  setPlatformContext : false,
-                 setBase64Encoded : false,
-                 setApplicationContext : false,
-                 setLifecycleEvents : false,
-                 setScreenContext : false,
-                 setSessionContext : false,
+                 base64Encoded : false,
+                 platformContext : false,
+                 lifecycleEvents : false,
+                 screenContext : false,
+                 sessionContext : false,
                  foregroundTimeout : 600,
                  backgroundTimeout : 300,
                  checkInterval : 15,
-                 setInstallEvent : false}
-
+                 installTracking : false}
 
     if (typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined' ) {
       return RNSnowplowTracker.initialize({...defaults, ...argmap});
