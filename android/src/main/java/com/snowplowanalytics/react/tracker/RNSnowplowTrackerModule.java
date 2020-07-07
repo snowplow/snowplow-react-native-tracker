@@ -56,6 +56,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             options.hasKey("installTracking"))) {
 
             promise.reject("ERROR", "SnowplowTracker: initialize() method - missing parameter with no default found");
+            return;
         }
 
         this.emitter = new Emitter.EmitterBuilder(options.getString("endpoint"), this.reactContext)
@@ -88,6 +89,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             promise.resolve(true);
         } else {
             promise.reject("ERROR", "SnowplowTracker: initialize() method - tracker initialisation failed");
+            return;
         }
     }
 
