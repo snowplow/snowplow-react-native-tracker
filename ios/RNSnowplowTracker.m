@@ -91,42 +91,42 @@ RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options
     NSNumber *colorDepth = options[@"colorDepth"];
 
     if (userId) {
-        NSString *newUserId = userId == [NSNull null] ? nil : userId;
+        NSString *newUserId = [[NSNull null] isEqual:userId] ? nil : userId;
         [self.tracker.subject setUserId:newUserId];
     }
 
     if (timezone) {
-        NSString *newTimezone = timezone == [NSNull null] ? nil : timezone;
+        NSString *newTimezone = [[NSNull null] isEqual:timezone] ? nil : timezone;
         [self.tracker.subject setTimezone:newTimezone];
     }
 
     if (ipAddress) {
-        NSString *newIpAddress = ipAddress == [NSNull null] ? nil : ipAddress;
+        NSString *newIpAddress = [[NSNull null] isEqual:ipAddress] ? nil : ipAddress;
         [self.tracker.subject setIpAddress:newIpAddress];
     }
 
     if (language) {
-        NSString *newLanguage = language == [NSNull null] ? nil : language;
+        NSString *newLanguage = [[NSNull null] isEqual:language] ? nil : language;
         [self.tracker.subject setLanguage:newLanguage];
     }
 
     if (useragent) {
-        NSString *newUseragent = useragent == [NSNull null] ? nil : useragent;
+        NSString *newUseragent = [[NSNull null] isEqual:useragent] ? nil : useragent;
         [self.tracker.subject setUseragent:newUseragent];
     }
 
     if (networkUserId) {
-        NSString *newNetworkUserId = networkUserId == [NSNull null] ? nil : networkUserId;
+        NSString *newNetworkUserId = [[NSNull null] isEqual:networkUserId] ? nil : networkUserId;
         [self.tracker.subject setNetworkUserId:newNetworkUserId];
     }
 
     if (domainUserId) {
-        NSString *newDomainUserId = domainUserId == [NSNull null] ? nil : domainUserId;
+        NSString *newDomainUserId = [[NSNull null] isEqual:domainUserId] ? nil : domainUserId;
         [self.tracker.subject setDomainUserId:newDomainUserId];
     }
 
     if (screenWidth && screenHeight) {
-        if (screenWidth == [NSNull null] || screenHeight == [NSNull null]) {
+        if ([[NSNull null] isEqual:screenWidth] || [[NSNull null] isEqual:screenHeight]) {
             NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
             return reject(@"ERROR", @"SnowplowTracker: setSubjectData() method -  screenWidth and screenHeight cannot be null", error);
         } else {
@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options
     }
 
     if (viewportWidth && viewportHeight) {
-        if (viewportWidth == [NSNull null] || viewportHeight == [NSNull null]) {
+        if ([[NSNull null] isEqual:viewportWidth] || [[NSNull null] isEqual:viewportHeight]) {
             NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
             return reject(@"ERROR", @"SnowplowTracker: setSubjectData() method -  viewportWidth and viewportHeight cannot be null", error);
         } else {
@@ -144,7 +144,7 @@ RCT_EXPORT_METHOD(setSubjectData :(NSDictionary *)options
     }
 
     if (colorDepth != nil) {
-        if (colorDepth == [NSNull null]) {
+        if ([[NSNull null] isEqual:colorDepth]) {
             NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
             return reject(@"ERROR", @"SnowplowTracker: setSubjectData() method -  colorDepth cannot be null", error);
         } else {
