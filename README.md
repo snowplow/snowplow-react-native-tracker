@@ -1,17 +1,13 @@
 
 # @snowplow/react-native-tracker
 
-## Disclaimer
-
-**This project is currently in alpha status.**
+[![Early Release]][Tracker Classificiation] [![Release][release-image]][releases] [![License][license-image]][license]
 
 Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
 
-Due to pending design decisions, breaking changes in how the methods are called may be introduced before a beta/v1 release.
-
 ## Getting started
 
-From the root of your react-js project:
+From the root of your react-native project:
 
 `$ npm install @snowplow/react-native-tracker --save`
 
@@ -22,20 +18,29 @@ The tracker will be imported as a NativeModule. Initialise it then call the rele
 ```JavaScript
 import Tracker from '@snowplow/react-native-tracker';
 
-Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'my-app-id', {
-  setPlatformContext: true,
-  setBase64Encoded: true,
-  setApplicationContext:true,
-  setLifecycleEvents: true,
-  setScreenContext: true,
-  setSessionContext: true,
-  foregroundTimeout: 600, // 10 minutes
-  backgroundTimeout: 300, // 5 minutes
-  checkInterval: 15,
-  setInstallEvent: true
-  });
 
-Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
+Tracker.initialize({
+  // required
+  endpoint: 'test-endpoint',
+  namespace: 'my-namespace',
+  appId: 'my-app-id',
+
+  // optional
+  method: 'post',
+  protocol: 'https',
+  base64Encoded : true,
+  platformContext : true,
+  applicationContext : false,
+  lifecycleEvents : false,
+  screenContext : true,
+  sessionContext : true,
+  foregroundTimeout : 600,
+  backgroundTimeout : 300,
+  checkInterval : 15,
+  installTracking : false
+});
+
+Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jsonschema/1-0-0', 'data': {'message': 'hello world'}});
 ```
 
 ### Running on iOS
@@ -44,36 +49,40 @@ Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jso
 
 Run the app with: `react-native run-ios` from the root of the project.
 
-
 ### Running on Android
 
 `react-native run-android` from the root of the project.
 
 ## Available methods
 
+All methods take a JSON of named arguments.
+
 ### Instantiate the tracker:
 
 ```JavaScript
-initialize('endpoint', // required, collector endpoint, string
-            'method', // required, http method, string enum ('get' or 'post')
-            'protocol', // required, http protocol, string enum ('http' or 'https')
-            'namespace', // required, tracker namespace, string
-            'my-app-id', // required, app id, string
-            {
-              // optional arguments passed as json. Defaults are values provided
-              autoScreenView: false,
-              setPlatformContext: false,
-              setBase64Encoded: false,
-              setApplicationContext: false,
-              setLifecycleEvents: false,
-              setScreenContext: false,
-              setSessionContext: false,
-              foregroundTimeout: 600, // 10 minutes
-              backgroundTimeout: 300, // 5 minutes
-              checkInterval: 15,
-              setInstallEvent: false
-            });
-````
+
+initialize({
+  // required
+  endpoint: 'my-endpoint.com',
+  namespace: 'my-namespace',
+  appId: 'my-app-id',
+
+  // optional
+  method: 'post',
+  protocol: 'https',
+  platformContext: true,
+  base64Encoded: true,
+  applicationContext: true,
+  lifecycleEvents: true,
+  screenContext: true,
+  sessionContext: true,
+  foregroundTimeout: 600,
+  backgroundTimeout: 300,
+  checkInterval: 15,
+  installTracking: true
+  }
+);
+```
 
 ### Set the subject data:
 
@@ -93,7 +102,8 @@ setSubjectData({ // All parameters optional
   domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',// domain user id, UUID4 string
   viewportWidth: 123, // viewport width, integer
   viewportHeight: 456 // viewport height, integer
-});
+  }
+);
 ```
 
 
@@ -103,19 +113,22 @@ setSubjectData({ // All parameters optional
 trackSelfDescribingEvent({ // Self-describing JSON for the custom event
   'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
   'data': {'message': 'hello world'}
-  },
-  []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+});
 ```
 
 ### Track a structured event:
 
 ```JavaScript
-trackStructuredEvent('my-category', // required, category, string
-                    'my-action', // required, action, string
-                    'my-label', // optional - set to null if not needed, label, string
-                    'my-property', // optional - set to null if not needed, property, string
-                    50.00, // optional - set to null if not needed, value, number
-                    []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+trackStructuredEvent({
+  // required
+  category: 'my-category',
+  action: 'my-action',
+  // optional
+  label: 'my-label',
+  property: 'my-property',
+  value: 50.00
+  }
+);
 ```
 
 ### Track a Screen View:
@@ -123,21 +136,146 @@ trackStructuredEvent('my-category', // required, category, string
 Note - for the track Screen View method, if previous screen values aren't set, they should be automatically set by the tracker.
 
 ```JavaScript
-trackScreenViewEvent('my-screen-name', // required, screen name, string
-                    '63ddebea-a948-4e0c-b458-96467d46f230', // optional - set to null if not needed (recommended), screen id, /uuid4 string
-                    'my-screen-type' // optional - set to null if not needed (recommended), screen type, string
-                    'my-previous-screen', // optional - set to null if not needed (recommended), previous screen name, string
-                    'my-previous-screen-type', // optional - set to null if not needed (recommended), previous screen type, string
-                    'e4711a72-c721-4dfa-b51a-a2e201dcec09', // optional - set to null if not needed (recommended), previous screen id, UUID4 string
-                    'my-transition-type', // optional - set to null if not needed (recommended), transition type, string
-                    []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+trackScreenViewEvent({
+  screenName: 'my-screen-name', //required
+  // optional:
+  screenType: 'my-screen-type',
+  transitionType: 'my-transition'
+  }
+);
 ```
 
 ### Track a Page View:
 
 ```JavaScript
-trackPageViewEvent('my-page-url.com', // required, page url, string
-                  'my page title', // optional - set to null if not needed, page title, string
-                  'my-page-referrer.com', // optional - set to null if not needed, referrer url, string
-                  []); // array of self-describing JSONs for custom contexts, or an empty array if none are to be attached
+trackPageViewEvent({
+  pageUrl: 'https://www.my-page-url.com', // required
+  //optional:
+  pageTitle: 'my page title',
+  pageReferrer: 'http://www.my-refr.com'
+  }
+);
 ```
+
+### Attaching custom contexts
+
+All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts:
+
+```JavaScript
+trackSelfDescribingEvent({ // Self-describing JSON for the custom event
+  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
+  'data': {'message': 'hello world'}
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackStructuredEvent({// required
+  category: 'my-category',
+  action: 'my-action',
+  // optional
+  label: 'my-label',
+  property: 'my-property',
+  value: 50.00
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackScreenViewEvent({
+  screenName: 'my-screen-name', //required
+  // optional:
+  screenType: 'my-screen-type',
+  transitionType: 'my-transition'
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackPageViewEvent({
+  pageUrl: 'https://www.my-page-url.com', //required
+  // optional
+  pageTitle: 'my page title',
+  pageReferrer: 'http://www.my-refr.com'
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+```
+
+## Contributing
+
+Please read CONTRIBUTING.md for general guidelines on contributing.
+
+### Setting up
+
+Assuming a react-native environment is set up, the demoApp can be used to test changes, with:
+
+```bash
+# android
+
+cd DemoApp
+react-native run-android
+```
+
+and
+
+```bash
+# ios
+
+cd DemoApp/ios
+pod install
+cd ..
+react-native run-ios
+```
+
+### Testing
+
+Currently, testing is done manually. PRs may not be merged until an automated test framework is introduced. It is recommended to use a Snowplow Mini instance to test your changes during development.
+
+During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used, assuming the DemoApp has already been built before. This simply replaces relevant files in the node_modules folder, and re-runs react native.
+
+```bash
+# android
+
+bash .scripts/quickTest.sh android
+
+# ios
+
+bash .scripts/quickTest.sh ios
+
+# both
+
+bash .scripts/quickTest.sh both
+```
+
+The `.scripts/cleanBuildAndRun.sh` script offers a naive way to rebuild the entire project with your changes. It uses `npm pack` to create an npm package locally, and installs it to the DemoApp, then it removes pod and gradle lock files and rebuilds all dependencies.
+
+```bash
+# android
+
+bash .scripts/cleanBuildAndRun.sh android
+
+# ios
+
+bash .scripts/cleanBuildAndRun.sh ios
+
+# both
+
+bash .scripts/cleanBuildAndRun.sh both
+```
+
+## Find out more
+
+| Technical Docs              |
+|-----------------------------|
+| ![i1][techdocs-image]       |
+| [Technical Docs][techdocs]  |
+
+[Tracker Classificiation]: https://github.com/snowplow/snowplow/wiki/Tracker-Maintenance-Classification
+[Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
+
+[release-image]: https://img.shields.io/badge/release-0.1.0-orange.svg?style=flat
+[releases]: https://github.com/snowplow/snowplow/releases
+
+[license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
+[license]: https://www.apache.org/licenses/LICENSE-2.0
+
+[techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
+[techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png

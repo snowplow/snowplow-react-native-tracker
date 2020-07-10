@@ -28,39 +28,94 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
-  Tracker.initialize('test-endpoint', 'post', 'https', 'namespace', 'my-app-id', {
-    setPlatformContext: true,
-    setBase64Encoded: true,
-    setApplicationContext:true,
-    setLifecycleEvents: true,
-    setScreenContext: true,
-    setSessionContext: true,
+  const initPromise = Tracker.initialize({
+    // required
+    endpoint: 'test-endpoint',
+    namespace: 'namespace',
+    appId: 'my-app-id',
+
+    // optional
+    method: 'post',
+    protocol: 'https',
+    platformContext: true,
+    base64Encoded: true,
+    applicationContext:true,
+    lifecycleEvents: true,
+    screenContext: true,
+    sessionContext: true,
     foregroundTimeout: 10, // set unreasonably low for testing purposes
     backgroundTimeout: 10, // set unreasonably low for testing purposes
     checkInterval: 5,
-    setInstallEvent: true
+    installTracking: true
     });
 
-    Tracker.setSubjectData({
+    initPromise.then(() => Tracker.setSubjectData({
       userId: 'test-userId',
       screenWidth: 123,
       screenHeight: 456,
       colorDepth: 20,
       timezone: 'Europe/London',
-      language: 'en',
+      language: 'fr',
       ipAddress: '123.45.67.89',
       useragent: '[some-user-agent-string]',
       networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
       domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
       viewportWidth: 123,
       viewportHeight: 456
-    });
+    }));
 
-  Tracker.trackScreenViewEvent('Name', null, null, null, null, null, null, []);
-  const onPressSendEvent = () => {
-    Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
-    Tracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, []);
-    Tracker.trackPageViewEvent('acme.com', 'some title', 'refr.com', []);
+  initPromise.then(() => Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}));
+
+  const onPressTrackStructuredEvent = async () => {
+    await initPromise;
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsFloat', property: 'property', value: 50.00});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsNullAndSoIsProperty', property: null, value: null});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsUndefined', property: 'property', value: undefined});
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
+  }
+  const onPressTrackScreenViewEvent = async () => {
+    await initPromise;
+    Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
+    Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenType: 'allPopulated', transitionType: 'test' });
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenType: null, transitionType: null});
+    Tracker.trackScreenViewEvent({screenName: 'allOptionalsUndefined', screenType: undefined,transitionType: undefined});
+    Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [{schema: "iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0", data: {basisForProcessing: "consent"}}]);
+    Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
+  }
+  const onPressTrackSelfDescribingEvent = async () => {
+    await initPromise;
+    Tracker.trackSelfDescribingEvent({schema: 'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0', data: {'impressionId': 'test_imp_id'}});
+  }
+  const onPressTrackPageViewEvent = async () => {
+    await initPromise;
+    Tracker.trackPageViewEvent({pageUrl: 'https://allpopulated.com', pageTitle: 'some title', pageReferrer: 'http://refr.com'});
+    Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
+    Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsnull.com', pageTitle: null, pageReferrer: null});
+    Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsundefined.com', pageTitle: undefined, pageReferrer: undefined});
+  }
+  const onPressShowMeSomeWarnings = async () => {
+    await initPromise;
+    Tracker.trackSelfDescribingEvent({});
+    Tracker.trackStructuredEvent({});
+    Tracker.trackPageViewEvent({});
+    Tracker.trackScreenViewEvent({});
+  }
+  const onPressTestSetSubject = async () => {
+    await initPromise;
+    Tracker.setSubjectData({
+      userId: null,
+      timezone: null,
+      language: null,
+      ipAddress: null,
+      useragent: null,
+      networkUserId: null,
+      domainUserId: null,
+      screenWidth: 123,
+      screenHeight: 456,
+      colorDepth: 20,
+      viewportWidth: 123,
+      viewportHeight: 456
+    });
   }
   return (
     <>
@@ -77,37 +132,59 @@ const App: () => React$Node = () => {
           )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
+              <Text style={styles.sectionTitle}>Test trackScreenViewEvent:</Text>
               <Button
-                  onPress={onPressSendEvent}
-                  title="Send event"
+                  onPress={onPressTrackScreenViewEvent}
+                  title="Track some Screen View Events"
                   color="#841584"
-                  accessibilityLabel="Send an event"
+                  accessibilityLabel="testScreenView"
               />
             </View>
-            <LearnMoreLinks />
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackSelfDescribingEvent (custom events):</Text>
+              <Button
+                  onPress={onPressTrackSelfDescribingEvent}
+                  title="Track some Self-Describing Events"
+                  color="#841584"
+                  accessibilityLabel="testSelfDesc"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackStructuredEvent:</Text>
+              <Button
+                  onPress={onPressTrackStructuredEvent}
+                  title="Track some Structured Events"
+                  color="#841584"
+                  accessibilityLabel="testStruct"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test trackPageViewEvent:</Text>
+              <Button
+                  onPress={onPressTrackPageViewEvent}
+                  title="Track some Page View Events"
+                  color="#841584"
+                  accessibilityLabel="testPageView"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test throwing warnings due to missing input:</Text>
+              <Button
+                  onPress={onPressShowMeSomeWarnings}
+                  title="Show me some warnings"
+                  color="#f6bd3b"
+                  accessibilityLabel="testWrongInputs"
+              />
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Test setting the Subject</Text>
+              <Button
+                  onPress={onPressTestSetSubject}
+                  title="Set the Subject again"
+                  color="#228B22"
+                  accessibilityLabel="testSetSubject"
+              />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -127,8 +204,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 16,
     paddingHorizontal: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 24,

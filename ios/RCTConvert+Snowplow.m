@@ -5,30 +5,34 @@
 @implementation RCTConvert (Snowplow)
 
 + (SPSelfDescribingJson *)SPSelfDescribingJson:(id)json {
-	if (!json) {
-		return nil;
-	}
+    if (!json) {
+        return nil;
+    }
 
-	if ([json isKindOfClass:[NSDictionary class]]) {
+    if ([json isKindOfClass:[NSDictionary class]]) {
         NSString * schema = [json objectForKey:@"schema"];
         NSDictionary * data = [json objectForKey:@"data"];
         if (schema == nil || data == nil) {
-    		return nil;
-    	}
-    	SPSelfDescribingJson *sdj = [[SPSelfDescribingJson alloc] initWithSchema:schema andData:data];
-    	return sdj;
-	}
-	return nil;
+            return nil;
+        }
+        SPSelfDescribingJson *sdj = [[SPSelfDescribingJson alloc] initWithSchema:schema andData:data];
+        return sdj;
+    }
+    return nil;
 }
 
 RCT_ARRAY_CONVERTER(SPSelfDescribingJson)
 
 + (SPUnstructured *)SPUnstructured:(id)json {
-  if (!json) {
-    return nil;
-  }
+    if (!json) {
+        return nil;
+    }
 
-  if ([json isKindOfClass:[NSDictionary class]]) {
+    if (![json isKindOfClass:[NSDictionary class]]) {
+        RCTLogConvertError(json, @"Self-describing JSON to be an NSDictionary with at least schema and some data type");
+        return nil;
+    }
+
     SPSelfDescribingJson * data = [self SPSelfDescribingJson:json[@"event"]];
     NSNumber * timestamp = [self NSNumber:json[@"timestamp"]];
     NSArray * contexts = [self SPSelfDescribingJsonArray:json[@"contexts"]];
@@ -46,11 +50,6 @@ RCT_ARRAY_CONVERTER(SPSelfDescribingJson)
         }
     }];
     return unstructEvent;
-  } else {
-    RCTLogConvertError(json, @"needs to be an NSDictionary with at least schema and some data type");
-    return nil;
-  }
-  return nil;
 }
 
 RCT_ARRAY_CONVERTER(SPUnstructured)
