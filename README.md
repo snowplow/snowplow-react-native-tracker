@@ -271,8 +271,8 @@ bash .scripts/cleanBuildAndRun.sh both
 [Tracker Classificiation]: https://github.com/snowplow/snowplow/wiki/Tracker-Maintenance-Classification
 [Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
 
-[release-image]: https://img.shields.io/badge/release-0.1.0-orange.svg?style=flat
-[releases]: https://github.com/snowplow/snowplow/releases
+[release-image]: https://badge.fury.io/js/%40snowplow%2Freact-native-tracker.svg
+[releases]: https://badge.fury.io/js/%40snowplow%2Freact-native-tracker
 
 [license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
 [license]: https://www.apache.org/licenses/LICENSE-2.0
