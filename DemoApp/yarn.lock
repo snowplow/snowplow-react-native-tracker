@@ -987,10 +987,10 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
-"@snowplow/react-native-tracker@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@snowplow/react-native-tracker/-/react-native-tracker-0.1.1.tgz#a5f362ba3689b1394c788e30c2c34674c3f6b86c"
-  integrity sha512-Y8fuizw8V/1u95ELtNeLcVco7ol++JaXcKcE0Xrp7VGiCJH79kosO7ziGHUsEFWxQLy7pd4+AMPRUjPA6n2ezw==
+"@snowplow/react-native-tracker@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@snowplow/react-native-tracker/-/react-native-tracker-0.1.2.tgz#5f59df88fb96eed8af7d837a64d80103b299730b"
+  integrity sha512-O6o28DTLr5ePs+xSbgZFNj2mhYn9Zz8qv8OAXbxUxms4LGhu1QAghMCpMnofjrCH8Z5WArpAXLISxN6bFAenZQ==
 
 "@types/babel__core@^7.1.0":
   version "7.1.9"
