@@ -246,8 +246,8 @@ PODS:
     - ReactCommon/callinvoker (= 0.62.2)
   - RNSnowplowTracker (1.0.0):
     - React
-    - SnowplowTracker (~> 1.3.0)
-  - SnowplowTracker (1.3.1):
+    - SnowplowTracker (~> 1.6.2)
+  - SnowplowTracker (1.6.2):
     - FMDB (~> 2.6)
   - Yoga (1.14.0)
 
@@ -369,8 +369,8 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
-  RNSnowplowTracker: c6dd3937e883597ea8f98c4498ca3d5643ee1f18
-  SnowplowTracker: 71b47ab2ea802f8d4d9c798113e96a8e6e56427a
+  RNSnowplowTracker: 9b1d297e7308cd65c240b7901a69ab58bf48e606
+  SnowplowTracker: 6d37e5411b4bdc4c254ab19cb7df41e81bbd0a13
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
 
 PODFILE CHECKSUM: ac593d5c58e2aa1cf19d653375f2b993c6c507f8
