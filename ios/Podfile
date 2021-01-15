@@ -9,7 +9,7 @@ target 'RNSnowplowTracker' do
   # Pods for RNSnowplowTracker
   pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
   pod 'React', path: '../node_modules/react-native'
-  pod 'SnowplowTracker', '~> 1.3.0'
+  pod 'SnowplowTracker', '~> 1.6.2'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|

@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@snowplow/react-native-tracker": "0.1.1",
+    "@snowplow/react-native-tracker": "0.1.2",
     "react": "16.9.0",
     "react-native": "^0.62.2"
   },
