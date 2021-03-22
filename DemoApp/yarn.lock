@@ -1162,9 +1162,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@snowplow/react-native-tracker@file:../tmp/snowplow-react-native-tracker-test-asset.tgz":
-  version "0.1.4"
-  resolved "file:../tmp/snowplow-react-native-tracker-test-asset.tgz#4e38ad8c2113b7e1772ab00e2b0c13eeb0a610a8"
+"@snowplow/react-native-tracker@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@snowplow/react-native-tracker/-/react-native-tracker-0.1.5.tgz#89749de0e994a13b44466821b3624443da2e2723"
+  integrity sha512-gveoy6WLnlU19qq4LKNfHrCJEJ69ZHCb8QSFUNak/bSKAgRskzOQMdpGsTvHuc2Kguw7TYQzD2y/+rfqflYTjQ==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.13"
