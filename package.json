@@ -1,17 +1,22 @@
 {
   "name": "@snowplow/react-native-tracker",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A library for tracking Snowplow events in React Native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "snowplow"
   ],
-  "author": "Michael Hadam, Colm O Griobhtha, James Munro",
+  "author": "Snowplow Analytics Ltd",
   "contributors": [
-    "Max Bondarenko"
+    "Michael Hadam",
+    "Colm O Griobhtha",
+    "James Munro",
+    "Max Bondarenko",
+    "Paul Boocock"
   ],
   "license": "Apache-2.0",
   "peerDependencies": {

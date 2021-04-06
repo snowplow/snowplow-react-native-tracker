@@ -1,18 +1,18 @@
 PODS:
-  - FMDB (2.6.2):
-    - FMDB/standard (= 2.6.2)
-  - FMDB/standard (2.6.2)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - React (0.59.10):
     - React/Core (= 0.59.10)
   - React/Core (0.59.10):
     - yoga (= 0.59.10.React)
-  - SnowplowTracker (1.2.0):
-    - FMDB (~> 2.6.2)
+  - SnowplowTracker (1.7.0):
+    - FMDB (~> 2.6)
   - yoga (0.59.10.React)
 
 DEPENDENCIES:
   - React (from `../node_modules/react-native`)
-  - SnowplowTracker (= 1.2.0)
+  - SnowplowTracker (~> 1.7.0)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -27,11 +27,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   React: 36d0768f9e93be2473b37e7fa64f92c1d5341eef
-  SnowplowTracker: 653d9afdf35e8c6d362eeae14cecd6541e5930cd
+  SnowplowTracker: af57230e44ca85007d36eab7ae1a199af5d31192
   yoga: 684513b14b03201579ba3cee20218c9d1298b0cc
 
-PODFILE CHECKSUM: 4a9908535a2e4509a35895f11506a729dc74238d
+PODFILE CHECKSUM: a26d715479a0ed9008e1b647c3385b566fac22b1
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.10.1
