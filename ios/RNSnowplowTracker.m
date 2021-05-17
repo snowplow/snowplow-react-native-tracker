@@ -201,7 +201,7 @@ RCT_EXPORT_METHOD(trackScreenViewEvent
 
         // screenType must not be NSNull.
         if (details[@"screenType"] != (id)[NSNull null] && details[@"screenType"] != nil) [builder setType:details[@"screenType"]];
-        if (details[@"transitionType"] != nil) [builder setTransitionType:details[@"transitionType"]];
+        if (details[@"transitionType"] != (id)[NSNull null] && details[@"transitionType"] != nil) [builder setTransitionType:details[@"transitionType"]];
         if (contexts) {
             [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
         }
