@@ -1,18 +1,29 @@
+Version 0.1.7 (2021-05-24)
+--------------------------
+Remove waitForEventStore method and upgrade Android tracker (#92)
+Automate deploy process (#61)
+Fix null transitionType resulting in screen view event failing validation for ios (#122)
+Fix Xcode 12.5 build breaks (#119)
+Fix typo in CHANGELOG (#116)
+Remove JCenter and add MavenCentral (#121)
+Update build.gradle to match rootProject extra properties (#120)
+Fix assembleAndroidTest builds (#118)
+
 Version 0.1.6 (2021-04-06)
 --------------------------
 Bump iOS Tracker to 1.7.0 (#111)
 
 Version 0.1.5 (2021-03-22)
 --------------------------
-Update DemoApp versions (close #106)
-Loosen peer dependency requirements (close #105)
+Update DemoApp versions (#106)
+Loosen peer dependency requirements (#105)
 
 Note: v0.1.4 was skipped due to an error in publishing process.
 ---------------------------------------------------------------
 
 Version 0.1.3 (2021-02-12)
 --------------------------
-Fix Xcode 12 compatibility (close #102)
+Fix Xcode 12 compatibility (#102)
 
 Version 0.1.2 (2021-01-15)
 --------------------------

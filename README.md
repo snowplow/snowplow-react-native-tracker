@@ -1,7 +1,14 @@
 
 # @snowplow/react-native-tracker
 
-[![Early Release]][Tracker Classificiation] [![Release][release-image]][releases] [![License][license-image]][license]
+[![Early Release]][Tracker Classificiation]
+[![Build Status][gh-actions-image]][gh-actions]
+[![License][license-image]][license]
+
+[![Release][release-image]][releases]
+[![RN version][react-native-v-image]][react-native-v]
+[![downloads][downloads-dm-image]][downloads-dm]
+
 
 Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
 
@@ -227,7 +234,7 @@ react-native run-ios
 
 ### Testing
 
-Currently, testing is done manually. PRs may not be merged until an automated test framework is introduced. It is recommended to use a Snowplow Mini instance to test your changes during development.
+Currently, testing is done manually. It is recommended to use Snowplow Micro or a Snowplow Mini instance to test your changes during development.
 
 During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used, assuming the DemoApp has already been built before. This simply replaces relevant files in the node_modules folder, and re-runs react native.
 
@@ -268,14 +275,23 @@ bash .scripts/cleanBuildAndRun.sh both
 | ![i1][techdocs-image]       |
 | [Technical Docs][techdocs]  |
 
-[Tracker Classificiation]: https://github.com/snowplow/snowplow/wiki/Tracker-Maintenance-Classification
+[Tracker Classificiation]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/tracker-maintenance-classification/
 [Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
 
-[release-image]: https://badge.fury.io/js/%40snowplow%2Freact-native-tracker.svg
-[releases]: https://badge.fury.io/js/%40snowplow%2Freact-native-tracker
+[gh-actions]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/actions
+[gh-actions-image]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/workflows/build/badge.svg?branch=master
 
-[license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
 [license]: https://www.apache.org/licenses/LICENSE-2.0
+[license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
+
+[releases]: https://www.npmjs.com/package/@snowplow/react-native-tracker
+[release-image]: https://img.shields.io/npm/v/@snowplow/react-native-tracker
+
+[react-native-v]: https://www.npmjs.com/package/@snowplow/react-native-tracker
+[react-native-v-image]: https://img.shields.io/npm/dependency-version/@snowplow/react-native-tracker/peer/react-native
+
+[downloads-dm]: https://www.npmjs.com/package/@snowplow/react-native-tracker
+[downloads-dm-image]: https://img.shields.io/npm/dm/@snowplow/react-native-tracker
 
 [techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
 [techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png
