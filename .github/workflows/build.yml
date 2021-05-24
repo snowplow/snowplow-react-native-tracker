@@ -1,0 +1,68 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build_android:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Validate Gradle Wrapper
+      uses: gradle/wrapper-validation-action@v1
+
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install node_modules
+      working-directory: DemoApp
+      run: |
+        yarn install --frozen-lockfile
+
+    - name: Build DemoApp
+      working-directory: DemoApp/android
+      run: |
+        ./gradlew assembleDebug
+
+  build_ios:
+    runs-on: macos-10.15
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install node_modules
+      working-directory: DemoApp
+      run: |
+        yarn install --frozen-lockfile
+
+    - name: Install Pods
+      working-directory: DemoApp/ios
+      run: |
+        pod install
+
+    - name: Build DemoApp
+      working-directory: DemoApp/ios
+      run: |
+        xcodebuild \
+          -workspace DemoApp.xcworkspace \
+          -scheme DemoApp \
+          -sdk iphonesimulator \
+          -configuration Debug \
+          -destination 'platform=iOS Simulator,name=iPhone 12' \
+          -derivedDataPath ios/build -UseModernBuildSystem=YES \
+          clean build \
+          CODE_SIGNING_ALLOWED=NO

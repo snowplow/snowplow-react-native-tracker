@@ -64,8 +64,6 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             .security(options.getString("protocol").equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
             .build();
 
-        this.emitter.waitForEventStore();
-
         com.snowplowanalytics.snowplow.tracker.Subject subject = new com.snowplowanalytics.snowplow.tracker.Subject.SubjectBuilder()
             .build();
 

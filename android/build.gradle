@@ -1,8 +1,11 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
 
     dependencies {
@@ -13,17 +16,21 @@ buildscript {
 apply plugin: "com.android.library"
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
         versionCode 1
         versionName "1.0"
     }
     lintOptions {
         abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -34,7 +41,6 @@ repositories {
     }
     mavenCentral()
     google()
-    jcenter()
 }
 
 dependencies {
@@ -45,5 +51,5 @@ dependencies {
     // Required Dependency for the Tracker
     implementation "com.squareup.okhttp3:okhttp:3.12.1"
     implementation "com.facebook.react:react-native:+"
-    implementation "com.snowplowanalytics:snowplow-android-tracker:1.5.+"
+    implementation "com.snowplowanalytics:snowplow-android-tracker:1.+"
 }
