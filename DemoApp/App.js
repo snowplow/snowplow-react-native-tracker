@@ -21,7 +21,7 @@ import {
 
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
-import Tracker from '@snowplow/react-native-tracker';
+import * as Snowplow from '@snowplow/react-native-tracker';
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -56,10 +56,9 @@ const App: () => Node = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const initPromise = Tracker.initialize({
+  const tracker = Snowplow.createTracker('sp1', {
     // required
     endpoint: 'test-url',
-    namespace: 'namespace',
     appId: 'my-app-id',
 
     // optional
@@ -77,115 +76,110 @@ const App: () => Node = () => {
     installTracking: true,
   });
 
-  initPromise.then(() =>
-    Tracker.setSubjectData({
-      userId: 'test-userId',
-      screenWidth: 123,
-      screenHeight: 456,
-      colorDepth: 20,
-      timezone: 'Europe/London',
-      language: 'fr',
-      ipAddress: '123.45.67.89',
-      useragent: '[some-user-agent-string]',
-      networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
-      domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
-      viewportWidth: 123,
-      viewportHeight: 456,
-    }),
-  );
+  tracker.setSubjectData({
+    userId: 'test-userId',
+    screenWidth: 123,
+    screenHeight: 456,
+    colorDepth: 20,
+    timezone: 'Europe/London',
+    language: 'fr',
+    ipAddress: '123.45.67.89',
+    useragent: '[some-user-agent-string]',
+    networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
+    domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
+    viewportWidth: 123,
+    viewportHeight: 456,
+  });
 
-  initPromise.then(() =>
-    Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}),
-  );
+  tracker.trackScreenViewEvent({screenName: 'firstScreenView'});
 
-  const onPressTrackStructuredEvent = async () => {
-    await initPromise;
-    Tracker.trackStructuredEvent({
+  const onPressTrackStructuredEvent = () => {
+    tracker.trackStructuredEvent({
       category: 'SeTest',
       action: 'allPopulated',
       label: 'valueIsFloat',
       property: 'property',
       value: 50.0,
     });
-    Tracker.trackStructuredEvent({
+    tracker.trackStructuredEvent({
       category: 'SeTest',
       action: 'allPopulated',
       label: 'valueIsNullAndSoIsProperty',
       property: null,
       value: null,
     });
-    Tracker.trackStructuredEvent({
+    tracker.trackStructuredEvent({
       category: 'SeTest',
       action: 'allPopulated',
       label: 'valueIsUndefined',
       property: 'property',
       value: undefined,
     });
-    Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
+    tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
   };
-  const onPressTrackScreenViewEvent = async () => {
-    await initPromise;
-    Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
-    Tracker.trackScreenViewEvent({
+
+  const onPressTrackScreenViewEvent = () => {
+    tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
+    tracker.trackScreenViewEvent({
       screenName: 'allPopulated',
       screenType: 'allPopulated',
       transitionType: 'test',
     });
-    Tracker.trackScreenViewEvent({
+    tracker.trackScreenViewEvent({
       screenName: 'allOptionalsNull',
       screenType: null,
       transitionType: null,
     });
-    Tracker.trackScreenViewEvent({
+    tracker.trackScreenViewEvent({
       screenName: 'allOptionalsUndefined',
       screenType: undefined,
       transitionType: undefined,
     });
-    Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [
+    tracker.trackScreenViewEvent({screenName: 'withAContext'}, [
       {
         schema: 'iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0',
         data: {basisForProcessing: 'consent'},
       },
     ]);
-    Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
+    tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
   };
-  const onPressTrackSelfDescribingEvent = async () => {
-    await initPromise;
-    Tracker.trackSelfDescribingEvent({
+
+  const onPressTrackSelfDescribingEvent = () => {
+    tracker.trackSelfDescribingEvent({
       schema:
         'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0',
       data: {impressionId: 'test_imp_id'},
     });
   };
-  const onPressTrackPageViewEvent = async () => {
-    await initPromise;
-    Tracker.trackPageViewEvent({
+
+  const onPressTrackPageViewEvent = () => {
+    tracker.trackPageViewEvent({
       pageUrl: 'https://allpopulated.com',
       pageTitle: 'some title',
       pageReferrer: 'http://refr.com',
     });
-    Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
-    Tracker.trackPageViewEvent({
+    tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
+    tracker.trackPageViewEvent({
       pageUrl: 'https://alloptionalsnull.com',
       pageTitle: null,
       pageReferrer: null,
     });
-    Tracker.trackPageViewEvent({
+    tracker.trackPageViewEvent({
       pageUrl: 'https://alloptionalsundefined.com',
       pageTitle: undefined,
       pageReferrer: undefined,
     });
   };
-  const onPressShowMeSomeWarnings = async () => {
-    await initPromise;
-    Tracker.trackSelfDescribingEvent({});
-    Tracker.trackStructuredEvent({});
-    Tracker.trackPageViewEvent({});
-    Tracker.trackScreenViewEvent({});
+
+  const onPressShowMeSomeWarnings = () => {
+    tracker.trackSelfDescribingEvent({});
+    tracker.trackStructuredEvent({});
+    tracker.trackPageViewEvent({});
+    tracker.trackScreenViewEvent({});
   };
-  const onPressTestSetSubject = async () => {
-    await initPromise;
-    Tracker.setSubjectData({
+
+  const onPressTestSetSubject = () => {
+    tracker.setSubjectData({
       userId: null,
       timezone: null,
       language: null,
