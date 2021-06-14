@@ -19,13 +19,7 @@ import {
   Button,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 import Tracker from '@snowplow/react-native-tracker';
 
@@ -73,17 +67,18 @@ const App: () => Node = () => {
     protocol: 'https',
     platformContext: true,
     base64Encoded: true,
-    applicationContext:true,
+    applicationContext: true,
     lifecycleEvents: true,
     screenContext: true,
     sessionContext: true,
     foregroundTimeout: 10, // set unreasonably low for testing purposes
     backgroundTimeout: 10, // set unreasonably low for testing purposes
     checkInterval: 5,
-    installTracking: true
-    })
+    installTracking: true,
+  });
 
-    initPromise.then(() => Tracker.setSubjectData({
+  initPromise.then(() =>
+    Tracker.setSubjectData({
       userId: 'test-userId',
       screenWidth: 123,
       screenHeight: 456,
@@ -95,62 +90,116 @@ const App: () => Node = () => {
       networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
       domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
       viewportWidth: 123,
-      viewportHeight: 456
-    }))
+      viewportHeight: 456,
+    }),
+  );
 
-    initPromise.then(() => Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}));
+  initPromise.then(() =>
+    Tracker.trackScreenViewEvent({screenName: 'firstScreenView'}),
+  );
 
-    const onPressTrackStructuredEvent = async () => {
-      await initPromise;
-      Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsFloat', property: 'property', value: 50.00});
-      Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsNullAndSoIsProperty', property: null, value: null});
-      Tracker.trackStructuredEvent({category: 'SeTest', action: 'allPopulated', label: 'valueIsUndefined', property: 'property', value: undefined});
-      Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
-    }
-    const onPressTrackScreenViewEvent = async () => {
-      await initPromise;
-      Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
-      Tracker.trackScreenViewEvent({screenName: 'allPopulated', screenType: 'allPopulated', transitionType: 'test' });
-      Tracker.trackScreenViewEvent({screenName: 'allOptionalsNull', screenType: null, transitionType: null});
-      Tracker.trackScreenViewEvent({screenName: 'allOptionalsUndefined', screenType: undefined,transitionType: undefined});
-      Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [{schema: "iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0", data: {basisForProcessing: "consent"}}]);
-      Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
-    }
-    const onPressTrackSelfDescribingEvent = async () => {
-      await initPromise;
-      Tracker.trackSelfDescribingEvent({schema: 'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0', data: {'impressionId': 'test_imp_id'}});
-    }
-    const onPressTrackPageViewEvent = async () => {
-      await initPromise;
-      Tracker.trackPageViewEvent({pageUrl: 'https://allpopulated.com', pageTitle: 'some title', pageReferrer: 'http://refr.com'});
-      Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
-      Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsnull.com', pageTitle: null, pageReferrer: null});
-      Tracker.trackPageViewEvent({pageUrl: 'https://alloptionalsundefined.com', pageTitle: undefined, pageReferrer: undefined});
-    }
-    const onPressShowMeSomeWarnings = async () => {
-      await initPromise;
-      Tracker.trackSelfDescribingEvent({});
-      Tracker.trackStructuredEvent({});
-      Tracker.trackPageViewEvent({});
-      Tracker.trackScreenViewEvent({});
-    }
-    const onPressTestSetSubject = async () => {
-      await initPromise;
-      Tracker.setSubjectData({
-        userId: null,
-        timezone: null,
-        language: null,
-        ipAddress: null,
-        useragent: null,
-        networkUserId: null,
-        domainUserId: null,
-        screenWidth: 123,
-        screenHeight: 456,
-        colorDepth: 20,
-        viewportWidth: 123,
-        viewportHeight: 456
-      });
-    }
+  const onPressTrackStructuredEvent = async () => {
+    await initPromise;
+    Tracker.trackStructuredEvent({
+      category: 'SeTest',
+      action: 'allPopulated',
+      label: 'valueIsFloat',
+      property: 'property',
+      value: 50.0,
+    });
+    Tracker.trackStructuredEvent({
+      category: 'SeTest',
+      action: 'allPopulated',
+      label: 'valueIsNullAndSoIsProperty',
+      property: null,
+      value: null,
+    });
+    Tracker.trackStructuredEvent({
+      category: 'SeTest',
+      action: 'allPopulated',
+      label: 'valueIsUndefined',
+      property: 'property',
+      value: undefined,
+    });
+    Tracker.trackStructuredEvent({category: 'SeTest', action: 'onlyRequired'});
+  };
+  const onPressTrackScreenViewEvent = async () => {
+    await initPromise;
+    Tracker.trackScreenViewEvent({screenName: 'onlyRequired'});
+    Tracker.trackScreenViewEvent({
+      screenName: 'allPopulated',
+      screenType: 'allPopulated',
+      transitionType: 'test',
+    });
+    Tracker.trackScreenViewEvent({
+      screenName: 'allOptionalsNull',
+      screenType: null,
+      transitionType: null,
+    });
+    Tracker.trackScreenViewEvent({
+      screenName: 'allOptionalsUndefined',
+      screenType: undefined,
+      transitionType: undefined,
+    });
+    Tracker.trackScreenViewEvent({screenName: 'withAContext'}, [
+      {
+        schema: 'iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0',
+        data: {basisForProcessing: 'consent'},
+      },
+    ]);
+    Tracker.trackScreenViewEvent({screenName: 'withEmptyArrayContext'}, []);
+  };
+  const onPressTrackSelfDescribingEvent = async () => {
+    await initPromise;
+    Tracker.trackSelfDescribingEvent({
+      schema:
+        'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0',
+      data: {impressionId: 'test_imp_id'},
+    });
+  };
+  const onPressTrackPageViewEvent = async () => {
+    await initPromise;
+    Tracker.trackPageViewEvent({
+      pageUrl: 'https://allpopulated.com',
+      pageTitle: 'some title',
+      pageReferrer: 'http://refr.com',
+    });
+    Tracker.trackPageViewEvent({pageUrl: 'https://onlyrequired.com'});
+    Tracker.trackPageViewEvent({
+      pageUrl: 'https://alloptionalsnull.com',
+      pageTitle: null,
+      pageReferrer: null,
+    });
+    Tracker.trackPageViewEvent({
+      pageUrl: 'https://alloptionalsundefined.com',
+      pageTitle: undefined,
+      pageReferrer: undefined,
+    });
+  };
+  const onPressShowMeSomeWarnings = async () => {
+    await initPromise;
+    Tracker.trackSelfDescribingEvent({});
+    Tracker.trackStructuredEvent({});
+    Tracker.trackPageViewEvent({});
+    Tracker.trackScreenViewEvent({});
+  };
+  const onPressTestSetSubject = async () => {
+    await initPromise;
+    Tracker.setSubjectData({
+      userId: null,
+      timezone: null,
+      language: null,
+      ipAddress: null,
+      useragent: null,
+      networkUserId: null,
+      domainUserId: null,
+      screenWidth: 123,
+      screenHeight: 456,
+      colorDepth: 20,
+      viewportWidth: 123,
+      viewportHeight: 456,
+    });
+  };
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -165,50 +214,50 @@ const App: () => Node = () => {
           }}>
           <Section title="Screen Views">
             <Button
-                  onPress={onPressTrackScreenViewEvent}
-                  title="Track some Screen View Events"
-                  color="#841584"
-                  accessibilityLabel="testScreenView"
+              onPress={onPressTrackScreenViewEvent}
+              title="Track some Screen View Events"
+              color="#841584"
+              accessibilityLabel="testScreenView"
             />
           </Section>
           <Section title="Self-Describing Events">
             <Button
-                  onPress={onPressTrackSelfDescribingEvent}
-                  title="Track some Self-Describing Events"
-                  color="#841584"
-                  accessibilityLabel="testSelfDesc"
-              />
+              onPress={onPressTrackSelfDescribingEvent}
+              title="Track some Self-Describing Events"
+              color="#841584"
+              accessibilityLabel="testSelfDesc"
+            />
           </Section>
           <Section title="Structured Events">
             <Button
-                  onPress={onPressTrackStructuredEvent}
-                  title="Track some Structured Events"
-                  color="#841584"
-                  accessibilityLabel="testStruct"
-              />
+              onPress={onPressTrackStructuredEvent}
+              title="Track some Structured Events"
+              color="#841584"
+              accessibilityLabel="testStruct"
+            />
           </Section>
           <Section title="Page Views">
             <Button
-                onPress={onPressTrackPageViewEvent}
-                title="Track some Page View Events"
-                color="#841584"
-                accessibilityLabel="testPageView"
+              onPress={onPressTrackPageViewEvent}
+              title="Track some Page View Events"
+              color="#841584"
+              accessibilityLabel="testPageView"
             />
           </Section>
           <Section title="Warnings">
             <Button
-                onPress={onPressShowMeSomeWarnings}
-                title="Show me some warnings"
-                color="#f6bd3b"
-                accessibilityLabel="testWrongInputs"
+              onPress={onPressShowMeSomeWarnings}
+              title="Show me some warnings"
+              color="#f6bd3b"
+              accessibilityLabel="testWrongInputs"
             />
           </Section>
           <Section title="Set the Subject">
             <Button
-                onPress={onPressTestSetSubject}
-                title="Set the Subject again"
-                color="#228B22"
-                accessibilityLabel="testSetSubject"
+              onPress={onPressTestSetSubject}
+              title="Set the Subject again"
+              color="#228B22"
+              accessibilityLabel="testSetSubject"
             />
           </Section>
         </View>
