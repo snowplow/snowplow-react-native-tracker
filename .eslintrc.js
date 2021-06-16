@@ -1,15 +1,16 @@
 module.exports = {
-  extends: ['plugin:promise/recommended', 'eslint:recommended'],
-  parser: '@babel/eslint-parser',
+  root: true,
+  parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: './tsconfig.json',
     ecmaVersion: 6,
     ecmaFeatures: {
       impliedStrict: true,
       jsx: true,
     },
     sourceType: 'module',
-    requireConfigFile: false,
   },
+  ignorePatterns: ['.eslintrc.js', 'rollup.config.js'],
   env: {
     es6: true,
     node: true,
@@ -17,7 +18,15 @@ module.exports = {
   globals: {
     __DEV__: 'readonly',
   },
-  plugins: ['promise'],
+  plugins: [
+    '@typescript-eslint',
+    'promise'
+  ],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:promise/recommended',
+    'eslint:recommended'
+  ],
   rules: {
     // eslint
     'consistent-return': ['warn'],
@@ -51,6 +60,17 @@ module.exports = {
     'promise/no-return-in-finally': ['warn'],
     'promise/no-return-wrap': ['warn'],
     'promise/param-names': ['warn'],
-    'promise/valid-params': ['warn']
+    'promise/valid-params': ['warn'],
+    // typescript
+    '@typescript-eslint/explicit-function-return-type': ['warn'],
+    '@typescript-eslint/no-floating-promises': ['warn', { ignoreVoid: false }],
+    '@typescript-eslint/no-misused-promises': ['warn'],
+    '@typescript-eslint/no-unnecessary-condition': ['warn'],
+    '@typescript-eslint/no-unnecessary-type-constraint': ['warn'],
+    '@typescript-eslint/no-unsafe-assignment': ['warn'],
+    '@typescript-eslint/no-unsafe-return': ['warn'],
+    '@typescript-eslint/no-unused-vars': ['warn'],
+    '@typescript-eslint/no-use-before-define': ['warn'],
+    '@typescript-eslint/strict-boolean-expressions': ['warn'],
   },
 };

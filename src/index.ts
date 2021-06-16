@@ -13,8 +13,10 @@
 
 'use strict';
 
-const api = require('./api.js');
-const utils = require('./utils.js');
+import * as api from './api';
+import { safeWait, errorHandler } from './utils';
+
+import type { TrackerConfig, ReactNativeTracker } from './types';
 
 /*
  * Creates a React Native Tracker object
@@ -23,9 +25,12 @@ const utils = require('./utils.js');
  * @param config - The configuration to be used for the tracker
  * @returns The tracker object
  */
-function createTracker(namespace, config) {
+function createTracker(
+  namespace: string,
+  config: TrackerConfig
+): ReactNativeTracker {
   // initTrackerPromise
-  const initTrackerPromise = Promise.resolve(
+  const initTrackerPromise: Promise<void> = Promise.resolve(
     api.initializeTracker({
       ...config,
       namespace,
@@ -33,7 +38,7 @@ function createTracker(namespace, config) {
   );
 
   // mkMethod creates methods subscribed to the initTrackerPromise
-  const mkMethod = utils.safeWait(initTrackerPromise, utils.errorHandler);
+  const mkMethod = safeWait(initTrackerPromise, errorHandler);
 
   // tracker methods
   const setSubjectData = mkMethod(api.setSubjectData);
@@ -52,3 +57,15 @@ function createTracker(namespace, config) {
 }
 
 export { createTracker };
+export type {
+  ReactNativeTracker,
+  TrackerConfig,
+  HttpMethod,
+  HttpProtocol,
+  SubjectData,
+  ScreenViewProps,
+  SelfDescribingProps,
+  StructuredProps,
+  PageViewProps,
+  EventContext
+} from './types';

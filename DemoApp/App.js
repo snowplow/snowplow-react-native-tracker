@@ -21,7 +21,7 @@ import {
 
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
-import * as Snowplow from '@snowplow/react-native-tracker';
+import {createTracker} from '@snowplow/react-native-tracker';
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -56,7 +56,7 @@ const App: () => Node = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const tracker = Snowplow.createTracker('sp1', {
+  const tracker = createTracker('sp1', {
     // required
     endpoint: 'test-url',
     appId: 'my-app-id',

@@ -22,12 +22,12 @@
  * @param errHandle - A function to handle the promise being rejected
  * @returns - A function subscribed to the Promise's fullfillment
  */
-function safeWait(aPromise, errHandle) {
-  return (func) => {
-    return (...args) => {
+function safeWait(aPromise: Promise<void>, errHandle: ((err: Error) => void)) {
+  return (<F extends ((...args: never[]) => Promise<void>)>(func: F) => {
+    return (...args: Parameters<F>): Promise<void> => {
       return aPromise.then(() => func(...args)).catch((err) => errHandle(err));
     };
-  };
+  });
 }
 
 /*
@@ -35,7 +35,7 @@ function safeWait(aPromise, errHandle) {
  *
  * @param err - The error to be handled.
  */
-function errorHandler(err) {
+function errorHandler(err: Error): void {
   if (__DEV__) {
     console.warn(err.message);
   }

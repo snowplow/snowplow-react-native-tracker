@@ -14,6 +14,16 @@
 'use strict';
 
 import { NativeModules } from 'react-native';
+import type {
+  InitTrackerConfig,
+  OptTrackerConfig,
+  SubjectData,
+  ScreenViewProps,
+  SelfDescribingProps,
+  StructuredProps,
+  PageViewProps,
+  EventContext,
+} from './types';
 
 const { RNSnowplowTracker } = NativeModules;
 
@@ -23,9 +33,9 @@ const { RNSnowplowTracker } = NativeModules;
  * @param argmap - The configuration to use for the tracker instance
  * @returns - A promise fullfilled if the tracker is initialized
  */
-function initializeTracker(argmap) {
+function initializeTracker(argmap: InitTrackerConfig): Promise<void> {
 
-  const defaults = {// defaults for optional params
+  const defaults: OptTrackerConfig = {// defaults for optional params
     method: 'post',
     protocol: 'https',
     base64Encoded : true,
@@ -37,28 +47,31 @@ function initializeTracker(argmap) {
     foregroundTimeout : 600,
     backgroundTimeout : 300,
     checkInterval : 15,
-    installTracking : false};
+    installTracking : false
+  };
 
   const ok = typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined';
 
   if (ok) {
-    // RNSnowplowTracker.initialize is a Promise
-    return RNSnowplowTracker.initialize({...defaults, ...argmap});
+    return <Promise<void>>Promise.resolve(
+      RNSnowplowTracker.initialize({...defaults, ...argmap})
+    );
   } else {
     const initReason = 'SnowplowTracker: initialize() requires endpoint, namespace and appId parameter to be set';
     return Promise.reject(new Error(initReason));
   }
 }
 
-
 /*
- * Sets data for the Subject
+ * Sets or updates data for the Subject
  *
  * @param argmap - The subject data to be used
  * @returns - A promise that is fullfilled if the Subject data is set
  */
-function setSubjectData(argmap) {
-  return Promise.resolve(RNSnowplowTracker.setSubjectData(argmap));
+function setSubjectData(argmap: SubjectData): Promise<void> {
+  return <Promise<void>>Promise.resolve(
+    RNSnowplowTracker.setSubjectData(argmap)
+  );
 }
 
 /*
@@ -68,9 +81,14 @@ function setSubjectData(argmap) {
  * @param ctxt - An array of contexts to be attached to the event
  * @returns - A promise that is fullfilled if the event is tracked successfully
  */
-function trackScreenViewEvent(argmap, ctxt = []) {
+function trackScreenViewEvent(
+  argmap: ScreenViewProps,
+  ctxt: EventContext[] = []
+): Promise<void> {
   if (typeof argmap.screenName !== 'undefined') {
-    return Promise.resolve(RNSnowplowTracker.trackScreenViewEvent(argmap, ctxt));
+    return <Promise<void>>Promise.resolve(
+      RNSnowplowTracker.trackScreenViewEvent(argmap, ctxt)
+    );
   } else {
     const reason = 'SnowplowTracker: trackScreenViewEvent() requires screenName parameter to be set';
     return Promise.reject(new Error(reason));
@@ -84,9 +102,14 @@ function trackScreenViewEvent(argmap, ctxt = []) {
  * @param ctxt - An array of contexts to be attached to the event
  * @returns - A promise that is fullfilled if the event is tracked successfully
  */
-function trackSelfDescribingEvent(argmap, ctxt = []) {
+function trackSelfDescribingEvent(
+  argmap: SelfDescribingProps,
+  ctxt: EventContext[] = []
+): Promise<void> {
   if (typeof argmap.schema !== 'undefined' && typeof argmap.data !== 'undefined') {
-    return Promise.resolve(RNSnowplowTracker.trackSelfDescribingEvent(argmap, ctxt));
+    return <Promise<void>>Promise.resolve(
+      RNSnowplowTracker.trackSelfDescribingEvent(argmap, ctxt)
+    );
   } else {
     const reason = 'SnowplowTracker: trackSelfDescribingEvent() requires schema and data parameters to be set';
     return Promise.reject(new Error(reason));
@@ -100,9 +123,14 @@ function trackSelfDescribingEvent(argmap, ctxt = []) {
  * @param ctxt - An array of contexts to be attached to the event
  * @returns - A promise that is fullfilled if the event is tracked successfully
  */
-function trackStructuredEvent(argmap, ctxt = []) {
+function trackStructuredEvent(
+  argmap: StructuredProps,
+  ctxt: EventContext[] = []
+): Promise<void> {
   if (typeof argmap.category !== 'undefined' && typeof argmap.action !== 'undefined') {
-    return Promise.resolve(RNSnowplowTracker.trackStructuredEvent(argmap, ctxt));
+    return <Promise<void>>Promise.resolve(
+      RNSnowplowTracker.trackStructuredEvent(argmap, ctxt)
+    );
   } else {
     const reason = 'SnowplowTracker: trackStructuredEvent() requires category and action parameters to be set';
     return Promise.reject(new Error(reason));
@@ -116,9 +144,14 @@ function trackStructuredEvent(argmap, ctxt = []) {
  * @param ctxt - An array of contexts to be attached to the event
  * @returns - A promise that is fullfilled if the event is tracked successfully
  */
-function trackPageViewEvent(argmap, ctxt = []) {
+function trackPageViewEvent(
+  argmap: PageViewProps,
+  ctxt: EventContext[] = []
+): Promise<void> {
   if (typeof argmap.pageUrl !== 'undefined') {
-    return Promise.resolve(RNSnowplowTracker.trackPageViewEvent(argmap, ctxt));
+    return <Promise<void>>Promise.resolve(
+      RNSnowplowTracker.trackPageViewEvent(argmap, ctxt)
+    );
   } else {
     const reason = 'SnowplowTracker: trackPageViewEvent() requires pageUrl parameter to be set';
     return Promise.reject(new Error(reason));
