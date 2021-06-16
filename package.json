@@ -1,6 +1,6 @@
 {
   "name": "@snowplow/react-native-tracker",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "A library for tracking Snowplow events in React Native",
   "homepage": "https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/",
   "main": "dist/index.js",
@@ -12,6 +12,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "src",
+    "dist",
+    "android",
+    "ios"
+  ],
   "keywords": [
     "react-native",
     "snowplow"

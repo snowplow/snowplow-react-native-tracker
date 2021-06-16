@@ -1,3 +1,12 @@
+Version 0.2.0 (2021-06-21)
+--------------------------
+Bump dependencies in DemoApp (#114)
+Port to TypeScript (#115)
+Handle asyncronous issues internally (#78)
+Use ESLint (#126)
+Add homepage and repository in package.json (#125)
+Remove unused files (#124)
+
 Version 0.1.7 (2021-05-24)
 --------------------------
 Remove waitForEventStore method and upgrade Android tracker (#92)
