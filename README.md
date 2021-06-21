@@ -14,40 +14,48 @@ Feedback and contributions are welcome - if you have identified a bug, please lo
 
 ## Getting started
 
-From the root of your react-native project:
+From the root of your [React Native][react-native] project:
 
 `$ npm install @snowplow/react-native-tracker --save`
 
 ### Instrumentation
 
-The tracker will be imported as a NativeModule. Initialise it then call the relevant tracking method:
+To setup, you first need to import the module and then create the tracker object using the `createTracker` function.
+
+Then you can start tracking events using the relevant tracking methods.
 
 ```JavaScript
-import Tracker from '@snowplow/react-native-tracker';
+import { createTracker } from '@snowplow/react-native-tracker';
 
+const tracker = createTracker('my-namespace', {
+    // required
+    endpoint: 'test-url',
+    appId: 'my-app-id',
 
-Tracker.initialize({
-  // required
-  endpoint: 'test-endpoint',
-  namespace: 'my-namespace',
-  appId: 'my-app-id',
+    // optional - defaults shown
+    method: 'post',
+    protocol: 'https',
+    base64Encoded: true,
+    platformContext: true,
+    applicationContext: false,
+    lifecycleEvents: false,
+    screenContext: true,
+    sessionContext: true,
+    foregroundTimeout: 600,
+    backgroundTimeout: 300,
+    checkInterval: 15,
+    installTracking: false,
+  });
 
-  // optional
-  method: 'post',
-  protocol: 'https',
-  base64Encoded : true,
-  platformContext : true,
-  applicationContext : false,
-  lifecycleEvents : false,
-  screenContext : true,
-  sessionContext : true,
-  foregroundTimeout : 600,
-  backgroundTimeout : 300,
-  checkInterval : 15,
-  installTracking : false
-});
+tracker.trackSelfDescribingEvent(
+  {
+    schema: 'iglu:com.acme/hello_world_event/jsonschema/1-0-0',
+    data: {
+      message: 'hello world'
+    }
+  }
+);
 
-Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jsonschema/1-0-0', 'data': {'message': 'hello world'}});
 ```
 
 ### Running on iOS
@@ -60,36 +68,10 @@ Run the app with: `react-native run-ios` from the root of the project.
 
 `react-native run-android` from the root of the project.
 
-## Available methods
+## Available tracker methods
 
 All methods take a JSON of named arguments.
 
-### Instantiate the tracker:
-
-```JavaScript
-
-initialize({
-  // required
-  endpoint: 'my-endpoint.com',
-  namespace: 'my-namespace',
-  appId: 'my-app-id',
-
-  // optional
-  method: 'post',
-  protocol: 'https',
-  platformContext: true,
-  base64Encoded: true,
-  applicationContext: true,
-  lifecycleEvents: true,
-  screenContext: true,
-  sessionContext: true,
-  foregroundTimeout: 600,
-  backgroundTimeout: 300,
-  checkInterval: 15,
-  installTracking: true
-  }
-);
-```
 
 ### Set the subject data:
 
@@ -118,8 +100,8 @@ setSubjectData({ // All parameters optional
 
 ```JavaScript
 trackSelfDescribingEvent({ // Self-describing JSON for the custom event
-  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
-  'data': {'message': 'hello world'}
+  schema: 'iglu:com.acme/event/jsonschema/1-0-0',
+  data: {message: 'hello world'}
 });
 ```
 
@@ -166,43 +148,77 @@ trackPageViewEvent({
 
 ### Attaching custom contexts
 
-All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts:
+All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts that will be attached to the event:
 
 ```JavaScript
-trackSelfDescribingEvent({ // Self-describing JSON for the custom event
-  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
-  'data': {'message': 'hello world'}
+
+trackSelfDescribingEvent(
+  // Self-describing JSON for the custom event
+  {
+    schema: 'iglu:com.acme/event/jsonschema/1-0-0',
+    data: {message: 'hello world'}
   },
-  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+  // array of contexts
+  [
+    {
+      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
+      data: {myEntityField: 'hello world'}
+    }
+  ]
 );
 
-trackStructuredEvent({// required
-  category: 'my-category',
-  action: 'my-action',
-  // optional
-  label: 'my-label',
-  property: 'my-property',
-  value: 50.00
+trackStructuredEvent(
+  // the structured event's properties
+  {
+    // required
+    category: 'my-category',
+    action: 'my-action',
+    // optional
+    label: 'my-label',
+    property: 'my-property',
+    value: 50.00
   },
-  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+  // the contexts' array
+  [
+    {
+      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
+      data: {myEntityField: 'hello world'}
+    }
+  ]
 );
 
-trackScreenViewEvent({
-  screenName: 'my-screen-name', //required
-  // optional:
-  screenType: 'my-screen-type',
-  transitionType: 'my-transition'
+trackScreenViewEvent(
+  // the screen_view event's properties
+  {
+    screenName: 'my-screen-name', //required
+    // optional:
+    screenType: 'my-screen-type',
+    transitionType: 'my-transition'
   },
-  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+  // the contexts' array
+  [
+    {
+      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
+      data: {myEntityField: "hello world"}
+    }
+  ]
 );
 
-trackPageViewEvent({
-  pageUrl: 'https://www.my-page-url.com', //required
-  // optional
-  pageTitle: 'my page title',
-  pageReferrer: 'http://www.my-refr.com'
+trackPageViewEvent(
+  // the page_view event's properties
+  {
+    pageUrl: 'https://www.my-page-url.com', //required
+    // optional
+    pageTitle: 'my page title',
+    pageReferrer: 'http://www.my-refr.com'
   },
-  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+  // the context's array
+  [
+    {
+      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
+      data: {myEntityField: "hello world"}
+    }
+  ]
 );
 ```
 
@@ -210,31 +226,40 @@ trackPageViewEvent({
 
 Please read CONTRIBUTING.md for general guidelines on contributing.
 
-### Setting up
+### Maintainer quick start
 
-Assuming a react-native environment is set up, the demoApp can be used to test changes, with:
+Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository to launch the DemoApp:
 
 ```bash
-# android
+npm install
+npm run compile
 
 cd DemoApp
-react-native run-android
+yarn install
+
+yarn start # to start Metro
+
 ```
 
-and
+Then in another terminal:
+
+1. For Android
 
 ```bash
-# ios
+cd DemoApp
+yarn android
+```
 
-cd DemoApp/ios
-pod install
-cd ..
-react-native run-ios
+2. For iOS
+
+```bash
+cd DemoApp/ios && pod install
+cd .. && yarn ios
 ```
 
 ### Testing
 
-Currently, testing is done manually. It is recommended to use Snowplow Micro or a Snowplow Mini instance to test your changes during development.
+Currently, testing is done manually. It is recommended to use [Snowplow Micro][snowplow-micro] or a [Snowplow Mini][snowplow-mini] instance to test your changes during development.
 
 During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used, assuming the DemoApp has already been built before. This simply replaces relevant files in the node_modules folder, and re-runs react native.
 
@@ -295,3 +320,8 @@ bash .scripts/cleanBuildAndRun.sh both
 
 [techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
 [techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png
+
+[react-native]: https://reactnative.dev/
+[react-native-environment]: https://reactnative.dev/docs/environment-setup
+[snowplow-micro]: https://github.com/snowplow-incubator/snowplow-micro
+[snowplow-mini]: https://github.com/snowplow/snowplow-mini

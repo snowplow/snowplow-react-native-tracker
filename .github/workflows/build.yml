@@ -7,7 +7,33 @@ on:
   pull_request:
 
 jobs:
+  test:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install node modules
+      run: npm ci
+
+    - name: Compile TypeScript
+      run: npm run compile
+
+    - name: Install node modules for DemoApp
+      working-directory: DemoApp
+      run: yarn install --frozen-lockfile
+
+    - name: Lint
+      run: npm run lint
+
   build_android:
+    needs: ["test"]
     runs-on: ubuntu-20.04
 
     steps:
@@ -22,7 +48,12 @@ jobs:
       with:
         node-version: 14
 
-    - name: Install node_modules
+    - name: Build tracker dist files
+      run: |
+        npm ci
+        npm run build
+
+    - name: Install node_modules in DemoApp
       working-directory: DemoApp
       run: |
         yarn install --frozen-lockfile
@@ -33,6 +64,7 @@ jobs:
         ./gradlew assembleDebug
 
   build_ios:
+    needs: ["test"]
     runs-on: macos-10.15
 
     steps:
@@ -44,7 +76,12 @@ jobs:
       with:
         node-version: 14
 
-    - name: Install node_modules
+    - name: Build tracker dist files
+      run: |
+        npm ci
+        npm run build
+
+    - name: Install node_modules in DemoApp
       working-directory: DemoApp
       run: |
         yarn install --frozen-lockfile
