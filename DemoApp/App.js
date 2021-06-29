@@ -77,14 +77,14 @@ const App: () => Node = () => {
   });
 
   tracker.setSubjectData({
-    userId: 'test-userId',
+    userId: 'test-userId-0',
     screenWidth: 123,
     screenHeight: 456,
     colorDepth: 20,
     timezone: 'Europe/London',
     language: 'fr',
     ipAddress: '123.45.67.89',
-    useragent: '[some-user-agent-string]',
+    useragent: 'some-user-agent-string',
     networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
     domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
     viewportWidth: 123,
@@ -180,18 +180,18 @@ const App: () => Node = () => {
 
   const onPressTestSetSubject = () => {
     tracker.setSubjectData({
-      userId: null,
+      userId: 'test-userId-1',
       timezone: null,
       language: null,
       ipAddress: null,
       useragent: null,
       networkUserId: null,
       domainUserId: null,
-      screenWidth: 123,
-      screenHeight: 456,
+      screenWidth: 456,
+      screenHeight: 789,
       colorDepth: 20,
-      viewportWidth: 123,
-      viewportHeight: 456,
+      viewportWidth: 456,
+      viewportHeight: 789,
     });
   };
 
@@ -199,6 +199,7 @@ const App: () => Node = () => {
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView
+        testID="scrollView"
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />

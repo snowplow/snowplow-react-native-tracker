@@ -7,7 +7,24 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "detox-build-android": "detox build -c android",
+    "detox-build-ios": "detox build -c ios",
+    "detox-test-android": "detox test -c android --maxWorkers 1 --headless",
+    "detox-test-ios": "detox test -c ios --maxWorkers 1",
+    "micro:run": "node bin/docker-run-micro.js sp_micro_tests_container",
+    "micro:stop": "node bin/docker-kill-micro.js sp_micro_tests_container",
+    "wait:micro": "wait-on http://localhost:9090/micro/all --timeout 10000",
+    "wait:metro": "wait-on http://localhost:8081 --timeout 10000",
+    "prep:app:android": "node bin/app-prep-endpoint.js android",
+    "prep:app:ios": "node bin/app-prep-endpoint.js ios",
+    "pods": "cd ios && rimraf Pods && pod install",
+    "e2e:test:android": "npm-run-all prep:app:android wait:* detox-build-android detox-test-android test",
+    "e2e:test:ios": "npm-run-all pods prep:app:ios wait:* detox-build-ios detox-test-ios test",
+    "e2e:android": "run-p --race start e2e:test:android",
+    "e2e:ios": "run-p --race start e2e:test:ios",
+    "e2e:android:micro": "run-s -c micro:run e2e:android micro:stop",
+    "e2e:ios:micro": "run-s -c micro:run e2e:ios micro:stop"
   },
   "dependencies": {
     "@snowplow/react-native-tracker": "file:..",
@@ -19,12 +36,26 @@
     "@babel/runtime": "^7.14.5",
     "@react-native-community/eslint-config": "^2.0.0",
     "babel-jest": "^27.0.2",
+    "detox": "^18.18.1",
     "eslint": "^7.28.0",
+    "eslint-plugin-detox": "^1.0.0",
+    "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.4",
     "metro-react-native-babel-preset": "^0.66.0",
-    "react-test-renderer": "^17.0.2"
+    "npm-run-all": "^4.1.5",
+    "react-test-renderer": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.4",
+    "wait-on": "^6.0.0"
+  },
+  "resolutions": {
+    "@jest/create-cache-key-function": "^27.0.2"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "verbose": true,
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@react-native|react-native|@snowplow/react-native-tracker|react-native-button)/)"
+    ]
   }
 }

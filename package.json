@@ -10,7 +10,8 @@
     "bundle": "rollup --config",
     "build": "npm run compile && npm run bundle && rimraf dist/tmp",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bootstrap": "npm run build && cd DemoApp && rimraf node_modules && yarn"
   },
   "files": [
     "src",
