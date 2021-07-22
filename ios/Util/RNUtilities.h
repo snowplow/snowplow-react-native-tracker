@@ -1,5 +1,5 @@
 //
-//  RNSnowplowTracker.h
+//  RNUtilities.h
 //
 //  Copyright (c) 2021 Snowplow Analytics Ltd. All rights reserved.
 //
@@ -18,17 +18,15 @@
 //  License: Apache License Version 2.0
 //
 
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
-#else
-#import <React/RCTBridgeModule.h>
-#endif
-
 #import <Foundation/Foundation.h>
-@class SPTracker;
+#import <SnowplowTracker/SPGDPRConfiguration.h>
 
-@interface RNSnowplowTracker : NSObject <RCTBridgeModule>
+@interface RNUtilities : NSObject
 
-@property (nonatomic, strong) SPTracker *tracker;
++ (NSDictionary *) removeNSNullFromDict:(NSDictionary *)trackerConfig;
+
++ (SPGdprProcessingBasis) getBasis:(NSString *)basis;
+
++ (NSMutableArray *) mkSDJArray:(NSArray<NSDictionary *> *)sdjArray;
 
 @end

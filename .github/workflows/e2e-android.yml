@@ -1,9 +1,6 @@
 name: e2e-android
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
 
 jobs:
@@ -48,9 +45,7 @@ jobs:
 
     - name: Prepare DemoApp for Micro
       working-directory: DemoApp
-      run: |
-        perl -i -pe "s/^.*protocol:\K.*/ \'http\'\,/" App.js
-        perl -i -pe "s/^.*endpoint:\K.*/ \'10.0.2.2:9090\'\,/" App.js
+      run: perl -i -pe "s/^.*endpoint:\K.*/ \'http:\/\/10.0.2.2:9090\'\,/" App.js
 
     # -- Tracker --
     - name: Use npm cache
@@ -82,7 +77,7 @@ jobs:
 
     - name: Install node modules for DemoApp
       working-directory: DemoApp
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile --network-timeout 100000
 
     # -- Emulator --
     - name: Get AOSP system image and create Android virtual device

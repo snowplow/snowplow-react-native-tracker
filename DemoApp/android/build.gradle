@@ -9,6 +9,7 @@ buildscript {
         ndkVersion = "20.1.5948944"
     }
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
@@ -30,7 +31,7 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
-
+        mavenCentral()
         google()
         jcenter()
         maven {

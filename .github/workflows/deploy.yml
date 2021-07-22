@@ -31,6 +31,9 @@ jobs:
     - name: Lint
       run: npm run lint
 
+    - name: Tests
+      run: npm run test
+
   version_check:
     runs-on: ubuntu-20.04
     outputs:

@@ -17,63 +17,281 @@
 export type HttpMethod = 'post' | 'get';
 
 /**
- * HttpProtocol type
+ * DevicePlatform type
  */
-export type HttpProtocol = 'https' | 'http';
+export type DevicePlatform = 'web' | 'mob' | 'pc' | 'srv' | 'app' | 'tv' | 'cnsl' | 'iot';
 
 /**
- * The Subject Data
+ * LogLevel type
  */
-export type SubjectData = {
+export type LogLevel = 'off' | 'error' | 'debug' | 'verbose';
+
+/**
+ * BasisForProsessing
+ */
+export type Basis = 'consent' | 'contract' | 'legal_obligation' | 'legitimate_interests' | 'public_task' | 'vital_interests';
+
+/**
+ * BufferOption
+ */
+export type BufferOption = 'single' | 'default' | 'large';
+
+/**
+ * ScreenSize
+ */
+export type ScreenSize = [number, number];
+
+/**
+ * SelfDescribing type
+ */
+export type SelfDescribing = {
+  /**
+   * Schema
+   */
+  schema: string;
+  /**
+   * Data
+   */
+  data: Record<string, unknown>;
+};
+
+/**
+ * EventContext type
+ */
+export type EventContext = SelfDescribing;
+
+/**
+ * NetworkConfiguration
+ */
+export interface NetworkConfiguration {
+  /**
+   * The collector endpoint
+   *  - if the protocol is not included it defaults to https
+   */
+  endpoint: string;
+
+  /**
+   * The Http Method to use when sending events to the collector
+   * @defaultValue 'post'
+   */
+  method?: HttpMethod;
+}
+
+
+/**
+ * TrackerConfiguration
+ */
+export interface TrackerConfiguration {
+  /**
+   * Identifier of the app.
+   */
+  appId?: string;
+  /**
+   * The device platform the tracker runs on.
+   * @defaultValue 'mob'
+   */
+  devicePlatform?: DevicePlatform;
+  /**
+   * Whether payload JSON data should be base64 encoded.
+   * @defaultValue true
+   */
+  base64Encoding?: boolean;
+  /**
+   * The log level of tracker logs.
+   * @defaultValue 'off'
+   */
+  logLevel?: LogLevel;
+  /**
+   * Whether application context is attached to tracked events.
+   * @defaultValue true
+   */
+  applicationContext?: boolean;
+  /**
+   * Whether platform context is attached to tracked events.
+   * @defaultValue true
+   */
+  platformContext?: boolean;
+  /**
+   * Whether geo-location context is attached to tracked events.
+   * @defaultValue false
+   */
+  geoLocationContext?: boolean;
+  /**
+   * Whether session context is attached to tracked events.
+   * @defaultValue true
+   */
+  sessionContext?: boolean;
+  /**
+   * Whether screen context is attached to tracked events.
+   * @defaultValue true
+   */
+  screenContext?: boolean;
+  /**
+   * Whether enable automatic tracking of ScreenView events.
+   * @defaultValue true
+   */
+  screenViewAutotracking?: boolean;
+  /**
+   * Whether enable automatic tracking of background and foreground transitions.
+   * @defaultValue false
+   */
+  lifecycleAutotracking?: boolean;
+  /**
+   * Whether enable automatic tracking of install event.
+   * @defaultValue true
+   */
+  installAutotracking?: boolean;
+  /**
+   * Whether enable crash reporting.
+   * @defaultValue true
+   */
+  exceptionAutotracking?: boolean;
+  /**
+   * Whether enable diagnostic reporting.
+   * @defaultValue false
+   */
+  diagnosticAutotracking?: boolean;
+}
+
+
+/**
+ * SessionConfiguration
+ */
+export interface SessionConfiguration {
+  /**
+   * The amount of time in seconds before the session id is updated while the app is in the foreground
+   * @defaultValue 1800
+   */
+  foregroundTimeout: number;
+  /**
+   * The amount of time in seconds before the session id is updated while the app is in the background
+   * @defaultValue 1800
+   */
+  backgroundTimeout: number;
+}
+
+/**
+ * EmitterConfiguration
+ */
+export interface EmitterConfiguration {
+  /**
+   * The buffer option for post requests.
+   * @defaultValue 'single'
+   */
+  bufferOption?: BufferOption;
+
+  /**
+   * Maximum number of events collected from the EventStore to be sent in a request.
+   * @defaultValue 150
+   */
+  emitRange?: number;
+
+  /**
+   *Maximum number of threads working in parallel in the tracker to send requests.
+   * @defaultValue 15
+   */
+  threadPoolSize?: number;
+
+  /**
+   * Maximum amount of bytes allowed to be sent in a payload in a POST request.
+   * @defaultValue 40000
+   */
+  byteLimitPost?: number;
+
+  /**
+   * Maximum amount of bytes allowed to be sent in a payload in a GET request.
+   * @defaultValue 40000
+   */
+  byteLimitGet?: number;
+}
+
+/**
+ * SubjectConfiguration
+ */
+export interface SubjectConfiguration {
+  [index: string]: unknown;
   /**
    * user id
    */
-  userId?: string;
-  /**
-   * screen width (integer)
-   */
-  screenWidth?: number;
-  /**
-   * screen height (integer)
-   */
-  screenHeight?: number;
-  /**
-   * color depth (integer)
-   */
-  colorDepth?: number;
-  /**
-   * timezone
-   */
-  timezone?: string;
-  /**
-   * language
-   */
-  language?: string;
-  /**
-   * IP address
-   */
-  ipAddress?: string;
-  /**
-   * user agent
-   */
-  useragent?: string;
+  userId?: string | null;
   /**
    * network user id (UUIDv4)
    */
-  networkUserId?: string;
+  networkUserId?: string | null;
   /**
    * domain user id
    */
-  domainUserId?: string;
+  domainUserId?: string | null;
   /**
-   * viewport width (integer)
+   * The custom user-agent. It overrides the user-agent used by default.
    */
-  viewportWidth?: number;
+  useragent?: string | null;
   /**
-   * viewport height (integer)
+   * IP address
    */
-  viewportHeight?: number;
-};
+  ipAddress?: string | null;
+  /**
+   * The timezone label
+   */
+  timezone?: string | null;
+  /**
+   * The language set in the device
+   */
+  language?: string | null;
+  /**
+   * The screen resolution
+   */
+  screenResolution?: ScreenSize | null;
+  /**
+   * The screen viewport size
+   */
+  screenViewport?: ScreenSize | null;
+  /**
+   * color depth (integer)
+   */
+  colorDepth?: number | null;
+}
+
+/**
+ * GdprConfiguration
+ */
+export interface GdprConfiguration {
+  /**
+   * Basis for processing
+   */
+  basisForProcessing: Basis;
+  /**
+   * ID of a GDPR basis document.
+   */
+  documentId: string;
+  /**
+   * Version of the document.
+   */
+  documentVersion: string;
+  /**
+   * Description of the document.
+   */
+  documentDescription: string;
+}
+
+/**
+ * The TrackerControllerConfiguration
+ */
+export interface TrackerControllerConfiguration {
+  trackerConfig?: TrackerConfiguration,
+  sessionConfig?: SessionConfiguration,
+  emitterConfig?: EmitterConfiguration,
+  subjectConfig?: SubjectConfiguration,
+  gdprConfig?: GdprConfiguration,
+}
+
+/**
+ * The TrackerConfiguration
+ */
+export interface InitTrackerConfiguration extends TrackerControllerConfiguration {
+  namespace: string,
+  networkConfig: NetworkConfiguration
+}
 
 /**
  * ScreenView event properties
@@ -83,29 +301,31 @@ export type ScreenViewProps = {
   /**
    * The name of the screen viewed
    */
-  screenName: string;
+  name: string;
+  /**
+   * The id(UUID) of screen that was viewed
+   */
+  id?: string;
   /**
    * The type of screen that was viewed
    */
-  screenType?: string;
+  type?: string;
+  /**
+   * The name of the previous screen that was viewed
+   */
+  previousName?: string;
+   /**
+   * The id(UUID) of the previous screen that was viewed
+   */
+  previousId?: string;
+  /**
+   * The type of the previous screen that was viewed
+   */
+  previousType?: string;
   /**
    * The type of transition that led to the screen being viewed
    */
   transitionType?: string;
-};
-
-/**
- * SelfDescribing event properties
- */
-export type SelfDescribingProps = {
-  /**
-   * The schema of the event
-   */
-  schema: string;
-  /**
-   * The event data
-   */
-  data: Record<string, unknown>;
 };
 
 /**
@@ -149,21 +369,147 @@ export type PageViewProps = {
   /**
    * The referrer URL
    */
-  pageReferrer?: string;
+  referrer?: string;
 };
 
 /**
- * Context type
+ * Timing event properties
  */
-export type EventContext = {
+export type TimingProps = {
   /**
-   * The context schema
+   * The timing category
    */
-  schema: string;
+  category: string;
   /**
-   * The context data
+   * The timing variable
    */
-  data: Record<string, unknown>;
+  variable: string;
+  /**
+   * The time
+   */
+  timing: number;
+  /**
+   * The timing label
+   */
+  label?: string;
+};
+
+/**
+ * ConsentDocument properties
+ */
+export interface ConsentDocument {
+  /**
+   * The consent document id
+   */
+  documentId: string;
+  /**
+   * The consent document version
+   */
+  version: string;
+  /**
+   * The consent document name
+   */
+  name?: string;
+  /**
+   * The consent document description
+   */
+  documentDescription?: string;
+}
+
+/**
+ * ConsentGranted event properties
+ */
+export interface ConsentGrantedProps extends ConsentDocument {
+  /**
+   * The expiry (date-time string, e.g.: '2022-01-01T00:00:00Z')
+   */
+  expiry: string;
+}
+
+/**
+ * ConsentWithdrawn event properties
+ */
+export interface ConsentWithdrawnProps extends ConsentDocument {
+  /**
+   * Whether user opts out of all data collection
+   */
+  all: boolean;
+}
+
+/**
+ * EcommerceItem
+ */
+export type EcommerceItem = {
+  /*
+   * The item sku
+   */
+  sku: string;
+  /*
+   * The item price
+   */
+  price: number;
+  /*
+   * The item quantity
+   */
+  quantity: number;
+  /*
+   * The item name
+   */
+  name?: string;
+  /*
+   * The item category
+   */
+  category?: string;
+  /*
+   * The item quantity
+   */
+  currency?: string;
+};
+
+/**
+ * EcommerceTransaction event properties
+ */
+export type EcommerceTransactionProps = {
+  /*
+   * The order ID of the transaction
+   */
+  orderId: string;
+  /*
+   * The total value of the transaction
+   */
+  totalValue: number;
+  /*
+   * The items(array) purchased in the transaction
+   */
+  items: EcommerceItem[];
+  /*
+   * The transaction affiliation
+   */
+  affiliation?: string;
+  /*
+   * The tax value of the transaction
+   */
+  taxValue?: number;
+  /*
+   * The shipping value of the transaction
+   */
+  shipping?: number;
+  /*
+   * The city of the transaction
+   */
+  city?: string;
+  /*
+   * The state(US) of the transaction
+   */
+  state?: string;
+  /*
+   * The country of the transaction
+   */
+  country?: string;
+  /*
+   * The currency of the transaction
+   */
+  currency?: string;
 };
 
 /**
@@ -171,155 +517,167 @@ export type EventContext = {
  */
 export type ReactNativeTracker = {
   /**
-   * Sets or updates subject data
+   * Tracks a self-descibing event
    *
-   * @param argmap - The subject data to be set or updated
+   * @param argmap - The self-describing event properties
+   * @param contexts - The array of event contexts
    */
-  readonly setSubjectData: (argmap: SubjectData) => Promise<void>;
+  readonly trackSelfDescribingEvent: (
+    argmap: SelfDescribing,
+    contexts?: EventContext[]
+  ) => Promise<void>;
 
   /**
    * Tracks a screen-view event
    *
    * @param argmap - The screen-view event's properties
-   * @param ctxt - The array of event contexts
+   * @param contexts - The array of event contexts
    */
   readonly trackScreenViewEvent: (
     argmap: ScreenViewProps,
-    ctxt?: EventContext[]
-  ) => Promise<void>;
-
-  /**
-   * Tracks a self-descibing event
-   *
-   * @param argmap - The self-describing event properties
-   * @param ctxt - The array of event contexts
-   */
-  readonly trackSelfDescribingEvent: (
-    argmap: SelfDescribingProps,
-    ctxt: EventContext[]
+    contexts?: EventContext[]
   ) => Promise<void>;
 
   /**
    * Tracks a structured event
    *
    * @param argmap - The structured event properties
-   * @param ctxt - The array of event contexts
+   * @param contexts - The array of event contexts
    */
   readonly trackStructuredEvent: (
     argmap: StructuredProps,
-    ctxt: EventContext[]
+    contexts?: EventContext[]
   ) => Promise<void>;
 
   /**
    * Tracks a page-view event
    *
    * @param argmap - The page-view event properties
-   * @param ctxt - The array of event contexts
+   * @param contexts - The array of event contexts
    */
   readonly trackPageViewEvent: (
     argmap: PageViewProps,
-    ctxt: EventContext[]
+    contexts?: EventContext[]
   ) => Promise<void>;
+
+  /**
+   * Tracks a timing event
+   *
+   * @param argmap - The timing event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackTimingEvent: (
+    argmap: TimingProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a consent-granted event
+   *
+   * @param argmap - The consent-granted event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackConsentGrantedEvent: (
+    argmap: ConsentGrantedProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a consent-withdrawn event
+   *
+   * @param argmap - The consent-withdrawn event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackConsentWithdrawnEvent: (
+    argmap: ConsentWithdrawnProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks an ecommerce-transaction event
+   *
+   * @param argmap - The ecommerce-transaction event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackEcommerceTransactionEvent: (
+    argmap: EcommerceTransactionProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Sets the userId of the tracker subject
+   *
+   * @param newUid - The new userId
+   */
+  readonly setUserId: (newUid: string | null) => Promise<void>;
+
+  /**
+   * Sets the networkUserId of the tracker subject
+   *
+   * @param newNuid - The new networkUserId
+   */
+  readonly setNetworkUserId: (newNuid: string | null) => Promise<void>;
+
+  /**
+   * Sets the domainUserId of the tracker subject
+   *
+   * @param newDuid - The new domainUserId
+   */
+  readonly setDomainUserId: (newDuid: string | null) => Promise<void>;
+
+  /**
+   * Sets the ipAddress of the tracker subject
+   *
+   * @param newIp - The new ipAddress
+   */
+  readonly setIpAddress: (newIp: string | null) => Promise<void>;
+
+  /**
+   * Sets the useragent of the tracker subject
+   *
+   * @param newUagent - The new useragent
+   */
+  readonly setUseragent: (newUagent: string | null) => Promise<void>;
+
+  /**
+   * Sets the timezone of the tracker subject
+   *
+   * @param newTz - The new timezone
+   */
+  readonly setTimezone: (newTz: string | null) => Promise<void>;
+
+  /**
+   * Sets the language of the tracker subject
+   *
+   * @param newLang - The new language
+   */
+  readonly setLanguage: (newLang: string | null) => Promise<void>;
+
+  /**
+   * Sets the screenResolution of the tracker subject
+   *
+   * @param newRes - The new screenResolution
+   */
+  readonly setScreenResolution: (newRes: ScreenSize | null) => Promise<void>;
+
+  /**
+   * Sets the screenViewport of the tracker subject
+   *
+   * @param newView - The new screenViewport
+   */
+  readonly setScreenViewport: (newView: ScreenSize | null) => Promise<void>;
+
+  /**
+   * Sets the colorDepth of the tracker subject
+   *
+   * @param newColorD - The new colorDepth
+   */
+  readonly setColorDepth: (newLang: number | null) => Promise<void>;
+
+  /**
+   * Sets subject data
+   *
+   * @param config - The new subject data
+   */
+  readonly setSubjectData: (config: SubjectConfiguration) => Promise<void>;
 };
-
-/**
- * The optional configuration parameters of the tracker
- */
-export interface OptTrackerConfig {
-  /**
-   * The HTTP method used
-   * @defaultValue 'post'
-   */
-  method?: HttpMethod;
-
-  /**
-   * The HTTP protocol used
-   * @defaultValue 'https'
-   */
-  protocol?: HttpProtocol;
-
-  /**
-   * Should event properties be base64 encoded where supported
-   * @defaultValue true
-   */
-  base64Encoded?: boolean;
-
-  /**
-   * Whether platform context are sent with all events
-   * @defaultValue true
-   */
-  platformContext?: boolean;
-
-  /**
-   * Whether application context are sent with all events
-   * @defaultValue false
-   */
-  applicationContext?: boolean;
-
-  /**
-   * Whether to automatically track transition from foreground to background
-   * @defaultValue false
-   */
-  lifecycleEvents?: boolean;
-
-  /**
-   * Whether to send a screen context (info for current screen) to events
-   * @defaultValue true
-   */
-  screenContext?: boolean;
-
-  /**
-   * whether to add a session context to events
-   * @defaultValue true
-   */
-  sessionContext?: boolean;
-
-  /**
-   * The session foreground timeout
-   * @defaultValue 600
-   */
-  foregroundTimeout?: number;
-
-  /**
-   * The session background timeout
-   * @defaultValue 300
-   */
-  backgroundTimeout?: number;
-
-  /**
-   * The session check interval
-   * @defaultValue 15
-   */
-  checkInterval?: number;
-
-  /**
-   * Whether install events will be tracked
-   * @defaultValue false
-   */
-  installTracking?: boolean;
-}
-
-/**
- * The configuration used for creating the tracker
- */
-export interface TrackerConfig extends OptTrackerConfig {
-  /**
-   * The collector endpoint
-   */
-  endpoint: string;
-
-  /**
-   * The app ID
-   */
-  appId: string;
-}
-
-/**
- * The tracker configuration
- */
-export interface InitTrackerConfig extends TrackerConfig {
-  /**
-   * The tracker namespace
-   */
-  namespace: string;
-}

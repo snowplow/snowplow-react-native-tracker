@@ -1,9 +1,6 @@
 name: e2e-ios
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
 
 jobs:
@@ -42,9 +39,7 @@ jobs:
 
     - name: Prepare DemoApp for Micro
       working-directory: DemoApp
-      run: |
-        perl -i -pe "s/^.*protocol:\K.*/ \'http\'\,/" App.js
-        perl -i -pe "s/^.*endpoint:\K.*/ \'0.0.0.0:9090\'\,/" App.js
+      run: perl -i -pe "s/^.*endpoint:\K.*/ \'http:\/\/0.0.0.0:9090\'\,/" App.js
 
     # -- Tracker --
     - name: Use npm cache
@@ -76,7 +71,7 @@ jobs:
 
     - name: Install node modules for DemoApp
       working-directory: DemoApp
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile --network-timeout 100000
 
     # -- Simulator --
     - name: Install applesimutils

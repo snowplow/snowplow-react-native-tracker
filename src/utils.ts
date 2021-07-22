@@ -13,7 +13,7 @@
 
 'use strict';
 
-/*
+/**
  * Returns a function that accepts a function as its argument and subscribes
  * that function to aPromise's fullfillment,
  * and errHandle to aPromise's rejection.
@@ -30,18 +30,29 @@ function safeWait(aPromise: Promise<void>, errHandle: ((err: Error) => void)) {
   });
 }
 
-/*
+/**
  * Handles an error.
  *
  * @param err - The error to be handled.
  */
 function errorHandler(err: Error): void {
   if (__DEV__) {
-    console.warn(err.message);
+    console.warn('SnowplowTracker:' + err.message);
   }
+}
+
+/**
+ * Helper to check whether its argument is of object type
+ *
+ * @param x - The argument to check.
+ * @returns - A boolean
+ */
+function isObject<Type>(x: Type): boolean {
+  return Object.prototype.toString.call(x) === '[object Object]';
 }
 
 export {
   safeWait,
   errorHandler,
+  isObject
 };

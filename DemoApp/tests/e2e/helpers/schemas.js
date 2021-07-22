@@ -18,6 +18,15 @@ const screenView =
   'iglu:com.snowplowanalytics.mobile/screen_view/jsonschema/1-0-0';
 const adImpression =
   'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0';
+const linkClick =
+  'iglu:com.snowplowanalytics.snowplow/link_click/jsonschema/1-0-1';
+const consentWithdrawn =
+  'iglu:com.snowplowanalytics.snowplow/consent_withdrawn/jsonschema/1-0-0';
+const consentGranted =
+  'iglu:com.snowplowanalytics.snowplow/consent_granted/jsonschema/1-0-0';
+const consentDoc =
+  'iglu:com.snowplowanalytics.snowplow/consent_document/jsonschema/1-0-0';
+const timing = 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0';
 
 // Context schemas
 const mobileApplicationContext =
@@ -34,6 +43,11 @@ export {
   appInstall,
   screenView,
   adImpression,
+  linkClick,
+  consentWithdrawn,
+  consentGranted,
+  consentDoc,
+  timing,
   mobileApplicationContext,
   mobileContext,
   mobileScreenContext,

@@ -9,14 +9,14 @@ Pod::Spec.new do |s|
   s.homepage     = "github.com/snowplow/snowplow-react-native-tracker"
   s.license      = "Apache-2.0"
   s.author             = { "author" => "author@domain.cn" }
-  s.platform     = :ios, "7.0"
+  s.platform     = :ios, "9.0"
   s.source       = { :git => "https://github.com/author/RNSnowplowTracker.git", :tag => "master" }
-  s.source_files  = "*.{h,m}"
+  s.source_files  = "**/*.{h,m}"
   s.requires_arc = true
 
 
   s.dependency "React-Core"
-  s.dependency "SnowplowTracker", "~> 1.7.0"
+  s.dependency "SnowplowTracker", "~> 2.2"
   #s.dependency "others"
 
 end

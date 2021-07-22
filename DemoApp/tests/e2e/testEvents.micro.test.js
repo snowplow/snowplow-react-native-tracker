@@ -18,85 +18,30 @@ test('no bad events', async () => {
   await commands.assertNoBadEvents();
 });
 
-test('application_install event', async () => {
-  await commands.eventsWithSchema(schemas.appInstall, 1);
-});
-
 test('number of screen_view events', async () => {
-  await commands.eventsWithSchema(schemas.screenView, 7);
+  await commands.eventsWithSchema(schemas.screenView, 8);
 });
 
 test('number of structured events', async () => {
-  await commands.eventsWithEventType('struct', 4);
+  await commands.eventsWithEventType('struct', 5);
 });
 
 test('number of page_view events', async () => {
-  await commands.eventsWithEventType('page_view', 8);
+  await commands.eventsWithEventType('page_view', 4);
 });
 
-test('self-describing ad_impression event', async () => {
-  await commands.eventsWithProperties(
-    {
-      schema: schemas.adImpression,
-      values: {
-        impressionId: 'test_imp_id',
-      },
-      contexts: [
-        {schema: schemas.mobileApplicationContext},
-        {schema: schemas.mobileContext},
-        {schema: schemas.mobileScreenContext},
-        {schema: schemas.clientSessionContext},
-      ],
-    },
-    1,
-  );
-});
-
-test('contexts in all screen_view events', async () => {
-  await commands.eventsWithProperties(
-    {
-      schema: schemas.screenView,
-      contexts: [
-        {schema: schemas.mobileApplicationContext},
-        {schema: schemas.mobileContext},
-        {schema: schemas.mobileScreenContext},
-        {schema: schemas.clientSessionContext},
-      ],
-    },
-    7,
-  );
-});
-
-test('contexts in all struct events', async () => {
-  await commands.eventsWithProperties(
-    {
-      parameters: {
-        event: 'struct',
-      },
-      contexts: [
-        {schema: schemas.mobileApplicationContext},
-        {schema: schemas.mobileContext},
-        {schema: schemas.mobileScreenContext},
-        {schema: schemas.clientSessionContext},
-      ],
-    },
-    4,
-  );
-});
-
-test('screen_view with gdpr context', async () => {
+test('screen_view with adImpression context', async () => {
   await commands.eventsWithProperties(
     {
       schema: schemas.screenView,
       values: {
-        name: 'withAContext',
-        previousName: 'allOptionalsUndefined',
+        name: 'withContext and screenId',
       },
       contexts: [
         {
-          schema: schemas.gdprContext,
+          schema: schemas.adImpression,
           data: {
-            basisForProcessing: 'consent',
+            impressionId: 'test_imp_id',
           },
         },
       ],
@@ -105,32 +50,142 @@ test('screen_view with gdpr context', async () => {
   );
 });
 
-test('pv events before resetting the Subject', async () => {
+test('self-describing ad_impression event', async () => {
   await commands.eventsWithProperties(
     {
-      parameters: {
-        event: 'page_view',
-        user_id: 'test-userId-0',
-        os_timezone: 'Europe/London',
-        br_lang: 'fr',
-        user_ipaddress: '123.45.67.89',
-        useragent: 'some-user-agent-string',
-        network_userid: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
-        domain_userid: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',
-        dvce_screenwidth: 123,
-        dvce_screenheight: 456,
-        br_colordepth: '20',
-        br_viewwidth: 123,
-        br_viewheight: 456,
+      schema: schemas.linkClick,
+      values: {
+        targetUrl: 'test.test',
       },
       contexts: [
         {schema: schemas.mobileApplicationContext},
         {schema: schemas.mobileContext},
         {schema: schemas.mobileScreenContext},
         {schema: schemas.clientSessionContext},
+        {schema: schemas.gdprContext},
       ],
     },
-    4,
+    1,
+  );
+});
+
+test('consentWithdrawn event', async () => {
+  await commands.eventsWithProperties(
+    {
+      schema: schemas.consentWithdrawn,
+      values: {
+        all: true,
+      },
+      contexts: [
+        {
+          schema: schemas.consentDoc,
+          data: {
+            id: '0987',
+            version: '0.2.0',
+          },
+        },
+      ],
+    },
+    1,
+  );
+});
+
+test('consentGranted event', async () => {
+  await commands.eventsWithProperties(
+    {
+      schema: schemas.consentGranted,
+      values: {
+        expiry: '2022-01-01T00:00:00Z',
+      },
+      contexts: [
+        {
+          schema: schemas.consentDoc,
+          data: {
+            id: '0123',
+            version: '0.1.0',
+          },
+        },
+      ],
+    },
+    1,
+  );
+});
+
+test('timing event', async () => {
+  await commands.eventsWithProperties(
+    {
+      schema: schemas.timing,
+      values: {
+        variable: 'testTimingVariable',
+        category: 'testTimingCategory',
+        timing: 10,
+      },
+    },
+    1,
+  );
+});
+
+test('transaction item event', async () => {
+  await commands.eventsWithProperties(
+    {
+      parameters: {
+        event: 'transaction_item',
+        ti_orderid: '0000',
+        ti_sku: '123',
+        ti_price: 5,
+        ti_quantity: 2,
+      },
+    },
+    1,
+  );
+});
+
+test('ecommerce transaction event', async () => {
+  await commands.eventsWithProperties(
+    {
+      parameters: {
+        event: 'transaction',
+        tr_orderid: '0000',
+        tr_total: 10,
+      },
+    },
+    1,
+  );
+});
+
+test('common in all first tracker events', async () => {
+  await commands.eventsWithProperties(
+    {
+      parameters: {
+        app_id: 'DemoAppId',
+        platform: 'iot',
+        name_tracker: 'sp1',
+      },
+      contexts: [
+        {schema: schemas.mobileApplicationContext},
+        {schema: schemas.mobileContext},
+        {schema: schemas.mobileScreenContext},
+        {schema: schemas.clientSessionContext},
+        {
+          schema: schemas.gdprContext,
+          data: {
+            basisForProcessing: 'consent',
+            documentDescription: 'test gdpr document',
+            documentId: 'docId',
+            documentVersion: '0.0.1',
+          },
+        },
+        {
+          schema: schemas.adImpression,
+          data: {impressionId: 'test_global_contexts_0'},
+        },
+        {
+          schema: schemas.adImpression,
+          data: {impressionId: 'test_global_contexts_1'},
+        },
+      ],
+    },
+    21,
   );
 });
 
@@ -138,16 +193,26 @@ test('events after resetting the Subject', async () => {
   await commands.eventsWithProperties(
     {
       parameters: {
-        event: 'page_view',
-        user_id: 'test-userId-1',
-        os_timezone: null,
-        br_lang: null,
-        domain_userid: null,
-        dvce_screenwidth: 456,
-        dvce_screenheight: 789,
-        br_colordepth: '20',
-        br_viewwidth: 456,
-        br_viewheight: 789,
+        user_id: 'nextTester',
+        dvce_screenwidth: 300,
+        dvce_screenheight: 300,
+        br_lang: 'es',
+        os_timezone: 'Europe/London',
+      },
+      schema: schemas.screenView,
+      values: {
+        name: 'afterSetSubjectTestSV',
+      },
+    },
+    1,
+  );
+});
+
+test('second tracker events', async () => {
+  await commands.eventsWithProperties(
+    {
+      parameters: {
+        name_tracker: 'sp2',
       },
       contexts: [
         {schema: schemas.mobileApplicationContext},
@@ -156,6 +221,6 @@ test('events after resetting the Subject', async () => {
         {schema: schemas.clientSessionContext},
       ],
     },
-    4,
+    2,
   );
 });

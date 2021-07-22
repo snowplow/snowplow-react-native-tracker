@@ -15,57 +15,134 @@
 
 import * as api from './api';
 import { safeWait, errorHandler } from './utils';
+import type {
+  NetworkConfiguration,
+  TrackerControllerConfiguration,
+  ReactNativeTracker
+} from './types';
 
-import type { TrackerConfig, ReactNativeTracker } from './types';
-
-/*
+/**
  * Creates a React Native Tracker object
  *
- * @param namespace - The tracker namespace
- * @param config - The configuration to be used for the tracker
+ * @param namespace {string} - The tracker namespace
+ * @param networkConfig {Object} - The network configuration
+ * @param control {Array} - The tracker controller configuration
  * @returns The tracker object
  */
 function createTracker(
   namespace: string,
-  config: TrackerConfig
+  networkConfig: NetworkConfiguration,
+  controllerConfig: TrackerControllerConfiguration = {}
 ): ReactNativeTracker {
   // initTrackerPromise
   const initTrackerPromise: Promise<void> = Promise.resolve(
-    api.initializeTracker({
-      ...config,
+    api.createTracker({
       namespace,
+      networkConfig,
+      ...controllerConfig
     })
   );
 
   // mkMethod creates methods subscribed to the initTrackerPromise
   const mkMethod = safeWait(initTrackerPromise, errorHandler);
 
-  // tracker methods
-  const setSubjectData = mkMethod(api.setSubjectData);
-  const trackScreenViewEvent = mkMethod(api.trackScreenViewEvent);
-  const trackSelfDescribingEvent = mkMethod(api.trackSelfDescribingEvent);
-  const trackStructuredEvent = mkMethod(api.trackStructuredEvent);
-  const trackPageViewEvent = mkMethod(api.trackPageViewEvent);
+  // track methods
+  const trackSelfDescribingEvent = mkMethod(api.trackSelfDescribingEvent(namespace));
+  const trackScreenViewEvent = mkMethod(api.trackScreenViewEvent(namespace));
+  const trackStructuredEvent = mkMethod(api.trackStructuredEvent(namespace));
+  const trackPageViewEvent = mkMethod(api.trackPageViewEvent(namespace));
+  const trackTimingEvent = mkMethod(api.trackTimingEvent(namespace));
+  const trackConsentGrantedEvent = mkMethod(api.trackConsentGrantedEvent(namespace));
+  const trackConsentWithdrawnEvent = mkMethod(api.trackConsentWithdrawnEvent(namespace));
+  const trackEcommerceTransactionEvent = mkMethod(api.trackEcommerceTransactionEvent(namespace));
+  // setters
+  const setUserId = mkMethod(api.setUserId(namespace));
+  const setNetworkUserId = mkMethod(api.setNetworkUserId(namespace));
+  const setDomainUserId = mkMethod(api.setDomainUserId(namespace));
+  const setIpAddress = mkMethod(api.setIpAddress(namespace));
+  const setUseragent = mkMethod(api.setUseragent(namespace));
+  const setTimezone = mkMethod(api.setTimezone(namespace));
+  const setLanguage = mkMethod(api.setLanguage(namespace));
+  const setScreenResolution = mkMethod(api.setScreenResolution(namespace));
+  const setScreenViewport = mkMethod(api.setScreenViewport(namespace));
+  const setColorDepth = mkMethod(api.setColorDepth(namespace));
+  const setSubjectData = mkMethod(api.setSubjectData(namespace));
 
   return Object.freeze({
-    setSubjectData,
-    trackScreenViewEvent,
     trackSelfDescribingEvent,
+    trackScreenViewEvent,
     trackStructuredEvent,
     trackPageViewEvent,
+    trackTimingEvent,
+    trackConsentGrantedEvent,
+    trackConsentWithdrawnEvent,
+    trackEcommerceTransactionEvent,
+    setUserId,
+    setNetworkUserId,
+    setDomainUserId,
+    setIpAddress,
+    setUseragent,
+    setTimezone,
+    setLanguage,
+    setScreenResolution,
+    setScreenViewport,
+    setColorDepth,
+    setSubjectData,
   });
 }
 
-export { createTracker };
+/**
+ * Removes a tracker given its namespace
+ *
+ * @param trackerNamespace {string}
+ * @returns - A boolean promise
+ */
+function removeTracker(trackerNamespace: string): Promise<boolean> {
+  return <Promise<boolean>>api.removeTracker(trackerNamespace)
+    .catch((e) => errorHandler(e));
+}
+
+/**
+ * Removes all trackers
+ *
+ * @returns - A boolean promise
+ */
+function removeAllTrackers(): Promise<boolean> {
+  return <Promise<boolean>>api.removeAllTrackers()
+    .catch((e) => errorHandler(e));
+}
+
+
+export {
+  createTracker,
+  removeTracker,
+  removeAllTrackers,
+};
+
 export type {
   ReactNativeTracker,
-  TrackerConfig,
-  HttpMethod,
-  HttpProtocol,
-  SubjectData,
+  TrackerControllerConfiguration,
+  NetworkConfiguration,
+  TrackerConfiguration,
+  SessionConfiguration,
+  EmitterConfiguration,
+  SubjectConfiguration,
+  GdprConfiguration,
+  SelfDescribing,
+  EventContext,
   ScreenViewProps,
-  SelfDescribingProps,
   StructuredProps,
   PageViewProps,
-  EventContext
+  TimingProps,
+  ConsentGrantedProps,
+  ConsentWithdrawnProps,
+  EcommerceTransactionProps,
+  EcommerceItem,
+  ConsentDocument,
+  HttpMethod,
+  DevicePlatform,
+  LogLevel,
+  Basis,
+  BufferOption,
+  ScreenSize,
 } from './types';

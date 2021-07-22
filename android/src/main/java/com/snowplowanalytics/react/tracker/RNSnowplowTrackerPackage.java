@@ -1,4 +1,3 @@
-
 package com.snowplowanalytics.react.tracker;
 
 import java.util.Arrays;

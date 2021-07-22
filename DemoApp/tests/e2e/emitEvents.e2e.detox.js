@@ -18,6 +18,9 @@ describe('Example', () => {
     await commands.resetMicro();
   });
 
+  afterEach(async () => {
+    await commands.sleep(1000);
+  });
   afterAll(async () => {
     await commands.sleep(5000);
   });
@@ -40,7 +43,7 @@ describe('Example', () => {
     await element(by.label('testSelfDesc')).tap();
   });
 
-  it('should tap Stuctured Button', async () => {
+  it('should tap Structured Button', async () => {
     await waitFor(element(by.label('testStruct')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
@@ -58,6 +61,15 @@ describe('Example', () => {
     await element(by.label('testPageView')).tap();
   });
 
+  it('should tap Second tracker Button', async () => {
+    await waitFor(element(by.label('testSecTracker')))
+      .toBeVisible()
+      .whileElement(by.id('scrollView'))
+      .scroll(50, 'down');
+
+    await element(by.label('testSecTracker')).tap();
+  });
+
   it('should tap Subject Button', async () => {
     await waitFor(element(by.label('testSetSubject')))
       .toBeVisible()
@@ -65,14 +77,5 @@ describe('Example', () => {
       .scroll(50, 'down');
 
     await element(by.label('testSetSubject')).tap();
-  });
-
-  it('should tap Page-view Button after SetSubject', async () => {
-    await waitFor(element(by.label('testPageView')))
-      .toBeVisible()
-      .whileElement(by.id('scrollView'))
-      .scroll(50, 'up');
-
-    await element(by.label('testPageView')).tap();
   });
 });
