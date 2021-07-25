@@ -19,6 +19,7 @@
 //
 
 #import "RNConfigUtils.h"
+#import "RNTrackerVersion.h"
 #import "RNUtilities.h"
 
 #import <Foundation/Foundation.h>
@@ -38,6 +39,7 @@
 
 + (SPTrackerConfiguration *) mkTrackerConfig:(NSDictionary *) trackerConfig {
     SPTrackerConfiguration *trackerConfiguration = [SPTrackerConfiguration new];
+    trackerConfiguration.trackerVersionSuffix = kRNTrackerVersion;
 
     NSString *appId = [trackerConfig sp_stringForKey:@"appId" defaultValue:nil];
     if (appId) {

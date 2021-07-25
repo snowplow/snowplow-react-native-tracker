@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.snowplowanalytics.react.util.TrackerVersion;
 import com.snowplowanalytics.react.util.EventUtil;
 
 public class ConfigUtil {
@@ -113,7 +114,8 @@ public class ConfigUtil {
                                                               ReactApplicationContext context) {
         String appId = trackerConfig.hasKey("appId") ? trackerConfig.getString("appId") : context.getPackageName();
 
-        TrackerConfiguration trackerConfiguration = new TrackerConfiguration(appId);
+        TrackerConfiguration trackerConfiguration = new TrackerConfiguration(appId)
+            .trackerVersionSuffix(TrackerVersion.RN_TRACKER_VERSION);
 
         if (trackerConfig.hasKey("devicePlatform")) {
             DevicePlatform devicePlatform = mkDevicePlatform(trackerConfig.getString("devicePlatform"));

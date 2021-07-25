@@ -26,7 +26,7 @@ jobs:
 
     - name: Install node modules for DemoApp
       working-directory: DemoApp
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile --network-timeout 100000
 
     - name: Lint
       run: npm run lint
@@ -50,15 +50,29 @@ jobs:
 
     - name: Get tag and tracker versions
       id: version
+      env:
+        IOS_VER_FILEPATH: 'ios/Util/RNTrackerVersion.m'
+        ANDR_VER_FILEPATH: 'android/src/main/java/com/snowplowanalytics/react/util/TrackerVersion.java'
       run: |
         echo ::set-output name=TAG_VERSION::${GITHUB_REF#refs/*/}
         echo "##[set-output name=RN_TRACKER_VERSION;]$(node -p "require('./package.json').version")"
+        echo "##[set-output name=RN_IOS_TRACKER_VERSION;]$(cat "${IOS_VER_FILEPATH}" | sed -n -e 's/^.*kRNTrackerVersion = @"rn-\(.*\)";/\1/p')"
+        echo "##[set-output name=RN_ANDROID_TRACKER_VERSION;]$(cat "${ANDR_VER_FILEPATH}" | sed -n -e 's/^.*RN_TRACKER_VERSION = "rn-\(.*\)";/\1/p')"
 
     - name: Fail if version mismatch
-      if: ${{ steps.version.outputs.TAG_VERSION != steps.version.outputs.RN_TRACKER_VERSION }}
       run: |
-        echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project (${{ steps.version.outputs.RN_TRACKER_VERSION }})"
-        exit 1
+        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ steps.version.outputs.RN_TRACKER_VERSION }}" ] ; then
+          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project (${{ steps.version.outputs.RN_TRACKER_VERSION }})"
+          exit 1
+        fi
+        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ steps.version.outputs.RN_IOS_TRACKER_VERSION }}" ] ; then
+          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project(ios) (${{ steps.version.outputs.RN_IOS_TRACKER_VERSION }})"
+          exit 1
+        fi
+        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ steps.version.outputs.RN_TRACKER_VERSION }}" ] ; then
+          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project(android) (${{ steps.version.outputs.RN_ANDR_TRACKER_VERSION }})"
+          exit 1
+        fi
 
   build_android:
     needs: ["test", "version_check"]
@@ -84,7 +98,7 @@ jobs:
     - name: Install node_modules
       working-directory: DemoApp
       run: |
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --network-timeout 100000
 
     - name: Build DemoApp
       working-directory: DemoApp/android
@@ -112,7 +126,7 @@ jobs:
     - name: Install node_modules
       working-directory: DemoApp
       run: |
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --network-timeout 100000
 
     - name: Install Pods
       working-directory: DemoApp/ios
