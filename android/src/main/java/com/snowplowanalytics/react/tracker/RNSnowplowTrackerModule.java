@@ -17,6 +17,8 @@ import com.snowplowanalytics.snowplow.configuration.RemoteConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SessionConfiguration;
 import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
+import com.snowplowanalytics.snowplow.configuration.GlobalContextsConfiguration;
+import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.controller.TrackerController;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.SelfDescribing;
@@ -106,6 +108,13 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                 ReadableMap gdprConfig = argmap.getMap("gdprConfig");
                 GdprConfiguration gdprConfiguration = ConfigUtil.mkGdprConfiguration(gdprConfig);
                 controllers.add(gdprConfiguration);
+            }
+
+            // GCConfiguration
+            if (argmap.hasKey("gcConfig")) {
+                ReadableArray gcConfig = argmap.getArray("gcConfig");
+                GlobalContextsConfiguration gcConfiguration = ConfigUtil.mkGCConfiguration(gcConfig);
+                controllers.add(gcConfiguration);
             }
 
             // create the tracker
@@ -332,6 +341,50 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void removeGlobalContexts(ReadableMap details,
+                                     Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            String tag = details.getString("removeTag");
+
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            trackerController.getGlobalContexts().remove(tag);
+            promise.resolve(true);
+
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void addGlobalContexts(ReadableMap details,
+                                  Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            ReadableMap gcArg = details.getMap("addGlobalContext");
+
+            String tag = gcArg.getString("tag");
+            ReadableArray globalContexts = gcArg.getArray("globalContexts") ;
+
+            List<SelfDescribingJson> staticContexts = new ArrayList<>();
+            for (int i = 0; i < globalContexts.size(); i++) {
+                SelfDescribingJson gContext = EventUtil.createSelfDescribingJson(globalContexts.getMap(i));
+                staticContexts.add(gContext);
+            }
+            GlobalContext gcStatic = new GlobalContext(staticContexts);
+
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            trackerController.getGlobalContexts().add(tag, gcStatic);
+            promise.resolve(true);
+
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void setUserId(ReadableMap details,
                           Promise promise) {
         try {
@@ -495,7 +548,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             String namespace = details.getString("tracker");
             TrackerController trackerController = Snowplow.getTracker(namespace);
 
-            if (details.isNull("screenResolution")) {
+            if (details.isNull("screenViewport")) {
                 trackerController.getSubject().setScreenViewPort(null);
             } else {
                 ReadableArray screenView = details.getArray("screenViewport");

@@ -493,3 +493,89 @@ describe('test isValidGdprConf', () => {
     expect(c.isValidGdprConf(testConf)).toBe(true);
   });
 });
+
+describe('test isValidGCConf', () => {
+  test('invalid - type', () => {
+    const testConf = {'tag': 'invalid'} as any;
+    expect(c.isValidGCConf(testConf)).toBe(false);
+  });
+
+  test('valid - empty array', () => {
+    const testConf = [] as any;
+    expect(c.isValidGCConf(testConf)).toBe(true);
+  });
+
+  test('invalid prop - invalid tag', () => {
+    const testConf = [
+      {
+        tag: undefined,
+        globalContexts: [
+          {
+            schema: 'testSchema',
+            data: {test: 'data'}
+          }
+        ]
+      }
+    ] as any;
+    expect(c.isValidGCConf(testConf)).toBe(false);
+  });
+
+  test('invalid prop - invalid globalContexts type', () => {
+    const testConf = [
+      {
+        tag: undefined,
+        globalContexts: {
+          schema: 'testSchema',
+          data: {test: 'data'}
+        }
+      }
+    ] as any;
+    expect(c.isValidGCConf(testConf)).toBe(false);
+  });
+
+  test('invalid prop - invalid globalContexts - invalid sdj', () => {
+    const testConf = [
+      {
+        tag: 'testGCTag',
+        globalContexts: [
+          {
+            data: {test: 'data'}
+          }
+        ]
+      }
+    ] as any;
+    expect(c.isValidGCConf(testConf)).toBe(false);
+  });
+
+  test('valid', () => {
+    const testConf = [
+      {
+        tag: 'testGCTag1',
+        globalContexts: [
+          {
+            schema: 'testSchema0',
+            data: {test: 'data'}
+          },
+          {
+            schema: 'testSchema1',
+            data: {test: 'data'}
+          },
+        ]
+      },
+      {
+        tag: 'testGCTag2',
+        globalContexts: [
+          {
+            schema: 'testSchema2',
+            data: {test: 'data'}
+          },
+          {
+            schema: 'testSchema3',
+            data: {test: 'data'}
+          },
+        ]
+      },
+    ] as any;
+    expect(c.isValidGCConf(testConf)).toBe(true);
+  });
+});

@@ -11,6 +11,8 @@ import com.snowplowanalytics.snowplow.configuration.RemoteConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SessionConfiguration;
 import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
+import com.snowplowanalytics.snowplow.configuration.GlobalContextsConfiguration;
+import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.tracker.DevicePlatform;
 import com.snowplowanalytics.snowplow.tracker.LogLevel;
@@ -309,4 +311,30 @@ public class ConfigUtil {
         return gdprConfiguration;
     }
 
+    public static GlobalContextsConfiguration mkGCConfiguration(ReadableArray gcConfig) {
+
+        HashMap contextGens = new HashMap<>();
+        for (int i = 0; i < gcConfig.size(); i++) {
+            ReadableMap gcMap = gcConfig.getMap(i);
+
+            String itag = gcMap.getString("tag");
+            ReadableArray globalContexts = gcMap.getArray("globalContexts");
+
+            List<SelfDescribingJson> staticContexts = new ArrayList<>();
+            for (int x = 0; x < globalContexts.size(); x++) {
+                SelfDescribingJson gContext = EventUtil.createSelfDescribingJson(globalContexts.getMap(x));
+                staticContexts.add(gContext);
+            }
+
+            GlobalContext gcStatic = new GlobalContext(staticContexts);
+
+            if (!contextGens.containsKey(itag)) {
+                contextGens.put(itag, gcStatic);
+            }
+        }
+
+        GlobalContextsConfiguration gcConfiguration = new GlobalContextsConfiguration(contextGens);
+
+        return gcConfiguration;
+    }
 }

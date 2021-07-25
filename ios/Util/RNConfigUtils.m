@@ -32,6 +32,7 @@
 #import <SnowplowTracker/SPEmitterConfiguration.h>
 #import <SnowplowTracker/SPSubjectConfiguration.h>
 #import <SnowplowTracker/SPGDPRConfiguration.h>
+#import <SnowplowTracker/SPGlobalContextsConfiguration.h>
 
 @implementation RNConfigUtils
 
@@ -173,6 +174,31 @@
     SPGDPRConfiguration *gdprConfiguration = [[SPGDPRConfiguration alloc] initWithBasis:[RNUtilities getBasis:basis] documentId:docId documentVersion:docVer documentDescription:docDesc];
 
     return gdprConfiguration;
+}
+
++ (SPGlobalContextsConfiguration *) mkGCConfig:(NSArray *) gcConfig {
+
+    SPGlobalContextsConfiguration *gcConfiguration = [[SPGlobalContextsConfiguration alloc] init];
+    //NSMutableDictionary *contextGens = [NSMutableDictionary dictionary];
+
+    for (NSDictionary *gcMap in gcConfig) {
+        NSString *itag = [gcMap objectForKey:@"tag"];
+        NSArray *globalContexts = [gcMap objectForKey:@"globalContexts"];
+
+        NSMutableArray *staticContexts = [NSMutableArray array];
+        for (NSDictionary *sdj in globalContexts) {
+            SPSelfDescribingJson *gContext = [[SPSelfDescribingJson alloc] initWithSchema:(NSString *)[sdj objectForKey:@"schema"]
+                                                                      andDictionary:(NSDictionary *)[sdj objectForKey:@"data"]];
+
+            [staticContexts addObject:gContext];
+        }
+
+        SPGlobalContext *gcStatic = [[SPGlobalContext alloc] initWithStaticContexts:(NSArray *)[staticContexts copy]];
+
+        [gcConfiguration addWithTag:itag contextGenerator:gcStatic];
+    }
+
+    return gcConfiguration;
 }
 
 @end

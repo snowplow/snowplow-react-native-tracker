@@ -14,7 +14,7 @@
 'use strict';
 
 import { RNSnowplowTracker } from './native';
-import { initValidate } from './configurations';
+import { initValidate, isValidGC } from './configurations';
 import { logMessages } from './constants';
 import * as tracker from './tracker';
 import * as subject from './subject';
@@ -31,6 +31,7 @@ import type {
   ConsentGrantedProps,
   ConsentWithdrawnProps,
   EcommerceTransactionProps,
+  GlobalContext,
   ScreenSize,
 } from './types';
 
@@ -191,6 +192,36 @@ function trackEcommerceTransactionEvent(namespace: string) {
 }
 
 /**
+ * Returns a function to remove global contexts by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to remove global contexts
+ */
+function removeGlobalContexts(namespace:string) {
+  return function (tag: string): Promise<void> {
+    if (typeof tag !== 'string') {
+      return Promise.reject(new Error(`${logMessages.removeGlobalContexts} ${logMessages.gcTagType}`));
+    }
+    return <Promise<void>>Promise.resolve(RNSnowplowTracker.removeGlobalContexts({tracker:namespace, removeTag: tag}));
+  };
+}
+
+/**
+ * Returns a function to add global contexts by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to add global contexts
+ */
+function addGlobalContexts(namespace:string) {
+  return function (gc: GlobalContext): Promise<void> {
+    if (!isValidGC(gc)) {
+      return Promise.reject(new Error(`${logMessages.addGlobalContexts} ${logMessages.gcType}`));
+    }
+    return <Promise<void>>Promise.resolve(RNSnowplowTracker.addGlobalContexts({tracker:namespace, addGlobalContext: gc}));
+  };
+}
+
+/**
  * Returns a function to set the subject userId
  *
  * @param namespace {string} - The tracker namespace
@@ -334,6 +365,8 @@ export {
   trackConsentGrantedEvent,
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
+  removeGlobalContexts,
+  addGlobalContexts,
   setUserId,
   setNetworkUserId,
   setDomainUserId,

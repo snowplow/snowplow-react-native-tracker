@@ -55,6 +55,9 @@ function createTracker(
   const trackConsentGrantedEvent = mkMethod(api.trackConsentGrantedEvent(namespace));
   const trackConsentWithdrawnEvent = mkMethod(api.trackConsentWithdrawnEvent(namespace));
   const trackEcommerceTransactionEvent = mkMethod(api.trackEcommerceTransactionEvent(namespace));
+  // Global Contexts
+  const removeGlobalContexts = mkMethod(api.removeGlobalContexts(namespace));
+  const addGlobalContexts = mkMethod(api.addGlobalContexts(namespace));
   // setters
   const setUserId = mkMethod(api.setUserId(namespace));
   const setNetworkUserId = mkMethod(api.setNetworkUserId(namespace));
@@ -77,6 +80,8 @@ function createTracker(
     trackConsentGrantedEvent,
     trackConsentWithdrawnEvent,
     trackEcommerceTransactionEvent,
+    removeGlobalContexts,
+    addGlobalContexts,
     setUserId,
     setNetworkUserId,
     setDomainUserId,
@@ -128,6 +133,7 @@ export type {
   EmitterConfiguration,
   SubjectConfiguration,
   GdprConfiguration,
+  GCConfiguration,
   SelfDescribing,
   EventContext,
   ScreenViewProps,
@@ -139,6 +145,7 @@ export type {
   EcommerceTransactionProps,
   EcommerceItem,
   ConsentDocument,
+  GlobalContext,
   HttpMethod,
   DevicePlatform,
   LogLevel,

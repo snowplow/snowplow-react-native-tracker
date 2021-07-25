@@ -14,6 +14,7 @@
 'use strict';
 
 import { isObject } from './utils';
+import { isValidSD } from './events';
 import { logMessages } from './constants';
 import type {
   NetworkConfiguration,
@@ -22,6 +23,8 @@ import type {
   EmitterConfiguration,
   SubjectConfiguration,
   GdprConfiguration,
+  GCConfiguration,
+  GlobalContext,
   InitTrackerConfiguration
 } from './types';
 
@@ -74,6 +77,10 @@ const gdprProps = [
   'documentId',
   'documentVersion',
   'documentDescription'
+];
+const gcProps = [
+  'tag',
+  'globalContexts'
 ];
 
 /**
@@ -212,6 +219,36 @@ function isValidGdprConf(config: GdprConfiguration): boolean {
 }
 
 /**
+ * Validates whether an object is of GlobalContext type
+ *
+ * @param gc {Object} - the object to validate
+ * @returns - boolean
+ */
+function isValidGC(gc: GlobalContext): boolean {
+  return isObject(gc)
+    && isValidConfig(gc, gcProps)
+    && typeof gc.tag === 'string'
+    && Array.isArray(gc.globalContexts)
+    && gc.globalContexts.every(c => isValidSD(c));
+}
+
+/**
+ * Validates the GCConfig (global contexts)
+ *
+ * @param config {Object} - the config to validate
+ * @returns - boolean
+ */
+function isValidGCConf(config: GCConfiguration): boolean {
+  if (!Array.isArray(config)) {
+    return false;
+  }
+  if (!config.every(gc => isValidGC(gc as GlobalContext))) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Validates the initTrackerConfiguration
  *
  * @param init {Object} - the config to validate
@@ -263,6 +300,12 @@ function initValidate(init: InitTrackerConfiguration): Promise<boolean> {
     return Promise.reject(new Error(logMessages.gdpr));
   }
 
+  if (
+    Object.prototype.hasOwnProperty.call(init, 'gcConfig')
+      && !isValidGCConf(init.gcConfig as GCConfiguration)) {
+    return Promise.reject(new Error(logMessages.gc));
+  }
+
   return Promise.resolve(true);
 }
 
@@ -273,6 +316,8 @@ export {
   isValidEmitterConf,
   isValidSubjectConf,
   isValidGdprConf,
+  isValidGCConf,
+  isValidGC,
   isScreenSize,
   initValidate,
 };

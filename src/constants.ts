@@ -23,6 +23,7 @@ const logMessages = {
   emitter: 'emitterConfig is invalid',
   subject: 'subjectConfig is invalid',
   gdpr: 'gdprConfig is invalid',
+  gc: 'gcConfig is invalid',
 
   // event errors
   context: 'invalid contexts parameter',
@@ -35,6 +36,10 @@ const logMessages = {
   consentGReq: 'consentGranted event requires expiry, documentId and version parameters to be set',
   consentWReq: 'consentWithdrawn event requires all, documentId and version parameters to be set',
   ecomReq: 'ecommerceTransaction event requires orderId, totalValue to be set and items to be an array of valid ecommerceItems',
+
+  // global contexts errors
+  gcTagType: 'tag argument is required to be a string',
+  gcType: 'global context argument is invalid',
 
   // api error prefix
   createTracker: 'createTracker:',
@@ -49,6 +54,8 @@ const logMessages = {
   trackConsentGranted: 'trackConsentGranted:',
   trackConsentWithdrawn: 'trackConsentWithdrawn:',
   trackEcommerceTransaction: 'trackEcommerceTransaction:',
+  removeGlobalContexts: 'removeGlobalContexts:',
+  addGlobalContexts: 'addGlobalContexts:',
 
   // setters
   setUserId: 'setUserId: userId can only be a string or null',

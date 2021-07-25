@@ -25,6 +25,7 @@
 #import <SnowplowTracker/SPEmitterConfiguration.h>
 #import <SnowplowTracker/SPSubjectConfiguration.h>
 #import <SnowplowTracker/SPGDPRConfiguration.h>
+#import <SnowplowTracker/SPGlobalContextsConfiguration.h>
 
 @interface RNConfigUtils : NSObject
 
@@ -37,5 +38,7 @@
 + (SPSubjectConfiguration *) mkSubjectConfig:(NSDictionary *) subjectConfig;
 
 + (SPGDPRConfiguration *) mkGdprConfig:(NSDictionary *) gdprConfig;
+
++ (SPGlobalContextsConfiguration *) mkGCConfig:(NSArray *) gcConfig;
 
 @end

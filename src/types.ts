@@ -275,6 +275,25 @@ export interface GdprConfiguration {
 }
 
 /**
+ * Global Context
+ */
+export interface GlobalContext {
+  /**
+   * tag
+   */
+  tag: string,
+  /**
+   * contexts
+   */
+  globalContexts: SelfDescribing[]
+}
+
+/**
+ * Global Contexts configuration
+ */
+export type GCConfiguration = GlobalContext[];
+
+/**
  * The TrackerControllerConfiguration
  */
 export interface TrackerControllerConfiguration {
@@ -283,6 +302,7 @@ export interface TrackerControllerConfiguration {
   emitterConfig?: EmitterConfiguration,
   subjectConfig?: SubjectConfiguration,
   gdprConfig?: GdprConfiguration,
+  gcConfig?: GCConfiguration
 }
 
 /**
@@ -603,6 +623,20 @@ export type ReactNativeTracker = {
     argmap: EcommerceTransactionProps,
     contexts?: EventContext[]
   ) => Promise<void>;
+
+  /**
+   * Removes global contexts
+   *
+   * @param tag - The tag of the global contexts to remove
+   */
+  readonly removeGlobalContexts: (tag: string) => Promise<void>;
+
+  /**
+   * Adds global contexts
+   *
+   * @param gc - The global context to add
+   */
+  readonly addGlobalContexts: (gc: GlobalContext) => Promise<void>;
 
   /**
    * Sets the userId of the tracker subject

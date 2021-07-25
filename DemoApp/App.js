@@ -83,6 +83,23 @@ const App = () => {
         documentVersion: '0.0.1',
         documentDescription: 'test gdpr document',
       },
+      gcConfig: [
+        {
+          tag: 'testTag',
+          globalContexts: [
+            {
+              schema:
+                'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0',
+              data: {impressionId: 'test_global_contexts_0'},
+            },
+            {
+              schema:
+                'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0',
+              data: {impressionId: 'test_global_contexts_1'},
+            },
+          ],
+        },
+      ],
     },
   );
 
@@ -244,6 +261,25 @@ const App = () => {
     });
   };
 
+  const onPressPlayGC = async () => {
+    try {
+      await tracker.removeGlobalContexts('testTag');
+      await tracker.addGlobalContexts({
+        tag: 'testTagReloaded',
+        globalContexts: [
+          {
+            schema:
+              'iglu:com.snowplowanalytics.snowplow/ad_impression/jsonschema/1-0-0',
+            data: {impressionId: 'test_global_contexts_Reloaded'},
+          },
+        ],
+      });
+      await tracker.trackPageViewEvent({pageUrl: 'afterGCChange.test'});
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   const onPressRemoveSecTracker = () => {
     removeTracker('sp2');
     // removeAllTrackers();
@@ -315,6 +351,14 @@ const App = () => {
               title="Set the Subject again"
               color="#228B22"
               accessibilityLabel="testSetSubject"
+            />
+          </Section>
+          <Section title="GC">
+            <Button
+              onPress={onPressPlayGC}
+              title="Remove and Add Global Contexts"
+              color="#228B22"
+              accessibilityLabel="testGC"
             />
           </Section>
           <Section title="Removals">

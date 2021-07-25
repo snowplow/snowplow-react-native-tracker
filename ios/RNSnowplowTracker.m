@@ -32,6 +32,8 @@
 #import <SnowplowTracker/SPEmitterConfiguration.h>
 #import <SnowplowTracker/SPSubjectConfiguration.h>
 #import <SnowplowTracker/SPGDPRConfiguration.h>
+#import <SnowplowTracker/SPGlobalContextsConfiguration.h>
+#import <SnowplowTracker/SPGlobalContext.h>
 #import <SnowplowTracker/SPSelfDescribingJson.h>
 #import <SnowplowTracker/SPSelfDescribing.h>
 #import <SnowplowTracker/SPScreenView.h>
@@ -97,6 +99,13 @@ RCT_EXPORT_METHOD(createTracker:
     if (gdprArg != nil && [gdprArg isKindOfClass:NSDictionary.class]) {
         SPGDPRConfiguration *gdprConfiguration = [RNConfigUtils mkGdprConfig:(NSDictionary *)gdprArg];
         [controllers addObject:gdprConfiguration];
+    }
+
+    // GConfiguration
+    NSObject *gcArg = [argmap objectForKey:@"gcConfig"];
+    if (gcArg != nil && [gcArg isKindOfClass:NSArray.class]) {
+        SPGlobalContextsConfiguration *gcConfiguration = [RNConfigUtils mkGCConfig:(NSArray *)gcArg];
+        [controllers addObject:gcConfiguration];
     }
 
     id<SPTrackerController> tracker = [SPSnowplow createTrackerWithNamespace:trackerNs network:networkConfiguration configurations:controllers];
@@ -418,6 +427,46 @@ RCT_EXPORT_METHOD(trackEcommerceTransactionEvent:
         [trackerController track:event];
         resolve(@YES);
 
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(removeGlobalContexts:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSString *tag = [details objectForKey:@"removeTag"];
+        [[trackerController globalContexts] removeWithTag:tag];
+        resolve(@YES);
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(addGlobalContexts:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSDictionary *gcArg = [details objectForKey:@"addGlobalContext"];
+        NSString *tag = [gcArg objectForKey:@"tag"];
+        NSArray *globalContexts = [gcArg objectForKey:@"globalContexts"];
+
+        NSArray *staticContexts = [[RNUtilities mkSDJArray:globalContexts] mutableCopy];
+        SPGlobalContext *gcStatic = [[SPGlobalContext alloc] initWithStaticContexts:staticContexts];
+
+        [[trackerController globalContexts] addWithTag:tag contextGenerator:gcStatic];
+        resolve(@YES);
     } else {
         NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
         reject(@"ERROR", @"tracker with given namespace not found", error);
