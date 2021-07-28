@@ -285,6 +285,31 @@ const App = () => {
     // removeAllTrackers();
   };
 
+  const onPressLogSessionData = async () => {
+    try {
+      const sessionUserId = await tracker.getSessionUserId();
+      const sessionId = await tracker.getSessionId();
+      const sessionIdx = await tracker.getSessionIndex();
+      const isInBg = await tracker.getIsInBackground();
+      const bgIndex = await tracker.getBackgroundIndex();
+      const fgIndex = await tracker.getForegroundIndex();
+
+      const sessionData = {
+        userId: sessionUserId,
+        sessionId: sessionId,
+        sessionIndex: sessionIdx,
+        isInBackground: isInBg,
+        backgroundIndex: bgIndex,
+        foregroundIndex: fgIndex,
+      };
+      console.log(
+        'SnowplowTracker: Session Data: ' + JSON.stringify(sessionData),
+      );
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
@@ -353,6 +378,15 @@ const App = () => {
               accessibilityLabel="testSetSubject"
             />
           </Section>
+          <Section title="SessionData">
+            <Button
+              onPress={onPressLogSessionData}
+              title="Show me session data"
+              color="#f6bd3b"
+              accessibilityLabel="testSessionData"
+            />
+          </Section>
+
           <Section title="GC">
             <Button
               onPress={onPressPlayGC}

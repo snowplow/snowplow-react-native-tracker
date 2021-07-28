@@ -14,7 +14,7 @@
 'use strict';
 
 import * as api from './api';
-import { safeWait, errorHandler } from './utils';
+import { safeWait, safeWaitCallback, errorHandler } from './utils';
 import type {
   NetworkConfiguration,
   TrackerControllerConfiguration,
@@ -46,6 +46,9 @@ function createTracker(
   // mkMethod creates methods subscribed to the initTrackerPromise
   const mkMethod = safeWait(initTrackerPromise, errorHandler);
 
+  // mkCallback creates callbacks subscribed to the initTrackerPromise
+  const mkCallback = safeWaitCallback(initTrackerPromise, errorHandler);
+
   // track methods
   const trackSelfDescribingEvent = mkMethod(api.trackSelfDescribingEvent(namespace));
   const trackScreenViewEvent = mkMethod(api.trackScreenViewEvent(namespace));
@@ -71,6 +74,14 @@ function createTracker(
   const setColorDepth = mkMethod(api.setColorDepth(namespace));
   const setSubjectData = mkMethod(api.setSubjectData(namespace));
 
+  // callbacks
+  const getSessionUserId = mkCallback(api.getSessionUserId(namespace));
+  const getSessionId = mkCallback(api.getSessionId(namespace));
+  const getSessionIndex = mkCallback(api.getSessionIndex(namespace));
+  const getIsInBackground = mkCallback(api.getIsInBackground(namespace));
+  const getBackgroundIndex = mkCallback(api.getBackgroundIndex(namespace));
+  const getForegroundIndex = mkCallback(api.getForegroundIndex(namespace));
+
   return Object.freeze({
     trackSelfDescribingEvent,
     trackScreenViewEvent,
@@ -93,6 +104,12 @@ function createTracker(
     setScreenViewport,
     setColorDepth,
     setSubjectData,
+    getSessionUserId,
+    getSessionId,
+    getSessionIndex,
+    getIsInBackground,
+    getBackgroundIndex,
+    getForegroundIndex,
   });
 }
 

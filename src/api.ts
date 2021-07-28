@@ -353,6 +353,84 @@ function setSubjectData(namespace:string) {
   };
 }
 
+/**
+ * Returns a function to get the current session userId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the session userId
+ */
+function getSessionUserId(namespace: string) {
+  return function (): Promise<string> {
+    return <Promise<string>>Promise
+      .resolve(RNSnowplowTracker.getSessionUserId({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the current sessionId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the sessionId
+ */
+function getSessionId(namespace: string) {
+  return function (): Promise<string> {
+    return <Promise<string>>Promise
+      .resolve(RNSnowplowTracker.getSessionId({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the current session index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the session index
+ */
+function getSessionIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getSessionIndex({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get whether the app is in background
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get whether the app isInBackground
+ */
+function getIsInBackground(namespace: string) {
+  return function (): Promise<boolean> {
+    return <Promise<boolean>>Promise
+      .resolve(RNSnowplowTracker.getIsInBackground({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the background index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the backgroundIndex
+ */
+function getBackgroundIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getBackgroundIndex({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the foreground index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the foregroundIndex
+ */
+function getForegroundIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getForegroundIndex({tracker: namespace}));
+  };
+}
+
 export {
   createTracker,
   removeTracker,
@@ -378,4 +456,10 @@ export {
   setScreenViewport,
   setColorDepth,
   setSubjectData,
+  getSessionUserId,
+  getSessionId,
+  getSessionIndex,
+  getIsInBackground,
+  getBackgroundIndex,
+  getForegroundIndex,
 };

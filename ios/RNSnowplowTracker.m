@@ -657,4 +657,100 @@ RCT_EXPORT_METHOD(setColorDepth:
     }
 }
 
+RCT_EXPORT_METHOD(getSessionUserId:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSString *suid = [trackerController.session userId];
+        resolve(suid);
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(getSessionId:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSString *sid = [trackerController.session sessionId];
+        resolve(sid);
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(getSessionIndex:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSInteger sidx = [trackerController.session sessionIndex];
+        resolve(@(sidx));
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(getIsInBackground:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        BOOL isInBg = [trackerController.session isInBackground];
+        resolve(@(isInBg));
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(getBackgroundIndex:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSInteger bgIdx = [trackerController.session backgroundIndex];
+        resolve(@(bgIdx));
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(getForegroundIndex:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSInteger fgIdx = [trackerController.session foregroundIndex];
+        resolve(@(fgIdx));
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
 @end

@@ -714,4 +714,46 @@ export type ReactNativeTracker = {
    * @param config - The new subject data
    */
   readonly setSubjectData: (config: SubjectConfiguration) => Promise<void>;
+
+  /**
+   * Gets the dentifier for the user of the session
+   *
+   * @returns {Promise<string | undefined>}
+   */
+  readonly getSessionUserId: () => Promise<string | undefined>;
+
+  /**
+   * Gets the identifier for the session
+   *
+   * @returns {Promise<string | undefined>}
+   */
+  readonly getSessionId: () => Promise<string | undefined>;
+
+  /**
+   * Gets the index of the current session for this user
+   *
+   * @returns {Promise<number | undefined>}
+   */
+  readonly getSessionIndex: () => Promise<number | undefined>;
+
+  /**
+   * Gets whether the app is currently in background state
+   *
+   * @returns {Promise<boolean | undefined>}
+   */
+  readonly getIsInBackground: () => Promise<boolean | undefined>;
+
+  /**
+   * Gets the number of background transitions in the current session
+   *
+   * @returns {Promise<number | undefined>}
+   */
+  readonly getBackgroundIndex: () => Promise<number | undefined>;
+
+  /**
+   * Gets the number of foreground transitions in the current session.
+   *
+   * @returns {Promise<number | undefined>}
+   */
+  readonly getForegroundIndex: () => Promise<number | undefined>;
 };

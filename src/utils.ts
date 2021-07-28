@@ -14,11 +14,11 @@
 'use strict';
 
 /**
- * Returns a function that accepts a function as its argument and subscribes
+ * Returns a function that accepts a side-effect function as its argument and subscribes
  * that function to aPromise's fullfillment,
  * and errHandle to aPromise's rejection.
  *
- * @param aPromise - A Promise
+ * @param aPromise - A void Promise
  * @param errHandle - A function to handle the promise being rejected
  * @returns - A function subscribed to the Promise's fullfillment
  */
@@ -31,14 +31,36 @@ function safeWait(aPromise: Promise<void>, errHandle: ((err: Error) => void)) {
 }
 
 /**
+ * Returns a function that accepts a callback function as its argument and subscribes
+ * that function to aPromise's fullfillment,
+ * and errHandle to aPromise's rejection.
+ *
+ * @param aPromise - A void Promise
+ * @param errHandle - A function to handle the promise being rejected
+ * @returns - A function subscribed to the Promise's fullfillment
+ */
+function safeWaitCallback(
+  callPromise: Promise<void>,
+  errHandle: ((err: Error) => undefined)
+) {
+  return (<T,F extends ((...args: never[]) => Promise<T>)>(func: F) => {
+    return (...args: Parameters<F>): ReturnType<F> | Promise<undefined> => {
+      return callPromise.then(() => <ReturnType<F>>func(...args)).catch((err) => errHandle(err));
+    };
+  });
+}
+
+/**
  * Handles an error.
  *
  * @param err - The error to be handled.
  */
-function errorHandler(err: Error): void {
+function errorHandler(err: Error): undefined {
   if (__DEV__) {
     console.warn('SnowplowTracker:' + err.message);
+    return undefined;
   }
+  return undefined;
 }
 
 /**
@@ -53,6 +75,7 @@ function isObject<Type>(x: Type): boolean {
 
 export {
   safeWait,
+  safeWaitCallback,
   errorHandler,
   isObject
 };

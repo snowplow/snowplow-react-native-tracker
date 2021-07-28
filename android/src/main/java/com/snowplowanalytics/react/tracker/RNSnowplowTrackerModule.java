@@ -584,4 +584,88 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void getSessionUserId(ReadableMap details,
+                                 Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            String suid = trackerController.getSession().getUserId();
+            promise.resolve(suid);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getSessionId(ReadableMap details,
+                             Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            String sid = trackerController.getSession().getSessionId();
+            promise.resolve(sid);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getSessionIndex(ReadableMap details,
+                                Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            int sidx = trackerController.getSession().getSessionIndex();
+            promise.resolve(sidx);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getIsInBackground(ReadableMap details,
+                                  Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            boolean isInBg = trackerController.getSession().isInBackground();
+            promise.resolve(isInBg);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getBackgroundIndex(ReadableMap details,
+                                   Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            int bgIdx = trackerController.getSession().getBackgroundIndex();
+            promise.resolve(bgIdx);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getForegroundIndex(ReadableMap details,
+                                   Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            int fgIdx = trackerController.getSession().getForegroundIndex();
+            promise.resolve(fgIdx);
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
 }
