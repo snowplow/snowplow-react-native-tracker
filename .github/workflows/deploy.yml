@@ -24,10 +24,6 @@ jobs:
     - name: Compile TypeScript
       run: npm run compile
 
-    - name: Install node modules for DemoApp
-      working-directory: DemoApp
-      run: yarn install --frozen-lockfile --network-timeout 100000
-
     - name: Lint
       run: npm run lint
 
@@ -99,6 +95,10 @@ jobs:
       working-directory: DemoApp
       run: |
         yarn install --frozen-lockfile --network-timeout 100000
+
+    - name: Lint DemoApp
+      working-directory: DemoApp
+      run: yarn lint
 
     - name: Build DemoApp
       working-directory: DemoApp/android
