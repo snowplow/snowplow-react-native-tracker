@@ -14,7 +14,6 @@
     "bootstrap": "npm run build && cd DemoApp && rimraf node_modules && yarn"
   },
   "files": [
-    "src",
     "dist",
     "android",
     "ios",
@@ -54,6 +53,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.52.1",
     "rollup-plugin-dts": "^3.0.2",
+    "rollup-plugin-sourcemaps": "^0.6.3",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.2"
   },

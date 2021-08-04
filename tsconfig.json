@@ -6,6 +6,7 @@
     "jsx": "react-native",
     "types": ["react", "react-native"],
     "declaration": true,
+    "sourceMap": true,
     "noEmitOnError": true,
 
     /* Strict Type-Checking */
