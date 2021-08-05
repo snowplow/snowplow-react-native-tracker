@@ -322,7 +322,7 @@ PODS:
   - RNSnowplowTracker (0.2.0):
     - React-Core
     - SnowplowTracker (~> 2.2)
-  - SnowplowTracker (2.2.0):
+  - SnowplowTracker (2.2.1):
     - FMDB (~> 2.7)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -462,7 +462,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 7b423f9e248eae65987838148c36eec1dbfe0b53
-  FBReactNativeSpec: 8ba43040865ce77e7ad7994641c0c8cf7d7e229c
+  FBReactNativeSpec: 6629be9e4832b127e2b80cf2b59b3bbba6273563
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
@@ -498,10 +498,10 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: ff951a0c241bfaefc4940a3f1f1a229e7cb32fa6
   ReactCommon: bedc99ed4dae329c4fcf128d0c31b9115e5365ca
   RNSnowplowTracker: 192f3600f033cfa6110e350d1f0db94e3ec563cb
-  SnowplowTracker: 833d164a3f61e9500feee24b83ac86efd3e7ff0e
+  SnowplowTracker: c5a71aaae234082b8dab4f8928e1d651757a2194
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: d1765cb4563b4375f196345238843eb0ce2fbdbc
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2
