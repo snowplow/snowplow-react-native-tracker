@@ -1,7 +1,7 @@
 
 # @snowplow/react-native-tracker
 
-[![Early Release]][Tracker Classificiation]
+[![actively-maintained]][tracker-classification]
 [![Build Status][gh-actions-image]][gh-actions]
 [![License][license-image]][license]
 
@@ -10,299 +10,179 @@
 [![downloads][downloads-dm-image]][downloads-dm]
 
 
-Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
+Snowplow is a scalable open-source platform for rich, high quality, low-latency data collection. It is designed to collect high quality, complete behavioral data for enterprise business.
 
-## Getting started
+**To find out more, please check out the [Snowplow website][website] and our [documentation][docs].**
+
+
+## Snowplow React-Native Tracker Overview
+
+The Snowplow React Native Tracker allows you to add analytics to your React Native apps when using a [Snowplow][snowplow] pipeline.
+
+With this library you can collect granular event-level data as your users interact with your React Native applications. It is build on top of Snowplow's [Mobile Native][native-trackers] [iOS][objc-tracker] and [Android][android-tracker] Trackers, in order to support the full range of out-of-the-box Snowplow events and tracking capabilities.
+
+
+## Quick start
 
 From the root of your [React Native][react-native] project:
 
-`$ npm install @snowplow/react-native-tracker --save`
+```
+npm install --save @snowplow/react-native-tracker
+npx pod-install
+```
 
-### Instrumentation
+Then, instrument the tracker in your app and start tracking events. For example:
 
-To setup, you first need to import the module and then create the tracker object using the `createTracker` function.
-
-Then you can start tracking events using the relevant tracking methods.
-
-```JavaScript
+```javascript
 import { createTracker } from '@snowplow/react-native-tracker';
 
-const tracker = createTracker('my-namespace', {
-    // required
-    endpoint: 'test-url',
-    appId: 'my-app-id',
-
-    // optional - defaults shown
-    method: 'post',
-    protocol: 'https',
-    base64Encoded: true,
-    platformContext: true,
-    applicationContext: false,
-    lifecycleEvents: false,
-    screenContext: true,
-    sessionContext: true,
-    foregroundTimeout: 600,
-    backgroundTimeout: 300,
-    checkInterval: 15,
-    installTracking: false,
-  });
-
-tracker.trackSelfDescribingEvent(
-  {
-    schema: 'iglu:com.acme/hello_world_event/jsonschema/1-0-0',
-    data: {
-      message: 'hello world'
-    }
-  }
+const tracker = createTracker(
+    'my-namespace',
+    { endpoint: 'https://my-collector.endpoint' }
 );
 
+tracker.trackScreenViewEvent({ name: 'myScreenName' });
 ```
 
-### Running on iOS
+The Snowplow React Native Tracker also provides first-class support for TypeScript, as it is fully typed.
 
-`cd ios && pod install && cd ..`
+See also our [DemoApp][demoapp] for an example implementation.
 
-Run the app with: `react-native run-ios` from the root of the project.
-
-### Running on Android
-
-`react-native run-android` from the root of the project.
-
-## Available tracker methods
-
-All methods take a JSON of named arguments.
-
-
-### Set the subject data:
-
-Setting custom subject data is optional, can be called any time, and can be called again to update the subject. Once set, the specified parameters are set for all subsequent events. (For example, a userid may be set after login, and once set all subsequent events will contain the userid).
-
-```JavaScript
-setSubjectData({ // All parameters optional
-  userId: 'my-userId', // user id, string
-  screenWidth: 123, // screen width, integer
-  screenHeight: 456, // screen height, integer
-  colorDepth: 20, // colour depth, integer
-  timezone: 'Europe/London', // timezone, string enum
-  language: 'en', // language, string enum
-  ipAddress: '123.45.67.89', // IP address, string
-  useragent: '[some-user-agent-string]', // user agent, string
-  networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e', // network user id, UUID4 string
-  domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',// domain user id, UUID4 string
-  viewportWidth: 123, // viewport width, integer
-  viewportHeight: 456 // viewport height, integer
-  }
-);
-```
-
-
-### Track a custom event:
-
-```JavaScript
-trackSelfDescribingEvent({ // Self-describing JSON for the custom event
-  schema: 'iglu:com.acme/event/jsonschema/1-0-0',
-  data: {message: 'hello world'}
-});
-```
-
-### Track a structured event:
-
-```JavaScript
-trackStructuredEvent({
-  // required
-  category: 'my-category',
-  action: 'my-action',
-  // optional
-  label: 'my-label',
-  property: 'my-property',
-  value: 50.00
-  }
-);
-```
-
-### Track a Screen View:
-
-Note - for the track Screen View method, if previous screen values aren't set, they should be automatically set by the tracker.
-
-```JavaScript
-trackScreenViewEvent({
-  screenName: 'my-screen-name', //required
-  // optional:
-  screenType: 'my-screen-type',
-  transitionType: 'my-transition'
-  }
-);
-```
-
-### Track a Page View:
-
-```JavaScript
-trackPageViewEvent({
-  pageUrl: 'https://www.my-page-url.com', // required
-  //optional:
-  pageTitle: 'my page title',
-  pageReferrer: 'http://www.my-refr.com'
-  }
-);
-```
-
-### Attaching custom contexts
-
-All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts that will be attached to the event:
-
-```JavaScript
-
-trackSelfDescribingEvent(
-  // Self-describing JSON for the custom event
-  {
-    schema: 'iglu:com.acme/event/jsonschema/1-0-0',
-    data: {message: 'hello world'}
-  },
-  // array of contexts
-  [
-    {
-      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
-      data: {myEntityField: 'hello world'}
-    }
-  ]
-);
-
-trackStructuredEvent(
-  // the structured event's properties
-  {
-    // required
-    category: 'my-category',
-    action: 'my-action',
-    // optional
-    label: 'my-label',
-    property: 'my-property',
-    value: 50.00
-  },
-  // the contexts' array
-  [
-    {
-      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
-      data: {myEntityField: 'hello world'}
-    }
-  ]
-);
-
-trackScreenViewEvent(
-  // the screen_view event's properties
-  {
-    screenName: 'my-screen-name', //required
-    // optional:
-    screenType: 'my-screen-type',
-    transitionType: 'my-transition'
-  },
-  // the contexts' array
-  [
-    {
-      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
-      data: {myEntityField: "hello world"}
-    }
-  ]
-);
-
-trackPageViewEvent(
-  // the page_view event's properties
-  {
-    pageUrl: 'https://www.my-page-url.com', //required
-    // optional
-    pageTitle: 'my page title',
-    pageReferrer: 'http://www.my-refr.com'
-  },
-  // the context's array
-  [
-    {
-      schema: 'iglu:com.acme/entity/jsonschema/1-0-0',
-      data: {myEntityField: "hello world"}
-    }
-  ]
-);
-```
-
-## Contributing
-
-Please read CONTRIBUTING.md for general guidelines on contributing.
-
-### Maintainer quick start
-
-Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository to launch the DemoApp:
-
-```bash
-npm install
-npm run compile
-
-cd DemoApp
-yarn install
-
-yarn start # to start Metro
-
-```
-
-Then in another terminal:
-
-1. For Android
-
-```bash
-cd DemoApp
-yarn android
-```
-
-2. For iOS
-
-```bash
-cd DemoApp/ios && pod install
-cd .. && yarn ios
-```
-
-### Testing
-
-Currently, testing is done manually. It is recommended to use [Snowplow Micro][snowplow-micro] or a [Snowplow Mini][snowplow-mini] instance to test your changes during development.
-
-During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used, assuming the DemoApp has already been built before. This simply replaces relevant files in the node_modules folder, and re-runs react native.
-
-```bash
-# android
-
-bash .scripts/quickTest.sh android
-
-# ios
-
-bash .scripts/quickTest.sh ios
-
-# both
-
-bash .scripts/quickTest.sh both
-```
-
-The `.scripts/cleanBuildAndRun.sh` script offers a naive way to rebuild the entire project with your changes. It uses `npm pack` to create an npm package locally, and installs it to the DemoApp, then it removes pod and gradle lock files and rebuilds all dependencies.
-
-```bash
-# android
-
-bash .scripts/cleanBuildAndRun.sh android
-
-# ios
-
-bash .scripts/cleanBuildAndRun.sh ios
-
-# both
-
-bash .scripts/cleanBuildAndRun.sh both
-```
 
 ## Find out more
 
-| Technical Docs              |
-|-----------------------------|
-| ![i1][techdocs-image]       |
-| [Technical Docs][techdocs]  |
+| Technical Docs                    | Setup Guide                 |
+|-----------------------------------|-----------------------------|
+| [![i1][techdocs-image]][techdocs] | [![i2][setup-image]][setup] |
+| [Technical Docs][techdocs]        | [Setup Guide][setup]        |
 
-[Tracker Classificiation]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/tracker-maintenance-classification/
-[Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
 
+
+## Maintainer quick start
+
+### Launching the DemoApp
+
+Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository:
+
+```bash
+npm install
+npm run bootstrap
+cd DemoApp
+```
+
+**For Android:**
+
+```bash
+yarn android
+```
+_Note_: Linux users who want to run the DemoApp for Android, would also need to run `yarn start` in a separate terminal.
+
+**For iOS:**
+
+```bash
+yarn pods && yarn ios
+```
+
+During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used.
+
+```bash
+# android
+bash .scripts/quickTest.sh android
+# ios
+bash .scripts/quickTest.sh ios
+# both
+bash .scripts/quickTest.sh both
+```
+
+Similarly, the `.scripts/cleanBuildAndRun.sh` script offers a naive way to clean-rebuild the entire project with your changes.
+
+```bash
+# android
+bash .scripts/cleanBuildAndRun.sh android
+# ios
+bash .scripts/cleanBuildAndRun.sh ios
+# both
+bash .scripts/cleanBuildAndRun.sh both
+```
+
+
+### End-to-end tests
+
+Snowplow React-Native Tracker is being end-to-end tested using [Snowplow Micro][snowplow-micro] and [Detox][detox]. To run these tests locally:
+
+#### Prerequisites
+
+1. **Docker**: Used to launch Snowplow Micro and expose its collector endpoint on `http://0.0.0.0:9090`.
+2. **Perl**: Used to substitute the endpoint placeholders in `DemoApp/App.js` with Micro's endpoint for respective emulator/simulator.
+3. **Detox** platform-specific development environment setup:
+    - [For Android][detox-android-env]. Namely:
+      - Java 8
+      - Android SDK
+      - Android Open-Source Project emulator
+    - [For iOS][detox-ios-env]. Namely:
+      - applesimutils
+
+#### Testing
+
+Once the prerequisites are in place:
+
+```
+npm install
+npm run bootstrap
+cd DemoApp
+```
+
+ - **e2e-android**
+```
+yarn e2e:android:micro
+```
+
+ - **e2e-ios**
+```
+yarn e2e:ios:micro
+```
+
+The above commands will take care to kill Micro's running container before exiting. If you'd prefer to keep Micro running in order to inspect the tracked events through Micro's REST API, you can alternatively control Micro through:
+
+```
+yarn micro:run
+yarn micro:stop
+```
+and run the e2e-tests on their own:
+```
+yarn e2e:android
+# or
+yarn e2e:ios
+```
+
+
+## Contributing
+
+Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum][discourse].
+
+| Contributing                              |
+|-------------------------------------------|
+| [![i3][contributing-image]][contributing] |
+| [Contributing][contributing]              |
+
+
+
+## Copyright and license
+
+The Snowplow React Native Tracker is copyright 2020-2021 Snowplow Analytics Ltd, 2019 DataCamp.
+
+Licensed under the **[Apache License, Version 2.0][license]** (the "License");
+you may not use this software except in compliance with the License.
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
+[tracker-classification]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/tracker-maintenance-classification/
+[actively-maintained]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Actively%20Maintained&color=6638b8&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
 [gh-actions]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/actions
 [gh-actions-image]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/workflows/build/badge.svg?branch=master
 
@@ -318,10 +198,30 @@ bash .scripts/cleanBuildAndRun.sh both
 [downloads-dm]: https://www.npmjs.com/package/@snowplow/react-native-tracker
 [downloads-dm-image]: https://img.shields.io/npm/dm/@snowplow/react-native-tracker
 
-[techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
+[website]: https://snowplowanalytics.com
+[docs]: https://docs.snowplowanalytics.com
+[snowplow]: https://github.com/snowplow/snowplow
+[discourse]: https://discourse.snowplowanalytics.com
+
+[techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/introduction
 [techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png
+[setup]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/quick-start-guide/
+[setup-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/setup.png
+
+[contributing]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/blob/master/CONTRIBUTING.md
+[contributing-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/contributing.png
 
 [react-native]: https://reactnative.dev/
 [react-native-environment]: https://reactnative.dev/docs/environment-setup
 [snowplow-micro]: https://github.com/snowplow-incubator/snowplow-micro
 [snowplow-mini]: https://github.com/snowplow/snowplow-mini
+
+[native-trackers]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/mobile-trackers/mobile-trackers-v2-0
+[objc-tracker]: https://github.com/snowplow/snowplow-objc-tracker
+[android-tracker]: https://github.com/snowplow/snowplow-android-tracker
+
+[demoapp]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/tree/master/DemoApp
+[gh-actions-workflows]: https://github.com/snowplow-incubator/snowplow-react-native-tracker/tree/master/.github/workflows
+[detox]: https://github.com/wix/Detox
+[detox-android-env]: https://github.com/wix/Detox/blob/master/docs/Introduction.AndroidDevEnv.md
+[detox-ios-env]: https://github.com/wix/Detox/blob/master/docs/Introduction.iOSDevEnv.md

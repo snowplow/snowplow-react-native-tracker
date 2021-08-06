@@ -1,6 +1,6 @@
 {
   "name": "@snowplow/react-native-tracker",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A library for tracking Snowplow events in React Native",
   "homepage": "https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/",
   "main": "dist/index.js",
@@ -29,7 +29,8 @@
     "Colm O Griobhtha",
     "James Munro",
     "Max Bondarenko",
-    "Paul Boocock"
+    "Paul Boocock",
+    "Ada Tzereme"
   ],
   "license": "Apache-2.0",
   "repository": {
