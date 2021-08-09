@@ -1,23 +1,41 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-root_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/..
+# Due to https://github.com/facebook/react-native/issues/28807,
+#   quickTest.sh is meant to be used only by MacOS users.
 
-cp -a $root_path/ios DemoApp/node_modules/@snowplow/react-native-tracker/
+set -e
 
-cp -a $root_path/android DemoApp/node_modules/@snowplow/react-native-tracker/
+root_path=$( cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd -P )
+demo_path=$( echo "${root_path}/DemoApp" )
 
-cp -a $root_path/index.js DemoApp/node_modules/@snowplow/react-native-tracker/
+# argument parsing and validation
+[ "$#" -eq 1 ] || (echo "quickTest: Single argument required, $# provided" 1>&2 ; exit 1)
 
-cd $root_path/DemoApp
+platform=${1}
 
-if [ "$1" == "android" ] || [ "$1" == "both" ]; then
-  react-native run-android
+case "$platform" in
+    android|ios|both)
+        ;;
+    *)
+        echo "quickTest: Platform argument can only be one of: android, ios, both" 1>&2 ; exit 1
+        ;;
+esac
+
+# bootstrap
+npm run bootstrap
+
+# run
+if [ "$platform" = "android" ] || [ "$platform" = "both" ]; then
+    cd "${demo_path}"
+    yarn android
 else
-  echo 'skipping android'
+    echo 'skipping android'
 fi
 
 if [ "$1" == "ios" ] || [ "$1" == "both" ]; then
-  react-native run-ios
+    cd "${demo_path}"
+    yarn pods
+    yarn ios
 else
-  echo 'skipping ios'
+    echo 'skipping ios'
 fi

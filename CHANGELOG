@@ -1,3 +1,16 @@
+Version 1.0.0 (2021-08-09)
+--------------------------
+Fix action-gh-release to specific commit (#133)
+Update devDependencies (#132)
+Publish sourcemaps (#131)
+Lint DemoApp separately (#130)
+Get Session Context Data (#53)
+Update version in podspec (#110)
+Set amended v_tracker indicating react-native (#18)
+Add global contexts (#104)
+Upgrade iOS Tracker and Android Tracker to v2 (#113)
+Add test suite (#60)
+
 Version 0.2.0 (2021-06-21)
 --------------------------
 Bump dependencies in DemoApp (#114)

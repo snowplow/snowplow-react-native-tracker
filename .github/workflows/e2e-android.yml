@@ -1,0 +1,150 @@
+name: e2e-android
+
+on:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: macos-10.15
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # -- Setup --
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '8'
+
+    # -- Micro --
+    - name: Cache Micro
+      id: cache-micro
+      uses: actions/cache@v2
+      with:
+        path: micro.jar
+        key: ${{ runner.os }}-micro
+
+    - name: Get micro
+      if: steps.cache-micro.outputs.cache-hit != 'true'
+      run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.1.2/snowplow-micro-1.1.2.jar
+
+    - name: Run Micro in background
+      run: java -jar micro.jar --collector-config DemoApp/tests/micro/micro.conf --iglu DemoApp/tests/micro/iglu.json &
+
+    - name: Wait on Micro endpoint
+      timeout-minutes: 2
+      run: while ! nc -z '0.0.0.0' 9090; do sleep 1; done
+
+    - name: Prepare DemoApp for Micro
+      working-directory: DemoApp
+      run: perl -i -pe "s/^.*endpoint:\K.*/ \'http:\/\/10.0.2.2:9090\'\,/" App.js
+
+    # -- Tracker --
+    - name: Use npm cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install node modules
+      run: npm ci
+
+    - name: Build Tracker
+      run: npm run build
+
+    # -- App --
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - name: Use yarn cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install node modules for DemoApp
+      working-directory: DemoApp
+      run: yarn install --frozen-lockfile --network-timeout 100000
+
+    # -- Emulator --
+    - name: Get AOSP system image and create Android virtual device
+      run: |
+        echo 'y' | ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager "system-images;android-28;default;x86_64"
+        echo 'no' | $ANDROID_SDK_ROOT/tools/bin/avdmanager create avd --force --name Pixel_API_28_AOSP -d pixel --package "system-images;android-28;default;x86_64"
+
+    - name: Start Android emulator
+      timeout-minutes: 10
+      run: |
+        echo "Starting emulator.."
+        nohup $ANDROID_HOME/emulator/emulator -avd Pixel_API_28_AOSP -no-audio -no-snapshot -no-window &
+        $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+        $ANDROID_HOME/platform-tools/adb devices
+        echo "Emulator started!"
+
+    # -- Build --
+    - name: Use gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Detox build android
+      working-directory: DemoApp
+      run: yarn detox-build-android
+
+    - name: Start Metro
+      working-directory: DemoApp
+      run: yarn start &
+
+    - name: Wait on metro endpoint
+      timeout-minutes: 2
+      run: while ! nc -z '0.0.0.0' 8081; do sleep 1; done
+
+    # -- Test --
+    - name: Detox Jest android
+      id: dj
+      uses: nick-invision/retry@v2
+      with:
+        timeout_minutes: 15
+        max_attempts: 2
+        command: |
+          cd DemoApp
+          yarn detox-test-android
+          yarn test
+
+    - name: Log events if Detox-Jest failed
+      id: eventlog
+      if: ${{ failure() && steps.dj.outcome == 'failure' }}
+      run: |
+        echo "{ \"all\": $(curl -s -o - 'http://0.0.0.0:9090/micro/all'), \
+                \"bad\": $(curl -s -o - 'http://0.0.0.0:9090/micro/bad'), \
+                \"good\": $(curl -s -o - 'http://0.0.0.0:9090/micro/good') }"\
+                | jq '.' > android-events-micro.json
+
+    - name: Upload events artifact if Detox-Jest failed
+      if: ${{ failure() && steps.dj.outcome == 'failure' && steps.eventlog.outcome == 'success' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: android-events-artifact
+        path: android-events-micro.json
+
+    # -- Cleanup --
+    - name: Stop gradle daemon
+      run: gradle --stop

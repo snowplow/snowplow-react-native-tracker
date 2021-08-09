@@ -25,12 +25,11 @@ jobs:
     - name: Compile TypeScript
       run: npm run compile
 
-    - name: Install node modules for DemoApp
-      working-directory: DemoApp
-      run: yarn install --frozen-lockfile
-
     - name: Lint
       run: npm run lint
+
+    - name: Tests
+      run: npm run test
 
   build_android:
     needs: ["test"]
@@ -56,7 +55,11 @@ jobs:
     - name: Install node_modules in DemoApp
       working-directory: DemoApp
       run: |
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --network-timeout 100000
+
+    - name: Lint DemoApp
+      working-directory: DemoApp
+      run: yarn lint
 
     - name: Build DemoApp
       working-directory: DemoApp/android
@@ -84,7 +87,7 @@ jobs:
     - name: Install node_modules in DemoApp
       working-directory: DemoApp
       run: |
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --network-timeout 100000
 
     - name: Install Pods
       working-directory: DemoApp/ios

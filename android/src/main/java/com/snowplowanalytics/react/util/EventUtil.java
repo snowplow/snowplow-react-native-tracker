@@ -2,115 +2,200 @@ package com.snowplowanalytics.react.util;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
-import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
-import com.snowplowanalytics.snowplow.tracker.events.Structured;
-import com.snowplowanalytics.snowplow.tracker.payload.SelfDescribingJson;
-import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
-import com.snowplowanalytics.snowplow.tracker.events.PageView;
+import com.snowplowanalytics.snowplow.event.SelfDescribing;
+import com.snowplowanalytics.snowplow.event.Structured;
+import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
+import com.snowplowanalytics.snowplow.event.ScreenView;
+import com.snowplowanalytics.snowplow.event.PageView;
+import com.snowplowanalytics.snowplow.event.Timing;
+import com.snowplowanalytics.snowplow.event.ConsentGranted;
+import com.snowplowanalytics.snowplow.event.ConsentWithdrawn;
+import com.snowplowanalytics.snowplow.event.EcommerceTransactionItem;
+import com.snowplowanalytics.snowplow.event.EcommerceTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EventUtil {
 
-    public static List<SelfDescribingJson> getContexts(ReadableArray contexts) {
+    public static SelfDescribingJson createSelfDescribingJson(ReadableMap json) {
+        String schema = json.getString("schema");
+        ReadableMap dataMap = json.getMap("data");
 
+        return new SelfDescribingJson(schema, dataMap.toHashMap());
+    }
+
+    public static List<SelfDescribingJson> createContexts(ReadableArray contexts) {
         List<SelfDescribingJson> nativeContexts = new ArrayList<>();
         for (int i = 0; i < contexts.size(); i++) {
-            SelfDescribingJson json = EventUtil.getSelfDescribingJson(contexts.getMap(i));
+            SelfDescribingJson json = createSelfDescribingJson(contexts.getMap(i));
             nativeContexts.add(json);
         }
+
         return nativeContexts;
     }
 
-    public static SelfDescribingJson getSelfDescribingJson(ReadableMap json) {
-
-        String schema = json.getString("schema");
-        ReadableMap dataMap = json.getMap("data");
-        if (schema != null && dataMap != null) {
-            return new SelfDescribingJson(schema, dataMap.toHashMap());
-        } else {
-            // log error
-        }
-        return null;
-    }
-
-    public static SelfDescribing getSelfDescribingEvent(ReadableMap event, ReadableArray contexts) {
-
-        SelfDescribingJson data = EventUtil.getSelfDescribingJson(event);
-        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
-        SelfDescribing.Builder eventBuilder = SelfDescribing.builder();
-        if (data == null) return null;
-        eventBuilder.eventData(data);
-        if (nativeContexts != null) {
-            eventBuilder.customContext(nativeContexts);
-        }
-        return eventBuilder.build();
-    }
-
-    public static Structured getStructuredEvent(ReadableMap details, ReadableArray contexts) {
-
-        // build with required arguments
+    public static Structured createStructuredEvent(ReadableMap argmap) {
         Structured.Builder eventBuilder = Structured.builder()
-            .category(details.getString("category"))
-            .action(details.getString("action"));
+            .category(argmap.getString("category"))
+            .action(argmap.getString("action"));
 
-        // add any optional arguments
-        if (details.hasKey("label")) {
-            eventBuilder.label(details.getString("label"));
+        if (argmap.hasKey("label")) {
+            eventBuilder.label(argmap.getString("label"));
         }
-        if (details.hasKey("property")) {
-            eventBuilder.property(details.getString("property"));
+        if (argmap.hasKey("property")) {
+            eventBuilder.property(argmap.getString("property"));
         }
         // React Native forces primitive double type - so null "value" parameter is handled by not setting at all
-        if (details.hasKey("value") && !details.isNull("value")) {
-            eventBuilder.value(details.getDouble("value"));
+        if (argmap.hasKey("value") && !argmap.isNull("value")) {
+            eventBuilder.value(argmap.getDouble("value"));
         }
 
-        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
-        if (nativeContexts != null) {
-            eventBuilder.customContext(nativeContexts);
-        }
         return eventBuilder.build();
     }
 
-    public static ScreenView getScreenViewEvent(ReadableMap details, ReadableArray contexts) {
-
-        // build with required arguments
+    public static ScreenView createScreenViewEvent(ReadableMap argmap) {
         ScreenView.Builder eventBuilder = ScreenView.builder()
-            .name(details.getString("screenName"));
-            // add any optional arguments
-            if (details.hasKey("screenType")) {
-                eventBuilder.type(details.getString("screenType"));
-            }
-            if (details.hasKey("transitionType")) {
-                eventBuilder.transitionType(details.getString("transitionType"));
-            }
+            .name(argmap.getString("name"));
 
-        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
-        if (nativeContexts != null) {
-            eventBuilder.customContext(nativeContexts);
+        if (argmap.hasKey("id")) {
+            UUID idUUID = UUID.fromString(argmap.getString("id"));
+            eventBuilder.id(idUUID.toString());
         }
+        if (argmap.hasKey("type")) {
+            eventBuilder.type(argmap.getString("type"));
+        }
+        if (argmap.hasKey("previousName")) {
+            eventBuilder.previousName(argmap.getString("previousName"));
+        }
+        if (argmap.hasKey("previousType")) {
+            eventBuilder.previousType(argmap.getString("previousType"));
+        }
+        if (argmap.hasKey("previousId")) {
+            eventBuilder.previousId(argmap.getString("previousId"));
+        }
+        if (argmap.hasKey("transitionType")) {
+            eventBuilder.transitionType(argmap.getString("transitionType"));
+        }
+
         return eventBuilder.build();
     }
 
-    public static PageView getPageViewEvent(ReadableMap details, ReadableArray contexts) {
-
-        // build with required arguments
+    public static PageView createPageViewEvent(ReadableMap argmap) {
         PageView.Builder eventBuilder = PageView.builder()
-            .pageUrl(details.getString("pageUrl"));
-        // add any optional arguments
-            if (details.hasKey("pageTitle")) {
-                eventBuilder.pageTitle(details.getString("pageTitle"));
+            .pageUrl(argmap.getString("pageUrl"));
+
+        if (argmap.hasKey("pageTitle")) {
+            eventBuilder.pageTitle(argmap.getString("pageTitle"));
+        }
+        if (argmap.hasKey("referrer")) {
+            eventBuilder.referrer(argmap.getString("referrer"));
+        }
+
+        return eventBuilder.build();
+    }
+
+    public static Timing createTimingEvent(ReadableMap argmap) {
+        Timing.Builder eventBuilder = Timing.builder()
+            .category(argmap.getString("category"))
+            .variable(argmap.getString("variable"))
+            .timing(argmap.getInt("timing"));
+
+        if (argmap.hasKey("label")) {
+            eventBuilder.label(argmap.getString("label"));
+        }
+
+        return eventBuilder.build();
+    }
+
+    public static ConsentGranted createConsentGrantedEvent(ReadableMap argmap) {
+        ConsentGranted.Builder eventBuilder = ConsentGranted.builder()
+            .expiry(argmap.getString("expiry"))
+            .documentId(argmap.getString("documentId"))
+            .documentVersion(argmap.getString("version"));
+
+        if (argmap.hasKey("name")) {
+            eventBuilder.documentName(argmap.getString("name"));
+        }
+        if (argmap.hasKey("documentDescription")) {
+            eventBuilder.documentDescription(argmap.getString("documentDescription"));
+        }
+
+        return eventBuilder.build();
+    }
+
+    public static ConsentWithdrawn createConsentWithdrawnEvent(ReadableMap argmap) {
+        ConsentWithdrawn.Builder eventBuilder = ConsentWithdrawn.builder()
+            .all(argmap.getBoolean("all"))
+            .documentId(argmap.getString("documentId"))
+            .documentVersion(argmap.getString("version"));
+
+        if (argmap.hasKey("name")) {
+            eventBuilder.documentName(argmap.getString("name"));
+        }
+        if (argmap.hasKey("documentDescription")) {
+            eventBuilder.documentDescription(argmap.getString("documentDescription"));
+        }
+
+        return eventBuilder.build();
+    }
+
+    public static List<EcommerceTransactionItem> createEcommerceTransactionItems(ReadableArray items) {
+        List<EcommerceTransactionItem> ecomItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            ReadableMap argItem = items.getMap(i);
+            EcommerceTransactionItem.Builder itemBuilder = EcommerceTransactionItem.builder()
+                .sku(argItem.getString("sku"))
+                .price(argItem.getDouble("price"))
+                .quantity(argItem.getInt("quantity"));
+
+            if (argItem.hasKey("name")) {
+                itemBuilder.name(argItem.getString("name"));
             }
-            if (details.hasKey("pageReferrer")) {
-                eventBuilder.referrer(details.getString("pageReferrer"));
+            if (argItem.hasKey("category")) {
+                itemBuilder.category(argItem.getString("category"));
+            }
+            if (argItem.hasKey("currency")) {
+                itemBuilder.currency(argItem.getString("currency"));
             }
 
-        List<SelfDescribingJson> nativeContexts = EventUtil.getContexts(contexts);
-        if (nativeContexts != null) {
-            eventBuilder.customContext(nativeContexts);
+            ecomItems.add(itemBuilder.build());
         }
+
+        return ecomItems;
+}
+
+    public static EcommerceTransaction createEcommerceTransactionEvent(ReadableMap argmap) {
+        List<EcommerceTransactionItem> ecomItems = createEcommerceTransactionItems(argmap.getArray("items"));
+
+        EcommerceTransaction.Builder eventBuilder = EcommerceTransaction.builder()
+            .orderId(argmap.getString("orderId"))
+            .totalValue(argmap.getDouble("totalValue"))
+            .items(ecomItems);
+
+        if (argmap.hasKey("affiliation")) {
+            eventBuilder.affiliation(argmap.getString("affiliation"));
+        }
+        if (argmap.hasKey("taxValue")) {
+            eventBuilder.taxValue(argmap.getDouble("taxValue"));
+        }
+        if (argmap.hasKey("shipping")) {
+            eventBuilder.shipping(argmap.getDouble("shipping"));
+        }
+        if (argmap.hasKey("city")) {
+            eventBuilder.city(argmap.getString("city"));
+        }
+        if (argmap.hasKey("state")) {
+            eventBuilder.state(argmap.getString("state"));
+        }
+        if (argmap.hasKey("country")) {
+            eventBuilder.country(argmap.getString("country"));
+        }
+        if (argmap.hasKey("currency")) {
+            eventBuilder.currency(argmap.getString("currency"));
+        }
+
         return eventBuilder.build();
     }
 }

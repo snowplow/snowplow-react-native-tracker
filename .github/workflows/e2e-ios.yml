@@ -1,0 +1,137 @@
+name: e2e-ios
+
+on:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: macos-10.15
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # -- Setup --
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    # -- Micro --
+    - name: Cache Micro
+      id: cache-micro
+      uses: actions/cache@v2
+      with:
+        path: micro.jar
+        key: ${{ runner.os }}-micro
+
+    - name: Get micro
+      if: steps.cache-micro.outputs.cache-hit != 'true'
+      run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.1.2/snowplow-micro-1.1.2.jar
+
+    - name: Run Micro in background
+      run: java -jar micro.jar --collector-config DemoApp/tests/micro/micro.conf --iglu DemoApp/tests/micro/iglu.json &
+
+    - name: Wait on Micro endpoint
+      timeout-minutes: 2
+      run: while ! nc -z '0.0.0.0' 9090; do sleep 1; done
+
+    - name: Prepare DemoApp for Micro
+      working-directory: DemoApp
+      run: perl -i -pe "s/^.*endpoint:\K.*/ \'http:\/\/0.0.0.0:9090\'\,/" App.js
+
+    # -- Tracker --
+    - name: Use npm cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install node modules
+      run: npm ci
+
+    - name: Build Tracker
+      run: npm run build
+
+    # -- App --
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - name: Use yarn cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install node modules for DemoApp
+      working-directory: DemoApp
+      run: yarn install --frozen-lockfile --network-timeout 100000
+
+    # -- Simulator --
+    - name: Install applesimutils
+      run: |
+        brew tap wix/brew
+        brew install applesimutils
+
+    # -- Build --
+    - name: Use pods cache
+      uses: actions/cache@v2
+      with:
+        path: DemoApp/ios/Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
+
+    - name: Use build cache
+      uses: mikehardy/buildcache-action@v1
+
+    - name: Install Pods
+      working-directory: DemoApp/ios
+      run: |
+        pod install
+
+    - name: Detox build ios
+      working-directory: DemoApp
+      run: yarn detox-build-ios
+
+    - name: Start Metro
+      working-directory: DemoApp
+      run: yarn start &
+
+    - name: Wait on metro endpoint
+      timeout-minutes: 2
+      run: while ! nc -z '0.0.0.0' 8081; do sleep 1; done
+
+    # -- Test --
+    - name: Detox Jest ios
+      id: dj
+      uses: nick-invision/retry@v2
+      with:
+        timeout_minutes: 15
+        max_attempts: 2
+        command: |
+          cd DemoApp
+          yarn detox-test-ios
+          yarn test
+
+    - name: Log events if Detox-Jest failed
+      id: eventlog
+      if: ${{ failure() && steps.dj.outcome == 'failure' }}
+      run: |
+        echo "{ \"all\": $(curl -s -o - 'http://0.0.0.0:9090/micro/all'), \
+                \"bad\": $(curl -s -o - 'http://0.0.0.0:9090/micro/bad'), \
+                \"good\": $(curl -s -o - 'http://0.0.0.0:9090/micro/good') }"\
+                | jq '.' > ios-events-micro.json
+
+    - name: Upload events artifact if Detox-Jest failed
+      if: ${{ failure() && steps.dj.outcome == 'failure' && steps.eventlog.outcome == 'success' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ios-events-artifact
+        path: ios-events-micro.json

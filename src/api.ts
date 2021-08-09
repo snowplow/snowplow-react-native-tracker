@@ -13,156 +13,453 @@
 
 'use strict';
 
-import { NativeModules } from 'react-native';
+import { RNSnowplowTracker } from './native';
+import { initValidate, isValidGC } from './configurations';
+import { logMessages } from './constants';
+import * as tracker from './tracker';
+import * as subject from './subject';
+
 import type {
-  InitTrackerConfig,
-  OptTrackerConfig,
-  SubjectData,
+  InitTrackerConfiguration,
+  SubjectConfiguration,
+  SelfDescribing,
+  EventContext,
   ScreenViewProps,
-  SelfDescribingProps,
   StructuredProps,
   PageViewProps,
-  EventContext,
+  TimingProps,
+  ConsentGrantedProps,
+  ConsentWithdrawnProps,
+  EcommerceTransactionProps,
+  GlobalContext,
+  ScreenSize,
 } from './types';
 
-const { RNSnowplowTracker } = NativeModules;
-
-/*
- * Initialize a tracker from specified argmap.
+/**
+ * Create a tracker from specified initial configuration.
  *
- * @param argmap - The configuration to use for the tracker instance
+ * @param initConfig {Object} - The initial tracker configuration
  * @returns - A promise fullfilled if the tracker is initialized
  */
-function initializeTracker(argmap: InitTrackerConfig): Promise<void> {
+function createTracker(initConfig: InitTrackerConfiguration): Promise<void> {
+  return <Promise<void>>initValidate(initConfig)
+    .then(() => <Promise<void>>RNSnowplowTracker.createTracker(initConfig))
+    .catch((error) => {
+      throw new Error(`${logMessages.createTracker} ${error.message}.`);
+    });
+}
 
-  const defaults: OptTrackerConfig = {// defaults for optional params
-    method: 'post',
-    protocol: 'https',
-    base64Encoded : true,
-    platformContext : true,
-    applicationContext : false,
-    lifecycleEvents : false,
-    screenContext : true,
-    sessionContext : true,
-    foregroundTimeout : 600,
-    backgroundTimeout : 300,
-    checkInterval : 15,
-    installTracking : false
+/**
+ * Removes the tracker with given namespace
+ *
+ * @param trackerNamespace {string} - The tracker namespace
+ * @returns - A boolean promise
+ */
+function removeTracker(trackerNamespace: string): Promise<boolean> {
+  if (typeof trackerNamespace !== 'string') {
+    return Promise.reject(new Error(logMessages.removeTracker));
+  }
+  return <Promise<boolean>>Promise.resolve(RNSnowplowTracker.removeTracker({tracker:trackerNamespace}));
+}
+
+/**
+ * Removes all existing trackers
+ *
+ * @returns - A void promise
+ */
+function removeAllTrackers(): Promise<boolean> {
+  return <Promise<boolean>>Promise.resolve(RNSnowplowTracker.removeAllTrackers());
+}
+
+/**
+ * Returns a function to track a SelfDescribing event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a SelfDescribing event
+ */
+function trackSelfDescribingEvent(namespace: string) {
+  return function (
+    argmap: SelfDescribing,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackSelfDescribingEvent(namespace, argmap, contexts);
   };
-
-  const ok = typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined';
-
-  if (ok) {
-    return <Promise<void>>Promise.resolve(
-      RNSnowplowTracker.initialize({...defaults, ...argmap})
-    );
-  } else {
-    const initReason = 'SnowplowTracker: initialize() requires endpoint, namespace and appId parameter to be set';
-    return Promise.reject(new Error(initReason));
-  }
 }
 
-/*
- * Sets or updates data for the Subject
+/**
+ * Returns a function to track a ScreenView event by a tracker
  *
- * @param argmap - The subject data to be used
- * @returns - A promise that is fullfilled if the Subject data is set
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a ScreenView event
  */
-function setSubjectData(argmap: SubjectData): Promise<void> {
-  return <Promise<void>>Promise.resolve(
-    RNSnowplowTracker.setSubjectData(argmap)
-  );
+function trackScreenViewEvent(namespace: string) {
+  return function (
+    argmap: ScreenViewProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackScreenViewEvent(namespace, argmap, contexts);
+  };
 }
 
-/*
- * Tracks a ScreenView event
+/**
+ * Returns a function to track a Structured event by a tracker
  *
- * @param argmap - The ScreenView event's parameters
- * @param ctxt - An array of contexts to be attached to the event
- * @returns - A promise that is fullfilled if the event is tracked successfully
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a Structured event
  */
-function trackScreenViewEvent(
-  argmap: ScreenViewProps,
-  ctxt: EventContext[] = []
-): Promise<void> {
-  if (typeof argmap.screenName !== 'undefined') {
-    return <Promise<void>>Promise.resolve(
-      RNSnowplowTracker.trackScreenViewEvent(argmap, ctxt)
-    );
-  } else {
-    const reason = 'SnowplowTracker: trackScreenViewEvent() requires screenName parameter to be set';
-    return Promise.reject(new Error(reason));
-  }
+function trackStructuredEvent(namespace: string) {
+  return function (
+    argmap: StructuredProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackStructuredEvent(namespace, argmap, contexts);
+  };
 }
 
-/*
- * Tracks a SelfDescribing event
+/**
+ * Returns a function to track a PageView event by a tracker
  *
- * @param argmap - The SelfDescribing event's parameters
- * @param ctxt - An array of contexts to be attached to the event
- * @returns - A promise that is fullfilled if the event is tracked successfully
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a PageView event
  */
-function trackSelfDescribingEvent(
-  argmap: SelfDescribingProps,
-  ctxt: EventContext[] = []
-): Promise<void> {
-  if (typeof argmap.schema !== 'undefined' && typeof argmap.data !== 'undefined') {
-    return <Promise<void>>Promise.resolve(
-      RNSnowplowTracker.trackSelfDescribingEvent(argmap, ctxt)
-    );
-  } else {
-    const reason = 'SnowplowTracker: trackSelfDescribingEvent() requires schema and data parameters to be set';
-    return Promise.reject(new Error(reason));
-  }
+function trackPageViewEvent(namespace: string) {
+  return function (
+    argmap: PageViewProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackPageViewEvent(namespace, argmap, contexts);
+  };
 }
 
-/*
- * Tracks a Structured event
+/**
+ * Returns a function to track a Timing event by a tracker
  *
- * @param argmap - The Structured event's parameters
- * @param ctxt - An array of contexts to be attached to the event
- * @returns - A promise that is fullfilled if the event is tracked successfully
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a Timing event
  */
-function trackStructuredEvent(
-  argmap: StructuredProps,
-  ctxt: EventContext[] = []
-): Promise<void> {
-  if (typeof argmap.category !== 'undefined' && typeof argmap.action !== 'undefined') {
-    return <Promise<void>>Promise.resolve(
-      RNSnowplowTracker.trackStructuredEvent(argmap, ctxt)
-    );
-  } else {
-    const reason = 'SnowplowTracker: trackStructuredEvent() requires category and action parameters to be set';
-    return Promise.reject(new Error(reason));
-  }
+function trackTimingEvent(namespace: string) {
+  return function (
+    argmap: TimingProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackTimingEvent(namespace, argmap, contexts);
+  };
 }
 
-/*
- * Tracks a PageView event
+/**
+ * Returns a function to track a ConsentGranted event by a tracker
  *
- * @param argmap - The PageView event's parameters
- * @param ctxt - An array of contexts to be attached to the event
- * @returns - A promise that is fullfilled if the event is tracked successfully
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a ConsentGranted event
  */
-function trackPageViewEvent(
-  argmap: PageViewProps,
-  ctxt: EventContext[] = []
-): Promise<void> {
-  if (typeof argmap.pageUrl !== 'undefined') {
-    return <Promise<void>>Promise.resolve(
-      RNSnowplowTracker.trackPageViewEvent(argmap, ctxt)
-    );
-  } else {
-    const reason = 'SnowplowTracker: trackPageViewEvent() requires pageUrl parameter to be set';
-    return Promise.reject(new Error(reason));
-  }
+function trackConsentGrantedEvent(namespace: string) {
+  return function (
+    argmap: ConsentGrantedProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackConsentGrantedEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track a ConsentWithdrawn event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a ConsentWithdrawn event
+ */
+function trackConsentWithdrawnEvent(namespace: string) {
+  return function (
+    argmap: ConsentWithdrawnProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackConsentWithdrawnEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track an EcommerceTransaction event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track an EcommerceTransaction event
+ */
+function trackEcommerceTransactionEvent(namespace: string) {
+  return function (
+    argmap: EcommerceTransactionProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackEcommerceTransactionEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to remove global contexts by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to remove global contexts
+ */
+function removeGlobalContexts(namespace:string) {
+  return function (tag: string): Promise<void> {
+    if (typeof tag !== 'string') {
+      return Promise.reject(new Error(`${logMessages.removeGlobalContexts} ${logMessages.gcTagType}`));
+    }
+    return <Promise<void>>Promise.resolve(RNSnowplowTracker.removeGlobalContexts({tracker:namespace, removeTag: tag}));
+  };
+}
+
+/**
+ * Returns a function to add global contexts by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to add global contexts
+ */
+function addGlobalContexts(namespace:string) {
+  return function (gc: GlobalContext): Promise<void> {
+    if (!isValidGC(gc)) {
+      return Promise.reject(new Error(`${logMessages.addGlobalContexts} ${logMessages.gcType}`));
+    }
+    return <Promise<void>>Promise.resolve(RNSnowplowTracker.addGlobalContexts({tracker:namespace, addGlobalContext: gc}));
+  };
+}
+
+/**
+ * Returns a function to set the subject userId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the userId
+ */
+function setUserId(namespace:string) {
+  return function (newUid: string | null): Promise<void> {
+    return subject.setUserId(namespace, newUid);
+  };
+}
+
+/**
+ * Returns a function to set the subject networkUserId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the networkUserId
+ */
+function setNetworkUserId(namespace:string) {
+  return function (newNuid: string | null): Promise<void> {
+    return subject.setNetworkUserId(namespace, newNuid);
+  };
+}
+
+/**
+ * Returns a function to set the subject domainUserId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the domainUserId
+ */
+function setDomainUserId(namespace:string) {
+  return function (newDuid: string | null): Promise<void> {
+    return subject.setDomainUserId(namespace, newDuid);
+  };
+}
+
+/**
+ * Returns a function to set the subject ipAddress
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the ipAddress
+ */
+function setIpAddress(namespace:string) {
+  return function (newIp: string | null): Promise<void> {
+    return subject.setIpAddress(namespace, newIp);
+  };
+}
+
+/**
+ * Returns a function to set the subject useragent
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the useragent
+ */
+function setUseragent(namespace:string) {
+  return function (newUagent: string | null): Promise<void> {
+    return subject.setUseragent(namespace, newUagent);
+  };
+}
+
+/**
+ * Returns a function to set the subject timezone
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the timezone
+ */
+function setTimezone(namespace:string) {
+  return function (newTz: string | null): Promise<void> {
+    return subject.setTimezone(namespace, newTz);
+  };
+}
+
+/**
+ * Returns a function to set the subject language
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the language
+ */
+function setLanguage(namespace:string) {
+  return function (newLang: string | null): Promise<void> {
+    return subject.setLanguage(namespace, newLang);
+  };
+}
+
+/**
+ * Returns a function to set the subject screenResolution
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the screenResolution
+ */
+function setScreenResolution(namespace:string) {
+  return function (newRes: ScreenSize | null): Promise<void> {
+    return subject.setScreenResolution(namespace, newRes);
+  };
+}
+
+/**
+ * Returns a function to set the subject screenViewport
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the screenViewport
+ */
+function setScreenViewport(namespace:string) {
+  return function (newView: ScreenSize | null): Promise<void> {
+    return subject.setScreenViewport(namespace, newView);
+  };
+}
+
+/**
+ * Returns a function to set the subject colorDepth
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set the colorDepth
+ */
+function setColorDepth(namespace:string) {
+  return function (newColorD: number | null): Promise<void> {
+    return subject.setColorDepth(namespace, newColorD);
+  };
+}
+
+/**
+ * Returns a function to set subject data
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to set subject data
+ */
+function setSubjectData(namespace:string) {
+  return function (config: SubjectConfiguration): Promise<void> {
+    return subject.setSubjectData(namespace, config);
+  };
+}
+
+/**
+ * Returns a function to get the current session userId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the session userId
+ */
+function getSessionUserId(namespace: string) {
+  return function (): Promise<string> {
+    return <Promise<string>>Promise
+      .resolve(RNSnowplowTracker.getSessionUserId({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the current sessionId
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the sessionId
+ */
+function getSessionId(namespace: string) {
+  return function (): Promise<string> {
+    return <Promise<string>>Promise
+      .resolve(RNSnowplowTracker.getSessionId({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the current session index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the session index
+ */
+function getSessionIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getSessionIndex({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get whether the app is in background
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get whether the app isInBackground
+ */
+function getIsInBackground(namespace: string) {
+  return function (): Promise<boolean> {
+    return <Promise<boolean>>Promise
+      .resolve(RNSnowplowTracker.getIsInBackground({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the background index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the backgroundIndex
+ */
+function getBackgroundIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getBackgroundIndex({tracker: namespace}));
+  };
+}
+
+/**
+ * Returns a function to get the foreground index
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to get the foregroundIndex
+ */
+function getForegroundIndex(namespace: string) {
+  return function (): Promise<number> {
+    return <Promise<number>>Promise
+      .resolve(RNSnowplowTracker.getForegroundIndex({tracker: namespace}));
+  };
 }
 
 export {
-  initializeTracker,
-  setSubjectData,
-  trackScreenViewEvent,
+  createTracker,
+  removeTracker,
+  removeAllTrackers,
   trackSelfDescribingEvent,
+  trackScreenViewEvent,
   trackStructuredEvent,
   trackPageViewEvent,
+  trackTimingEvent,
+  trackConsentGrantedEvent,
+  trackConsentWithdrawnEvent,
+  trackEcommerceTransactionEvent,
+  removeGlobalContexts,
+  addGlobalContexts,
+  setUserId,
+  setNetworkUserId,
+  setDomainUserId,
+  setIpAddress,
+  setUseragent,
+  setTimezone,
+  setLanguage,
+  setScreenResolution,
+  setScreenViewport,
+  setColorDepth,
+  setSubjectData,
+  getSessionUserId,
+  getSessionId,
+  getSessionIndex,
+  getIsInBackground,
+  getBackgroundIndex,
+  getForegroundIndex,
 };

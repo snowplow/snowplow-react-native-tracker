@@ -1,6 +1,6 @@
 {
   "name": "@snowplow/react-native-tracker",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A library for tracking Snowplow events in React Native",
   "homepage": "https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/",
   "main": "dist/index.js",
@@ -10,13 +10,14 @@
     "bundle": "rollup --config",
     "build": "npm run compile && npm run bundle && rimraf dist/tmp",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "bootstrap": "npm run build && cd DemoApp && rimraf node_modules && yarn"
   },
   "files": [
-    "src",
     "dist",
     "android",
-    "ios"
+    "ios",
+    "RNSnowplowTracker.podspec"
   ],
   "keywords": [
     "react-native",
@@ -28,7 +29,8 @@
     "Colm O Griobhtha",
     "James Munro",
     "Max Bondarenko",
-    "Paul Boocock"
+    "Paul Boocock",
+    "Ada Tzereme"
   ],
   "license": "Apache-2.0",
   "repository": {
@@ -40,15 +42,42 @@
     "react-native": ">=0.59.8"
   },
   "devDependencies": {
-    "@types/react": "^17.0.11",
-    "@types/react-native": "^0.64.10",
-    "@typescript-eslint/eslint-plugin": "^4.27.0",
-    "@typescript-eslint/parser": "^4.27.0",
-    "eslint": "^7.28.0",
+    "@types/jest": "^26.0.24",
+    "@types/react": "^17.0.15",
+    "@types/react-native": "^0.64.12",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.0.6",
     "rimraf": "^3.0.2",
-    "rollup": "^2.52.1",
+    "rollup": "^2.56.0",
     "rollup-plugin-dts": "^3.0.2",
-    "typescript": "^4.3.2"
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/tests/**/*test.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/DemoApp/"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/tests/"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tests/tsconfig.json"
+      }
+    }
   }
 }
