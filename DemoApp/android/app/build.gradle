@@ -215,6 +215,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation 'com.snowplowanalytics:snowplow-android-tracker:2.+@aar'
 }
 
 // Run this once to be able to run the application with BUCK

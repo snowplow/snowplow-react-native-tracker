@@ -1,6 +1,10 @@
 package com.demoapp;
 
+import android.view.KeyEvent;
+
 import com.facebook.react.ReactActivity;
+import com.snowplowanalytics.snowplow.Snowplow;
+import com.snowplowanalytics.snowplow.event.Structured;
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +15,14 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "DemoApp";
+  }
+
+  /**
+   * Demonstrates the use of a tracker initialized in React native.
+   */
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    Snowplow.getDefaultTracker().track(new Structured("key", "press"));
+    return super.onKeyDown(keyCode, event);
   }
 }
