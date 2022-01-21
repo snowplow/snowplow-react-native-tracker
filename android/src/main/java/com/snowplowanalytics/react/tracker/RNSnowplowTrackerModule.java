@@ -18,6 +18,7 @@ import com.snowplowanalytics.snowplow.configuration.SessionConfiguration;
 import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
 import com.snowplowanalytics.snowplow.configuration.GlobalContextsConfiguration;
+import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
 import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.controller.TrackerController;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
@@ -166,7 +167,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             TrackerController trackerController = Snowplow.getTracker(namespace);
 
             SelfDescribingJson sdj = EventUtil.createSelfDescribingJson(argmap);
-            SelfDescribing event = SelfDescribing.builder().eventData(sdj).build();
+            SelfDescribing event = new SelfDescribing(sdj);
 
             List<SelfDescribingJson> evCtxts = EventUtil.createContexts(contexts);
             event.customContexts.addAll(evCtxts);
