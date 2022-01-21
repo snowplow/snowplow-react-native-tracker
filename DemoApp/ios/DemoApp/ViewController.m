@@ -8,7 +8,6 @@
 #import "ViewController.h"
 #import "SPSnowplow.h"
 #import "SPStructured.h"
-#import "SPTrackerController.h"
 
 @interface ViewController ()
 

@@ -32,7 +32,7 @@ const timing = 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0';
 const mobileApplicationContext =
   'iglu:com.snowplowanalytics.mobile/application/jsonschema/1-0-0';
 const mobileContext =
-  'iglu:com.snowplowanalytics.snowplow/mobile_context/jsonschema/1-0-1';
+  'iglu:com.snowplowanalytics.snowplow/mobile_context/jsonschema/1-0-2';
 const mobileScreenContext =
   'iglu:com.snowplowanalytics.mobile/screen/jsonschema/1-0-0';
 const clientSessionContext =
