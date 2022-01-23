@@ -193,7 +193,7 @@ public class ConfigUtil {
             int byteLimitPost = (int) emitterConfig.getDouble("byteLimitPost");
             emitterConfiguration.byteLimitPost(byteLimitPost);
         }
-        if (emitterConfig.hasKey("byteLimitPost")) {
+        if (emitterConfig.hasKey("byteLimitGet")) {
             int byteLimitGet = (int) emitterConfig.getDouble("byteLimitGet");
             emitterConfiguration.byteLimitGet(byteLimitGet);
         }
