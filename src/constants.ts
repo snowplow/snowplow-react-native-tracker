@@ -36,6 +36,7 @@ const logMessages = {
   consentGReq: 'consentGranted event requires expiry, documentId and version parameters to be set',
   consentWReq: 'consentWithdrawn event requires all, documentId and version parameters to be set',
   ecomReq: 'ecommerceTransaction event requires orderId, totalValue to be set and items to be an array of valid ecommerceItems',
+  deepLinkReq: 'deepLinkReceived event requires the url parameter to be set',
 
   // global contexts errors
   gcTagType: 'tag argument is required to be a string',
@@ -54,6 +55,7 @@ const logMessages = {
   trackConsentGranted: 'trackConsentGranted:',
   trackConsentWithdrawn: 'trackConsentWithdrawn:',
   trackEcommerceTransaction: 'trackEcommerceTransaction:',
+  trackDeepLinkReceived: 'trackDeepLinkReceivedEvent:',
   removeGlobalContexts: 'removeGlobalContexts:',
   addGlobalContexts: 'addGlobalContexts:',
 

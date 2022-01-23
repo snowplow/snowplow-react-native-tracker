@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.snowplowanalytics.snowplow.entity.DeepLink;
+import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
 import com.snowplowanalytics.snowplow.event.Structured;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.ScreenView;
@@ -205,6 +207,18 @@ public class EventUtil {
         }
         if (argmap.hasKey("currency")) {
             event.currency(argmap.getString("currency"));
+        }
+
+        return event;
+    }
+
+    public static DeepLinkReceived createDeepLinkReceivedEvent(ReadableMap argmap) {
+        DeepLinkReceived event = new DeepLinkReceived(
+                Objects.requireNonNull(argmap.getString("url"), "url can't be null")
+        );
+
+        if (argmap.hasKey("referrer")) {
+            event.referrer(argmap.getString("referrer"));
         }
 
         return event;

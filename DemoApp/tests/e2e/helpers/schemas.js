@@ -27,6 +27,8 @@ const consentGranted =
 const consentDoc =
   'iglu:com.snowplowanalytics.snowplow/consent_document/jsonschema/1-0-0';
 const timing = 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0';
+const deepLink =
+  'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0';
 
 // Context schemas
 const mobileApplicationContext =
@@ -53,4 +55,5 @@ export {
   mobileScreenContext,
   clientSessionContext,
   gdprContext,
+  deepLink,
 };

@@ -122,6 +122,11 @@ export interface TrackerConfiguration {
    */
   sessionContext?: boolean;
   /**
+   * Whether to attach a Deep Link entity to the first ScreenView tracked in the tracker after DeepLinkReceived event.
+   * @defaultValue true
+   */
+  deepLinkContext?: boolean;
+  /**
    * Whether screen context is attached to tracked events.
    * @defaultValue true
    */
@@ -533,6 +538,21 @@ export type EcommerceTransactionProps = {
 };
 
 /**
+ * DeepLinkReceived event properties
+ * schema: iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0
+ */
+export type DeepLinkReceivedProps = {
+  /**
+   * URL in the received deep-link.
+   */
+  url: string;
+  /**
+   * Referrer URL, source of this deep-link.
+   */
+  referrer?: string;
+};
+
+/**
  * The ReactNativeTracker type
  */
 export type ReactNativeTracker = {
@@ -621,6 +641,17 @@ export type ReactNativeTracker = {
    */
   readonly trackEcommerceTransactionEvent: (
     argmap: EcommerceTransactionProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a deep link received event
+   *
+   * @param argmap - The deep link received event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackDeepLinkReceivedEvent: (
+    argmap: DeepLinkReceivedProps,
     contexts?: EventContext[]
   ) => Promise<void>;
 

@@ -230,6 +230,13 @@ const App = () => {
     });
   };
 
+  const onPressTrackDeepLinkReceivedEvent = () => {
+    tracker.trackDeepLinkReceivedEvent({
+      url: 'https://deeplink.com',
+      referrer: 'http://refr.com',
+    });
+  };
+
   const onPressShowMeSomeWarnings = () => {
     tracker.trackSelfDescribingEvent({});
     tracker.trackStructuredEvent({});
@@ -352,6 +359,14 @@ const App = () => {
               title="Track some Page View Events"
               color="#841584"
               accessibilityLabel="testPageView"
+            />
+          </Section>
+          <Section title="Deep Link">
+            <Button
+              onPress={onPressTrackDeepLinkReceivedEvent}
+              title="Track a Deep Link Received Events"
+              color="#841584"
+              accessibilityLabel="testDeepLinkReceived"
             />
           </Section>
           <Section title="Second tracker">

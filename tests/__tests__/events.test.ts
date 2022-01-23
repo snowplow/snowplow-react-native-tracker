@@ -394,6 +394,34 @@ describe('test validateConsentWithdrawn', () => {
   });
 });
 
+describe('test validateDeepLinkReceived', () => {
+  test('test invalid deepLinkReceived - wrong type', async () => {
+    const testEv = null as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.evType);
+  });
+
+  test('test invalid deepLinkReceived - missing url', async () => {
+    const testEv = {
+    } as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.deepLinkReq);
+  });
+
+  test('test invalid deepLinkReceived - invalid url', async () => {
+    const testEv = {
+      url: true
+    } as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.deepLinkReq);
+  });
+
+  test('test valid consentGranted', async () => {
+    const testEv = {
+      url: 'https://example.com/to',
+      referrer: 'https://example.com/from'
+    };
+    await expect(e.validateDeepLinkReceived(testEv)).resolves.toBe(true);
+  });
+});
+
 
 describe('test isValidEcomItem', () => {
   test('invalid - wrong type', () => {

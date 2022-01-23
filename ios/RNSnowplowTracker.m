@@ -44,6 +44,7 @@
 #import <SnowplowTracker/SPStructured.h>
 #import <SnowplowTracker/SPEcommerceItem.h>
 #import <SnowplowTracker/SPEcommerce.h>
+#import <SnowplowTracker/SPDeepLinkReceived.h>
 
 
 @implementation RNSnowplowTracker
@@ -427,6 +428,34 @@ RCT_EXPORT_METHOD(trackEcommerceTransactionEvent:
         [trackerController track:event];
         resolve(@YES);
 
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(trackDeepLinkReceivedEvent:
+    (NSDictionary *)details
+            resolver:(RCTPromiseResolveBlock)resolve
+            rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSDictionary *argmap = [details objectForKey:@"eventData"];
+        NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
+
+        NSString *url = [argmap sp_stringForKey:@"url" defaultValue:nil];
+        SPDeepLinkReceived *event = [[SPDeepLinkReceived alloc] initWithUrl:url];
+
+        NSString *referrer = [argmap sp_stringForKey:@"referrer" defaultValue:nil];
+        if (referrer) {
+            event.referrer = referrer;
+        }
+
+        [event contexts:[RNUtilities mkSDJArray:contexts]];
+        [trackerController track:event];
+        resolve(@YES);
     } else {
         NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
         reject(@"ERROR", @"tracker with given namespace not found", error);

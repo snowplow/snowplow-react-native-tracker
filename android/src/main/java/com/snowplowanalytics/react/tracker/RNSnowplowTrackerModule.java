@@ -342,6 +342,29 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void trackDeepLinkReceivedEvent(ReadableMap details,
+                                           Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            ReadableMap argmap = details.getMap("eventData");
+            ReadableArray contexts = details.getArray("contexts");
+
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            DeepLinkReceived event = EventUtil.createDeepLinkReceivedEvent(argmap);
+
+            List<SelfDescribingJson> evCtxts = EventUtil.createContexts(contexts);
+            event.customContexts.addAll(evCtxts);
+
+            trackerController.track(event);
+            promise.resolve(true);
+
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void removeGlobalContexts(ReadableMap details,
                                      Promise promise) {
         try {

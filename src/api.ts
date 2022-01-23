@@ -33,6 +33,7 @@ import type {
   EcommerceTransactionProps,
   GlobalContext,
   ScreenSize,
+  DeepLinkReceivedProps,
 } from './types';
 
 /**
@@ -188,6 +189,21 @@ function trackEcommerceTransactionEvent(namespace: string) {
     contexts: EventContext[] = []
   ): Promise<void> {
     return tracker.trackEcommerceTransactionEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track an DeepLinkReceived event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track an DeepLinkReceived event
+ */
+function trackDeepLinkReceivedEvent(namespace: string) {
+  return function (
+    argmap: DeepLinkReceivedProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackDeepLinkReceivedEvent(namespace, argmap, contexts);
   };
 }
 
@@ -443,6 +459,7 @@ export {
   trackConsentGrantedEvent,
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
+  trackDeepLinkReceivedEvent,
   removeGlobalContexts,
   addGlobalContexts,
   setUserId,

@@ -64,6 +64,7 @@
     trackerConfiguration.platformContext = [trackerConfig sp_boolForKey:@"platformContext" defaultValue:YES];
     trackerConfiguration.geoLocationContext = [trackerConfig sp_boolForKey:@"geoLocationContext" defaultValue:NO];
     trackerConfiguration.screenContext = [trackerConfig sp_boolForKey:@"screenContext" defaultValue:YES];
+    trackerConfiguration.deepLinkContext = [trackerConfig sp_boolForKey:@"deepLinkContext" defaultValue:YES];
     trackerConfiguration.screenViewAutotracking = [trackerConfig sp_boolForKey:@"screenViewAutotracking" defaultValue:YES];
     trackerConfiguration.lifecycleAutotracking = [trackerConfig sp_boolForKey:@"lifecycleAutotracking" defaultValue:NO];
     trackerConfiguration.installAutotracking = [trackerConfig sp_boolForKey:@"installAutotracking" defaultValue:YES];

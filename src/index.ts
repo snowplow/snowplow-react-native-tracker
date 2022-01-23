@@ -58,6 +58,7 @@ function createTracker(
   const trackConsentGrantedEvent = mkMethod(api.trackConsentGrantedEvent(namespace));
   const trackConsentWithdrawnEvent = mkMethod(api.trackConsentWithdrawnEvent(namespace));
   const trackEcommerceTransactionEvent = mkMethod(api.trackEcommerceTransactionEvent(namespace));
+  const trackDeepLinkReceivedEvent = mkMethod(api.trackDeepLinkReceivedEvent(namespace));
   // Global Contexts
   const removeGlobalContexts = mkMethod(api.removeGlobalContexts(namespace));
   const addGlobalContexts = mkMethod(api.addGlobalContexts(namespace));
@@ -91,6 +92,7 @@ function createTracker(
     trackConsentGrantedEvent,
     trackConsentWithdrawnEvent,
     trackEcommerceTransactionEvent,
+    trackDeepLinkReceivedEvent,
     removeGlobalContexts,
     addGlobalContexts,
     setUserId,

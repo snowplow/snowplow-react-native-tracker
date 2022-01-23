@@ -153,6 +153,19 @@ test('ecommerce transaction event', async () => {
   );
 });
 
+test('deep link event', async () => {
+  await commands.eventsWithProperties(
+    {
+      schema: schemas.deepLink,
+      values: {
+        url: 'https://deeplink.com',
+        referrer: 'http://refr.com',
+      },
+    },
+    1,
+  );
+});
+
 test('common in all first tracker events', async () => {
   await commands.eventsWithProperties(
     {
@@ -185,7 +198,7 @@ test('common in all first tracker events', async () => {
         },
       ],
     },
-    21,
+    22,
   );
 });
 

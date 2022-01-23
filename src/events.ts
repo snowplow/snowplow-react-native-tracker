@@ -26,6 +26,7 @@ import type {
   ConsentWithdrawnProps,
   EcommerceItem,
   EcommerceTransactionProps,
+  DeepLinkReceivedProps,
 } from './types';
 
 /**
@@ -203,6 +204,27 @@ function validateConsentWithdrawn(argmap: ConsentWithdrawnProps): Promise<boolea
 }
 
 /**
+ * Validates a deep link received event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateDeepLinkReceived(argmap: DeepLinkReceivedProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+  // validate required props
+  if (
+    typeof argmap.url !== 'string'
+  ) {
+    return Promise.reject(new Error(logMessages.deepLinkReq));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
  * Validates whether an object is valid ecommerce-item
  *
  * @param item {Object} - the object to validate
@@ -269,4 +291,5 @@ export {
   isValidEcomItem,
   validItemsArg,
   validateEcommerceTransaction,
+  validateDeepLinkReceived
 };
