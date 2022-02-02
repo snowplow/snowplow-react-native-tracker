@@ -34,6 +34,7 @@ import type {
   GlobalContext,
   ScreenSize,
   DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -204,6 +205,21 @@ function trackDeepLinkReceivedEvent(namespace: string) {
     contexts: EventContext[] = []
   ): Promise<void> {
     return tracker.trackDeepLinkReceivedEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track an MessageNotification event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track an MessageNotification event
+ */
+function trackMessageNotificationEvent(namespace: string) {
+  return function (
+    argmap: MessageNotificationProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackMessageNotificationEvent(namespace, argmap, contexts);
   };
 }
 
@@ -460,6 +476,7 @@ export {
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
   trackDeepLinkReceivedEvent,
+  trackMessageNotificationEvent,
   removeGlobalContexts,
   addGlobalContexts,
   setUserId,

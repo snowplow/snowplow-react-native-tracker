@@ -29,7 +29,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testScreenView')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testScreenView')).tap();
   });
@@ -38,7 +38,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testSelfDesc')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSelfDesc')).tap();
   });
@@ -47,7 +47,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testStruct')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testStruct')).tap();
   });
@@ -56,7 +56,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testPageView')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testPageView')).tap();
   });
@@ -65,16 +65,25 @@ describe('Example', () => {
     await waitFor(element(by.label('testDeepLinkReceived')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testDeepLinkReceived')).tap();
+  });
+
+  it('should tap Message Notification Button', async () => {
+    await waitFor(element(by.label('testMessageNotification')))
+      .toBeVisible()
+      .whileElement(by.id('scrollView'))
+      .scroll(100, 'down');
+
+    await element(by.label('testMessageNotification')).tap();
   });
 
   it('should tap Second tracker Button', async () => {
     await waitFor(element(by.label('testSecTracker')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSecTracker')).tap();
   });
@@ -83,7 +92,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testSetSubject')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(70, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSetSubject')).tap();
   });

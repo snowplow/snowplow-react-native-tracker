@@ -19,6 +19,7 @@ import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
 import com.snowplowanalytics.snowplow.configuration.GlobalContextsConfiguration;
 import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
+import com.snowplowanalytics.snowplow.event.MessageNotification;
 import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.controller.TrackerController;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
@@ -352,6 +353,29 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             TrackerController trackerController = Snowplow.getTracker(namespace);
 
             DeepLinkReceived event = EventUtil.createDeepLinkReceivedEvent(argmap);
+
+            List<SelfDescribingJson> evCtxts = EventUtil.createContexts(contexts);
+            event.customContexts.addAll(evCtxts);
+
+            trackerController.track(event);
+            promise.resolve(true);
+
+        } catch(Throwable t) {
+            promise.reject("ERROR", t.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void trackMessageNotificationEvent(ReadableMap details,
+                                              Promise promise) {
+        try {
+            String namespace = details.getString("tracker");
+            ReadableMap argmap = details.getMap("eventData");
+            ReadableArray contexts = details.getArray("contexts");
+
+            TrackerController trackerController = Snowplow.getTracker(namespace);
+
+            MessageNotification event = EventUtil.createMessageNotificationEvent(argmap);
 
             List<SelfDescribingJson> evCtxts = EventUtil.createContexts(contexts);
             event.customContexts.addAll(evCtxts);

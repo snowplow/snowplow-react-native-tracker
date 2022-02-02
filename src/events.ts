@@ -27,6 +27,7 @@ import type {
   EcommerceItem,
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -225,6 +226,30 @@ function validateDeepLinkReceived(argmap: DeepLinkReceivedProps): Promise<boolea
 }
 
 /**
+ * Validates a message notification event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateMessageNotification(argmap: MessageNotificationProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+  // validate required props
+  if (
+    typeof argmap.title !== 'string'
+    || typeof argmap.body !== 'string'
+    || typeof argmap.trigger !== 'string'
+    || !['push', 'location', 'calendar', 'timeInterval', 'other'].includes(argmap.trigger)
+  ) {
+    return Promise.reject(new Error(logMessages.messageNotificationReq));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
  * Validates whether an object is valid ecommerce-item
  *
  * @param item {Object} - the object to validate
@@ -291,5 +316,6 @@ export {
   isValidEcomItem,
   validItemsArg,
   validateEcommerceTransaction,
-  validateDeepLinkReceived
+  validateDeepLinkReceived,
+  validateMessageNotification
 };

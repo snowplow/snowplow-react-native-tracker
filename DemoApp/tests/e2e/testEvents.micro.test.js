@@ -166,6 +166,42 @@ test('deep link event', async () => {
   );
 });
 
+test('message notification event', async () => {
+  await commands.eventsWithProperties(
+    {
+      schema: schemas.messageNotification,
+      values: {
+        title: 'title1',
+        body: 'body1',
+        trigger: 'push',
+        action: 'action1',
+        attachments: [
+          {
+            identifier: 'att_id1',
+            type: 'att_type1',
+            url: 'http://att.url.1',
+          },
+        ],
+        bodyLocArgs: ['bodyArg1', 'bodyArg2'],
+        bodyLocKey: 'bodyKey1',
+        category: 'category1',
+        contentAvailable: true,
+        group: 'group1',
+        icon: 'icon1',
+        notificationCount: 3,
+        notificationTimestamp: '2022-02-02T15:17:42.767Z',
+        sound: 'sound1',
+        subtitle: 'subtitle1',
+        tag: 'tag1',
+        threadIdentifier: 'threadIdentifier1',
+        titleLocArgs: ['titleArg1', 'titleArg2'],
+        titleLocKey: 'titleKey1',
+      },
+    },
+    1,
+  );
+});
+
 test('common in all first tracker events', async () => {
   await commands.eventsWithProperties(
     {
@@ -198,7 +234,7 @@ test('common in all first tracker events', async () => {
         },
       ],
     },
-    22,
+    23,
   );
 });
 

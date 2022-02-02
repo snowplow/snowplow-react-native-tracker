@@ -413,7 +413,7 @@ describe('test validateDeepLinkReceived', () => {
     await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.deepLinkReq);
   });
 
-  test('test valid consentGranted', async () => {
+  test('test valid deepLinkReceived', async () => {
     const testEv = {
       url: 'https://example.com/to',
       referrer: 'https://example.com/from'
@@ -422,6 +422,32 @@ describe('test validateDeepLinkReceived', () => {
   });
 });
 
+describe('test validateMessageNotification', () => {
+  test('test invalid messageNotification - wrong type', async () => {
+    const testEv = null as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.evType);
+  });
+
+  test('test invalid messageNotification - missing properties', async () => {
+    const testEv = {
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.messageNotificationReq);
+  });
+
+  test('test invalid messageNotification - invalid trigger', async () => {
+    const testEv = {
+      title: 'x', body: 'y', trigger: 'z'
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.messageNotificationReq);
+  });
+
+  test('test valid messageNotification', async () => {
+    const testEv = {
+      title: 'x', body: 'y', trigger: 'push'
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).resolves.toBe(true);
+  });
+});
 
 describe('test isValidEcomItem', () => {
   test('invalid - wrong type', () => {

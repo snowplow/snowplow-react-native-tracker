@@ -26,6 +26,7 @@ import {
   validateConsentWithdrawn,
   validateEcommerceTransaction,
   validateDeepLinkReceived,
+  validateMessageNotification
 } from './events';
 import type {
   SelfDescribing,
@@ -38,6 +39,7 @@ import type {
   ConsentWithdrawnProps,
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -266,6 +268,31 @@ function trackDeepLinkReceivedEvent(
     });
 }
 
+/**
+ * Tracks a message notification event
+ *
+ * @param namespace {string} - the tracker namespace
+ * @param argmap {Object} - the event data
+ * @param contexts {Array}- the event contexts
+ * @returns {Promise}
+ */
+function trackMessageNotificationEvent(
+  namespace: string,
+  argmap: MessageNotificationProps,
+  contexts: EventContext[] = []
+): Promise<void> {
+  return <Promise<void>>validateMessageNotification(argmap)
+    .then(() => validateContexts(contexts))
+    .then(() =>
+      <Promise<void>>RNSnowplowTracker.trackMessageNotificationEvent({
+        tracker: namespace,
+        eventData: argmap,
+        contexts: contexts}))
+    .catch((error) => {
+      throw new Error(`${logMessages.trackMessageNotification} ${error.message}`);
+    });
+}
+
 export {
   trackSelfDescribingEvent,
   trackScreenViewEvent,
@@ -275,5 +302,6 @@ export {
   trackConsentGrantedEvent,
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
-  trackDeepLinkReceivedEvent
+  trackDeepLinkReceivedEvent,
+  trackMessageNotificationEvent
 };
