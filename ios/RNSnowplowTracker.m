@@ -44,6 +44,8 @@
 #import <SnowplowTracker/SPStructured.h>
 #import <SnowplowTracker/SPEcommerceItem.h>
 #import <SnowplowTracker/SPEcommerce.h>
+#import <SnowplowTracker/SPDeepLinkReceived.h>
+#import <SnowplowTracker/SPMessageNotification.h>
 
 
 @implementation RNSnowplowTracker
@@ -427,6 +429,148 @@ RCT_EXPORT_METHOD(trackEcommerceTransactionEvent:
         [trackerController track:event];
         resolve(@YES);
 
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(trackDeepLinkReceivedEvent:
+    (NSDictionary *)details
+            resolver:(RCTPromiseResolveBlock)resolve
+            rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSDictionary *argmap = [details objectForKey:@"eventData"];
+        NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
+
+        NSString *url = [argmap sp_stringForKey:@"url" defaultValue:nil];
+        SPDeepLinkReceived *event = [[SPDeepLinkReceived alloc] initWithUrl:url];
+
+        NSString *referrer = [argmap sp_stringForKey:@"referrer" defaultValue:nil];
+        if (referrer) {
+            event.referrer = referrer;
+        }
+
+        [event contexts:[RNUtilities mkSDJArray:contexts]];
+        [trackerController track:event];
+        resolve(@YES);
+    } else {
+        NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
+        reject(@"ERROR", @"tracker with given namespace not found", error);
+    }
+}
+
+RCT_EXPORT_METHOD(trackMessageNotificationEvent:
+    (NSDictionary *)details
+            resolver:(RCTPromiseResolveBlock)resolve
+            rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *namespace = [details objectForKey:@"tracker"];
+    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+
+    if (trackerController != nil) {
+        NSDictionary *argmap = [details objectForKey:@"eventData"];
+        NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
+
+        NSString *title = [argmap sp_stringForKey:@"title" defaultValue:nil];
+        NSString *body = [argmap sp_stringForKey:@"body" defaultValue:nil];
+        NSString *triggerStr = [argmap sp_stringForKey:@"trigger" defaultValue:nil];
+        SPMessageNotificationTrigger trigger;
+        if ([triggerStr isEqualToString:@"push"]) {
+            trigger = SPMessageNotificationTriggerPush;
+        } else if ([triggerStr isEqualToString:@"location"]) {
+            trigger = SPMessageNotificationTriggerLocation;
+        } else if ([triggerStr isEqualToString:@"calendar"]) {
+            trigger = SPMessageNotificationTriggerCalendar;
+        } else if ([triggerStr isEqualToString:@"timeInterval"]) {
+            trigger = SPMessageNotificationTriggerTimeInterval;
+        } else {
+            trigger = SPMessageNotificationTriggerOther;
+        }
+        SPMessageNotification *event = [[SPMessageNotification alloc] initWithTitle: title
+                                                                               body: body
+                                                                            trigger: trigger];
+
+        NSString *action = [argmap sp_stringForKey:@"action" defaultValue:nil];
+        if (action) {
+            event.action = action;
+        }
+        NSArray *attachmentsMap = [argmap objectForKey:@"attachments"];
+        if (attachmentsMap) {
+            NSMutableArray *attachments = [NSMutableArray new];
+            for (NSDictionary* attachmentMap in attachmentsMap) {
+                NSString *identifier = [attachmentMap sp_stringForKey:@"identifier" defaultValue:nil];
+                NSString *type = [attachmentMap sp_stringForKey:@"type" defaultValue:nil];
+                NSString *url = [attachmentMap sp_stringForKey:@"url" defaultValue:nil];
+                SPMessageNotificationAttachment *attachment = [[SPMessageNotificationAttachment alloc] initWithIdentifier:identifier
+                                                                                                                     type:type
+                                                                                                                      url:url];
+                [attachments addObject:attachment];
+            }
+            event.attachments = attachments;
+        }
+        NSArray<NSString *> *bodyLocArgs = [argmap objectForKey:@"bodyLocArgs"];
+        if (bodyLocArgs) {
+            event.bodyLocArgs = bodyLocArgs;
+        }
+        NSString *bodyLocKey = [argmap sp_stringForKey:@"bodyLocKey" defaultValue:nil];
+        if (bodyLocKey) {
+            event.bodyLocKey = bodyLocKey;
+        }
+        NSString *category = [argmap sp_stringForKey:@"category" defaultValue:nil];
+        if (category) {
+            event.category = category;
+        }
+        NSNumber *contentAvailable = [argmap sp_numberForKey:@"contentAvailable" defaultValue:nil];
+        if (contentAvailable != nil) {
+            event.contentAvailable = contentAvailable;
+        }
+        NSString *group = [argmap sp_stringForKey:@"group" defaultValue:nil];
+        if (group) {
+            event.group = group;
+        }
+        NSString *icon = [argmap sp_stringForKey:@"icon" defaultValue:nil];
+        if (icon) {
+            event.icon = icon;
+        }
+        NSNumber *notificationCount = [argmap sp_numberForKey:@"notificationCount" defaultValue:nil];
+        if (notificationCount) {
+            event.notificationCount = notificationCount;
+        }
+        NSString *notificationTimestamp = [argmap sp_stringForKey:@"notificationTimestamp" defaultValue:nil];
+        if (notificationTimestamp) {
+            event.notificationTimestamp = notificationTimestamp;
+        }
+        NSString *sound = [argmap sp_stringForKey:@"sound" defaultValue:nil];
+        if (sound) {
+            event.sound = sound;
+        }
+        NSString *subtitle = [argmap sp_stringForKey:@"subtitle" defaultValue:nil];
+        if (subtitle) {
+            event.subtitle = subtitle;
+        }
+        NSString *tag = [argmap sp_stringForKey:@"tag" defaultValue:nil];
+        if (tag) {
+            event.tag = tag;
+        }
+        NSString *threadIdentifier = [argmap sp_stringForKey:@"threadIdentifier" defaultValue:nil];
+        if (threadIdentifier) {
+            event.threadIdentifier = threadIdentifier;
+        }
+        NSArray<NSString *> *titleLocArgs = [argmap objectForKey:@"titleLocArgs"];
+        if (titleLocArgs) {
+            event.titleLocArgs = titleLocArgs;
+        }
+        NSString *titleLocKey = [argmap sp_stringForKey:@"titleLocKey" defaultValue:nil];
+        if (titleLocKey) {
+            event.titleLocKey = titleLocKey;
+        }
+
+        [event contexts:[RNUtilities mkSDJArray:contexts]];
+        [trackerController track:event];
+        resolve(@YES);
     } else {
         NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
         reject(@"ERROR", @"tracker with given namespace not found", error);

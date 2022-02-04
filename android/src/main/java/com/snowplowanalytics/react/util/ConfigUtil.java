@@ -158,6 +158,9 @@ public class ConfigUtil {
         if (trackerConfig.hasKey("diagnosticAutotracking")) {
             trackerConfiguration.diagnosticAutotracking(trackerConfig.getBoolean("diagnosticAutotracking"));
         }
+        if (trackerConfig.hasKey("deepLinkContext")) {
+            trackerConfiguration.deepLinkContext(trackerConfig.getBoolean("deepLinkContext"));
+        }
 
         return trackerConfiguration;
     }
