@@ -230,6 +230,43 @@ const App = () => {
     });
   };
 
+  const onPressTrackDeepLinkReceivedEvent = () => {
+    tracker.trackDeepLinkReceivedEvent({
+      url: 'https://deeplink.com',
+      referrer: 'http://refr.com',
+    });
+  };
+
+  const onPressTrackMessageNotificationEvent = () => {
+    tracker.trackMessageNotificationEvent({
+      title: 'title1',
+      body: 'body1',
+      trigger: 'push',
+      action: 'action1',
+      attachments: [
+        {
+          identifier: 'att_id1',
+          type: 'att_type1',
+          url: 'http://att.url.1',
+        },
+      ],
+      bodyLocArgs: ['bodyArg1', 'bodyArg2'],
+      bodyLocKey: 'bodyKey1',
+      category: 'category1',
+      contentAvailable: true,
+      group: 'group1',
+      icon: 'icon1',
+      notificationCount: 3,
+      notificationTimestamp: '2022-02-02T15:17:42.767Z',
+      sound: 'sound1',
+      subtitle: 'subtitle1',
+      tag: 'tag1',
+      threadIdentifier: 'threadIdentifier1',
+      titleLocArgs: ['titleArg1', 'titleArg2'],
+      titleLocKey: 'titleKey1',
+    });
+  };
+
   const onPressShowMeSomeWarnings = () => {
     tracker.trackSelfDescribingEvent({});
     tracker.trackStructuredEvent({});
@@ -352,6 +389,22 @@ const App = () => {
               title="Track some Page View Events"
               color="#841584"
               accessibilityLabel="testPageView"
+            />
+          </Section>
+          <Section title="Deep Link">
+            <Button
+              onPress={onPressTrackDeepLinkReceivedEvent}
+              title="Track a Deep Link Received Event"
+              color="#841584"
+              accessibilityLabel="testDeepLinkReceived"
+            />
+          </Section>
+          <Section title="Message Notification">
+            <Button
+              onPress={onPressTrackMessageNotificationEvent}
+              title="Track a Message Notification Event"
+              color="#841584"
+              accessibilityLabel="testMessageNotification"
             />
           </Section>
           <Section title="Second tracker">
