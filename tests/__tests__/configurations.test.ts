@@ -216,6 +216,7 @@ describe('test initValidate resolves', () => {
         platformContext: true,
         geoLocationContext: false,
         sessionContext: true,
+        deepLinkContext: true,
         screenContext: true,
         screenViewAutotracking: true,
         lifecycleAutotracking: false,
@@ -307,6 +308,7 @@ describe('test isValidTrackerConf', () => {
       screenContext: true,
       screenViewAutotracking: true,
       sessionContext: true,
+      deepLinkContext: true
     } as any;
     expect(c.isValidTrackerConf(testConf)).toBe(true);
   });

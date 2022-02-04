@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
+import com.snowplowanalytics.snowplow.event.MessageNotification;
+import com.snowplowanalytics.snowplow.event.MessageNotificationAttachment;
+import com.snowplowanalytics.snowplow.event.MessageNotificationTrigger;
 import com.snowplowanalytics.snowplow.event.Structured;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.ScreenView;
@@ -205,6 +209,129 @@ public class EventUtil {
         }
         if (argmap.hasKey("currency")) {
             event.currency(argmap.getString("currency"));
+        }
+
+        return event;
+    }
+
+    public static DeepLinkReceived createDeepLinkReceivedEvent(ReadableMap argmap) {
+        DeepLinkReceived event = new DeepLinkReceived(
+                Objects.requireNonNull(argmap.getString("url"), "url can't be null")
+        );
+
+        if (argmap.hasKey("referrer")) {
+            event.referrer(argmap.getString("referrer"));
+        }
+
+        return event;
+    }
+
+    public static List<MessageNotificationAttachment> createMessageNotificationAttachments(ReadableArray items) {
+        List<MessageNotificationAttachment> attachments = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            ReadableMap argItem = items.getMap(i);
+            MessageNotificationAttachment attachment = new MessageNotificationAttachment(
+                    Objects.requireNonNull(argItem.getString("identifier"), "identifier can't be null"),
+                    Objects.requireNonNull(argItem.getString("type"), "type can't be null"),
+                    Objects.requireNonNull(argItem.getString("url"), "url can't be null")
+            );
+            attachments.add(attachment);
+        }
+
+        return attachments;
+    }
+
+    public static List<String> createStrings(ReadableArray items) {
+        List<String> results = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            results.add(items.getString(i));
+        }
+        return results;
+    }
+
+    public static MessageNotification createMessageNotificationEvent(ReadableMap argmap) {
+
+        MessageNotificationTrigger trigger;
+        switch (Objects.requireNonNull(argmap.getString("trigger"), "trigger can't be null")) {
+            case "push":
+                trigger = MessageNotificationTrigger.push;
+                break;
+            case "location":
+                trigger = MessageNotificationTrigger.location;
+                break;
+            case "calendar":
+                trigger = MessageNotificationTrigger.calendar;
+                break;
+            case "timeInterval":
+                trigger = MessageNotificationTrigger.timeInterval;
+                break;
+            default:
+                trigger = MessageNotificationTrigger.other;
+                break;
+        }
+
+        MessageNotification event = new MessageNotification(
+                Objects.requireNonNull(argmap.getString("title"), "title can't be null"),
+                Objects.requireNonNull(argmap.getString("body"), "body can't be null"),
+                trigger
+        );
+
+        if (argmap.hasKey("action")) {
+            event.action(argmap.getString("action"));
+        }
+        if (argmap.hasKey("attachments")) {
+            ReadableArray attachments = argmap.getArray("attachments");
+            if (attachments != null) {
+                event.attachments(createMessageNotificationAttachments(attachments));
+            }
+        }
+        if (argmap.hasKey("bodyLocArgs")) {
+            ReadableArray bodyLocArgs = argmap.getArray("bodyLocArgs");
+            if (bodyLocArgs != null) {
+                event.bodyLocArgs(createStrings(bodyLocArgs));
+            }
+        }
+        if (argmap.hasKey("bodyLocKey")) {
+            event.bodyLocKey(argmap.getString("bodyLocKey"));
+        }
+        if (argmap.hasKey("category")) {
+            event.category(argmap.getString("category"));
+        }
+        if (argmap.hasKey("contentAvailable")) {
+            event.contentAvailable(argmap.getBoolean("contentAvailable"));
+        }
+        if (argmap.hasKey("group")) {
+            event.group(argmap.getString("group"));
+        }
+        if (argmap.hasKey("icon")) {
+            event.icon(argmap.getString("icon"));
+        }
+        if (argmap.hasKey("notificationCount")) {
+            event.notificationCount(argmap.getInt("notificationCount"));
+        }
+        if (argmap.hasKey("notificationTimestamp")) {
+            event.notificationTimestamp(argmap.getString("notificationTimestamp"));
+        }
+        if (argmap.hasKey("sound")) {
+            event.sound(argmap.getString("sound"));
+        }
+        if (argmap.hasKey("subtitle")) {
+            event.subtitle(argmap.getString("subtitle"));
+        }
+        if (argmap.hasKey("tag")) {
+            event.tag(argmap.getString("tag"));
+        }
+        if (argmap.hasKey("threadIdentifier")) {
+            event.threadIdentifier(argmap.getString("threadIdentifier"));
+        }
+        if (argmap.hasKey("titleLocArgs")) {
+            ReadableArray titleLocArgs = argmap.getArray("titleLocArgs");
+            if (titleLocArgs != null) {
+                event.titleLocArgs(createStrings(titleLocArgs));
+            }
+        }
+        if (argmap.hasKey("titleLocKey")) {
+            event.titleLocKey(argmap.getString("titleLocKey"));
         }
 
         return event;

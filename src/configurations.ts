@@ -42,6 +42,7 @@ const trackerProps= [
   'platformContext',
   'geoLocationContext',
   'sessionContext',
+  'deepLinkContext',
   'screenContext',
   'screenViewAutotracking',
   'lifecycleAutotracking',

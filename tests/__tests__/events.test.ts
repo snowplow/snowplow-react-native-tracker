@@ -394,6 +394,60 @@ describe('test validateConsentWithdrawn', () => {
   });
 });
 
+describe('test validateDeepLinkReceived', () => {
+  test('test invalid deepLinkReceived - wrong type', async () => {
+    const testEv = null as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.evType);
+  });
+
+  test('test invalid deepLinkReceived - missing url', async () => {
+    const testEv = {
+    } as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.deepLinkReq);
+  });
+
+  test('test invalid deepLinkReceived - invalid url', async () => {
+    const testEv = {
+      url: true
+    } as any;
+    await expect(e.validateDeepLinkReceived(testEv)).rejects.toThrow(logMessages.deepLinkReq);
+  });
+
+  test('test valid deepLinkReceived', async () => {
+    const testEv = {
+      url: 'https://example.com/to',
+      referrer: 'https://example.com/from'
+    };
+    await expect(e.validateDeepLinkReceived(testEv)).resolves.toBe(true);
+  });
+});
+
+describe('test validateMessageNotification', () => {
+  test('test invalid messageNotification - wrong type', async () => {
+    const testEv = null as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.evType);
+  });
+
+  test('test invalid messageNotification - missing properties', async () => {
+    const testEv = {
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.messageNotificationReq);
+  });
+
+  test('test invalid messageNotification - invalid trigger', async () => {
+    const testEv = {
+      title: 'x', body: 'y', trigger: 'z'
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).rejects.toThrow(logMessages.messageNotificationReq);
+  });
+
+  test('test valid messageNotification', async () => {
+    const testEv = {
+      title: 'x', body: 'y', trigger: 'push'
+    } as any;
+    await expect(e.validateMessageNotification(testEv)).resolves.toBe(true);
+  });
+});
 
 describe('test isValidEcomItem', () => {
   test('invalid - wrong type', () => {
