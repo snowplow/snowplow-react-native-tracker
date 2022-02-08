@@ -1,3 +1,14 @@
+Version 1.1.0 (2022-02-07)
+--------------------------
+Update mobile tracker dependencies to v3 (#141)
+Add deep link and message notification events (#142)
+Update demo app to show accessing tracker instance from platform native code (#136)
+Fix compilation error for iOS build on ARM macs (#140)
+Fix check for byteLimitGet when reading emitter configuration (#138)
+Fix check for Android version in GitHub Actions (#134) 
+Update year in all copyright notices (#148) 
+Update dependencies (#150) 
+
 Version 1.0.0 (2021-08-09)
 --------------------------
 Fix action-gh-release to specific commit (#133)
