@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -33,6 +33,8 @@ import type {
   EcommerceTransactionProps,
   GlobalContext,
   ScreenSize,
+  DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -188,6 +190,36 @@ function trackEcommerceTransactionEvent(namespace: string) {
     contexts: EventContext[] = []
   ): Promise<void> {
     return tracker.trackEcommerceTransactionEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track an DeepLinkReceived event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track an DeepLinkReceived event
+ */
+function trackDeepLinkReceivedEvent(namespace: string) {
+  return function (
+    argmap: DeepLinkReceivedProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackDeepLinkReceivedEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track an MessageNotification event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track an MessageNotification event
+ */
+function trackMessageNotificationEvent(namespace: string) {
+  return function (
+    argmap: MessageNotificationProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackMessageNotificationEvent(namespace, argmap, contexts);
   };
 }
 
@@ -443,6 +475,8 @@ export {
   trackConsentGrantedEvent,
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
+  trackDeepLinkReceivedEvent,
+  trackMessageNotificationEvent,
   removeGlobalContexts,
   addGlobalContexts,
   setUserId,

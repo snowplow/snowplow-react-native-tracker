@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -25,6 +25,8 @@ import {
   validateConsentGranted,
   validateConsentWithdrawn,
   validateEcommerceTransaction,
+  validateDeepLinkReceived,
+  validateMessageNotification
 } from './events';
 import type {
   SelfDescribing,
@@ -36,6 +38,8 @@ import type {
   ConsentGrantedProps,
   ConsentWithdrawnProps,
   EcommerceTransactionProps,
+  DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -239,6 +243,56 @@ function trackEcommerceTransactionEvent(
     });
 }
 
+/**
+ * Tracks a deep link received event
+ *
+ * @param namespace {string} - the tracker namespace
+ * @param argmap {Object} - the event data
+ * @param contexts {Array}- the event contexts
+ * @returns {Promise}
+ */
+function trackDeepLinkReceivedEvent(
+  namespace: string,
+  argmap: DeepLinkReceivedProps,
+  contexts: EventContext[] = []
+): Promise<void> {
+  return <Promise<void>>validateDeepLinkReceived(argmap)
+    .then(() => validateContexts(contexts))
+    .then(() =>
+      <Promise<void>>RNSnowplowTracker.trackDeepLinkReceivedEvent({
+        tracker: namespace,
+        eventData: argmap,
+        contexts: contexts}))
+    .catch((error) => {
+      throw new Error(`${logMessages.trackDeepLinkReceived} ${error.message}`);
+    });
+}
+
+/**
+ * Tracks a message notification event
+ *
+ * @param namespace {string} - the tracker namespace
+ * @param argmap {Object} - the event data
+ * @param contexts {Array}- the event contexts
+ * @returns {Promise}
+ */
+function trackMessageNotificationEvent(
+  namespace: string,
+  argmap: MessageNotificationProps,
+  contexts: EventContext[] = []
+): Promise<void> {
+  return <Promise<void>>validateMessageNotification(argmap)
+    .then(() => validateContexts(contexts))
+    .then(() =>
+      <Promise<void>>RNSnowplowTracker.trackMessageNotificationEvent({
+        tracker: namespace,
+        eventData: argmap,
+        contexts: contexts}))
+    .catch((error) => {
+      throw new Error(`${logMessages.trackMessageNotification} ${error.message}`);
+    });
+}
+
 export {
   trackSelfDescribingEvent,
   trackScreenViewEvent,
@@ -248,4 +302,6 @@ export {
   trackConsentGrantedEvent,
   trackConsentWithdrawnEvent,
   trackEcommerceTransactionEvent,
+  trackDeepLinkReceivedEvent,
+  trackMessageNotificationEvent
 };

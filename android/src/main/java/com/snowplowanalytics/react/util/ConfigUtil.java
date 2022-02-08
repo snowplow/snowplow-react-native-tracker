@@ -158,6 +158,9 @@ public class ConfigUtil {
         if (trackerConfig.hasKey("diagnosticAutotracking")) {
             trackerConfiguration.diagnosticAutotracking(trackerConfig.getBoolean("diagnosticAutotracking"));
         }
+        if (trackerConfig.hasKey("deepLinkContext")) {
+            trackerConfiguration.deepLinkContext(trackerConfig.getBoolean("deepLinkContext"));
+        }
 
         return trackerConfiguration;
     }
@@ -193,7 +196,7 @@ public class ConfigUtil {
             int byteLimitPost = (int) emitterConfig.getDouble("byteLimitPost");
             emitterConfiguration.byteLimitPost(byteLimitPost);
         }
-        if (emitterConfig.hasKey("byteLimitPost")) {
+        if (emitterConfig.hasKey("byteLimitGet")) {
             int byteLimitGet = (int) emitterConfig.getDouble("byteLimitGet");
             emitterConfiguration.byteLimitGet(byteLimitGet);
         }

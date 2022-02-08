@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -29,7 +29,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testScreenView')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testScreenView')).tap();
   });
@@ -38,7 +38,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testSelfDesc')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSelfDesc')).tap();
   });
@@ -47,7 +47,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testStruct')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testStruct')).tap();
   });
@@ -56,16 +56,34 @@ describe('Example', () => {
     await waitFor(element(by.label('testPageView')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testPageView')).tap();
+  });
+
+  it('should tap Deep Link Button', async () => {
+    await waitFor(element(by.label('testDeepLinkReceived')))
+      .toBeVisible()
+      .whileElement(by.id('scrollView'))
+      .scroll(100, 'down');
+
+    await element(by.label('testDeepLinkReceived')).tap();
+  });
+
+  it('should tap Message Notification Button', async () => {
+    await waitFor(element(by.label('testMessageNotification')))
+      .toBeVisible()
+      .whileElement(by.id('scrollView'))
+      .scroll(100, 'down');
+
+    await element(by.label('testMessageNotification')).tap();
   });
 
   it('should tap Second tracker Button', async () => {
     await waitFor(element(by.label('testSecTracker')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSecTracker')).tap();
   });
@@ -74,7 +92,7 @@ describe('Example', () => {
     await waitFor(element(by.label('testSetSubject')))
       .toBeVisible()
       .whileElement(by.id('scrollView'))
-      .scroll(50, 'down');
+      .scroll(100, 'down');
 
     await element(by.label('testSetSubject')).tap();
   });

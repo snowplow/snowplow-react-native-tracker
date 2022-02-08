@@ -48,7 +48,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.+'
 
     // Required Dependency for the Tracker
-    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
     implementation "com.facebook.react:react-native:+"
-    implementation 'com.snowplowanalytics:snowplow-android-tracker:2.+@aar'
+    implementation 'com.snowplowanalytics:snowplow-android-tracker:3.+'
 }

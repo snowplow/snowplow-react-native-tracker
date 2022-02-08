@@ -1,7 +1,7 @@
 //
 //  RNConfigUtils.m
 //
-//  Copyright (c) 2021 Snowplow Analytics Ltd. All rights reserved.
+//  Copyright (c) 2021-2022 Snowplow Analytics Ltd. All rights reserved.
 //
 //  This program is licensed to you under the Apache License Version 2.0,
 //  and you may not use this file except in compliance with the Apache License
@@ -14,7 +14,7 @@
 //  express or implied. See the Apache License Version 2.0 for the specific
 //  language governing permissions and limitations there under.
 //
-//  Copyright: Copyright (c) 2021 Snowplow Analytics Ltd
+//  Copyright: Copyright (c) 2022 Snowplow Analytics Ltd
 //  License: Apache License Version 2.0
 //
 
@@ -64,6 +64,7 @@
     trackerConfiguration.platformContext = [trackerConfig sp_boolForKey:@"platformContext" defaultValue:YES];
     trackerConfiguration.geoLocationContext = [trackerConfig sp_boolForKey:@"geoLocationContext" defaultValue:NO];
     trackerConfiguration.screenContext = [trackerConfig sp_boolForKey:@"screenContext" defaultValue:YES];
+    trackerConfiguration.deepLinkContext = [trackerConfig sp_boolForKey:@"deepLinkContext" defaultValue:YES];
     trackerConfiguration.screenViewAutotracking = [trackerConfig sp_boolForKey:@"screenViewAutotracking" defaultValue:YES];
     trackerConfiguration.lifecycleAutotracking = [trackerConfig sp_boolForKey:@"lifecycleAutotracking" defaultValue:NO];
     trackerConfiguration.installAutotracking = [trackerConfig sp_boolForKey:@"installAutotracking" defaultValue:YES];

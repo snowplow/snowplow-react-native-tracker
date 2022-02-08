@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -35,6 +35,11 @@ export type Basis = 'consent' | 'contract' | 'legal_obligation' | 'legitimate_in
  * BufferOption
  */
 export type BufferOption = 'single' | 'default' | 'large';
+
+/**
+ * Trigger for MessageNotification event
+ */
+export type Trigger = 'push' | 'location' | 'calendar' | 'timeInterval' | 'other';
 
 /**
  * ScreenSize
@@ -121,6 +126,11 @@ export interface TrackerConfiguration {
    * @defaultValue true
    */
   sessionContext?: boolean;
+  /**
+   * Whether to attach a Deep Link entity to the first ScreenView tracked in the tracker after DeepLinkReceived event.
+   * @defaultValue true
+   */
+  deepLinkContext?: boolean;
   /**
    * Whether screen context is attached to tracked events.
    * @defaultValue true
@@ -533,6 +543,113 @@ export type EcommerceTransactionProps = {
 };
 
 /**
+ * DeepLinkReceived event properties
+ * schema: iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0
+ */
+export type DeepLinkReceivedProps = {
+  /**
+   * URL in the received deep-link.
+   */
+  url: string;
+  /**
+   * Referrer URL, source of this deep-link.
+   */
+  referrer?: string;
+};
+
+/**
+ * Attachment object that identify an attachment in the MessageNotification.
+ */
+export type MessageNotificationAttachmentProps = {
+  identifier: string;
+  type: string;
+  url: string;
+};
+
+/**
+ * MessageNotification event properties
+ * schema: iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0
+ */
+export type MessageNotificationProps = {
+  /**
+   * The action associated with the notification.
+   */
+  action?: string;
+  /*
+   * Attachments added to the notification (they can be part of the data object).
+   */
+  attachments?: MessageNotificationAttachmentProps[];
+  /**
+   * The notification's body.
+   */
+  body: string;
+  /*
+   * Variable string values to be used in place of the format specifiers in bodyLocArgs to use to localize the body text to the user's current localization.
+   */
+  bodyLocArgs?: string[];
+  /**
+   * The key to the body string in the app's string resources to use to localize the body text to the user's current localization.
+   */
+   bodyLocKey?: string;
+  /**
+   * The category associated to the notification.
+   */
+   category?: string;
+  /**
+   * The application is notified of the delivery of the notification if it's in the foreground or background, the app will be woken up (iOS only).
+   */
+   contentAvailable?: boolean;
+  /**
+   * The group which this notification is part of.
+   */
+   group?: string;
+  /**
+   * The icon associated to the notification (Android only).
+   */
+   icon?: string;
+  /**
+   * The number of items this notification represent.
+   */
+   notificationCount?: number;
+  /**
+   * The time when the event of the notification occurred.
+   */
+   notificationTimestamp?: string;
+  /**
+   * The sound played when the device receives the notification.
+   */
+   sound?: string;
+  /**
+   * The notification's subtitle. (iOS only)
+   */
+   subtitle?: string;
+  /**
+   * An identifier similar to 'group' but usable for different purposes (Android only).
+   */
+   tag?: string;
+  /**
+   * An identifier similar to 'group' but usable for different purposes (iOS only).
+   */
+   threadIdentifier?: string;
+  /**
+   * The notification's title.
+   */
+   title: string;
+  /**
+   * Variable string values to be used in place of the format specifiers in titleLocArgs to use to localize the title text to the user's current localization.
+   */
+   titleLocArgs?: string[];
+  /**
+   * The key to the title string in the app's string resources to use to localize the title text to the user's current localization.
+   */
+   titleLocKey?: string;
+  /**
+   * The trigger that raised the notification message. Must be one of: push, location, calendar, timeInterval, other
+   */
+   trigger: Trigger;
+};
+
+/**
  * The ReactNativeTracker type
  */
 export type ReactNativeTracker = {
@@ -621,6 +738,28 @@ export type ReactNativeTracker = {
    */
   readonly trackEcommerceTransactionEvent: (
     argmap: EcommerceTransactionProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a deep link received event
+   *
+   * @param argmap - The deep link received event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackDeepLinkReceivedEvent: (
+    argmap: DeepLinkReceivedProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a message notification event
+   *
+   * @param argmap - The message notification event properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackMessageNotificationEvent: (
+    argmap: MessageNotificationProps,
     contexts?: EventContext[]
   ) => Promise<void>;
 

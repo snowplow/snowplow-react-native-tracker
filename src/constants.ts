@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -36,6 +36,8 @@ const logMessages = {
   consentGReq: 'consentGranted event requires expiry, documentId and version parameters to be set',
   consentWReq: 'consentWithdrawn event requires all, documentId and version parameters to be set',
   ecomReq: 'ecommerceTransaction event requires orderId, totalValue to be set and items to be an array of valid ecommerceItems',
+  deepLinkReq: 'deepLinkReceived event requires the url parameter to be set',
+  messageNotificationReq: 'messageNotification event requires title, body, and trigger parameters to be set',
 
   // global contexts errors
   gcTagType: 'tag argument is required to be a string',
@@ -54,6 +56,8 @@ const logMessages = {
   trackConsentGranted: 'trackConsentGranted:',
   trackConsentWithdrawn: 'trackConsentWithdrawn:',
   trackEcommerceTransaction: 'trackEcommerceTransaction:',
+  trackDeepLinkReceived: 'trackDeepLinkReceivedEvent:',
+  trackMessageNotification: 'trackMessageNotificationEvent:',
   removeGlobalContexts: 'removeGlobalContexts:',
   addGlobalContexts: 'addGlobalContexts:',
 

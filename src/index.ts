@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -58,6 +58,8 @@ function createTracker(
   const trackConsentGrantedEvent = mkMethod(api.trackConsentGrantedEvent(namespace));
   const trackConsentWithdrawnEvent = mkMethod(api.trackConsentWithdrawnEvent(namespace));
   const trackEcommerceTransactionEvent = mkMethod(api.trackEcommerceTransactionEvent(namespace));
+  const trackDeepLinkReceivedEvent = mkMethod(api.trackDeepLinkReceivedEvent(namespace));
+  const trackMessageNotificationEvent = mkMethod(api.trackMessageNotificationEvent(namespace));
   // Global Contexts
   const removeGlobalContexts = mkMethod(api.removeGlobalContexts(namespace));
   const addGlobalContexts = mkMethod(api.addGlobalContexts(namespace));
@@ -91,6 +93,8 @@ function createTracker(
     trackConsentGrantedEvent,
     trackConsentWithdrawnEvent,
     trackEcommerceTransactionEvent,
+    trackDeepLinkReceivedEvent,
+    trackMessageNotificationEvent,
     removeGlobalContexts,
     addGlobalContexts,
     setUserId,
@@ -160,6 +164,8 @@ export type {
   ConsentGrantedProps,
   ConsentWithdrawnProps,
   EcommerceTransactionProps,
+  DeepLinkReceivedProps,
+  MessageNotificationProps,
   EcommerceItem,
   ConsentDocument,
   GlobalContext,
@@ -169,4 +175,5 @@ export type {
   Basis,
   BufferOption,
   ScreenSize,
+  Trigger
 } from './types';

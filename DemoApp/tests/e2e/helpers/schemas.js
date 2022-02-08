@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -27,12 +27,16 @@ const consentGranted =
 const consentDoc =
   'iglu:com.snowplowanalytics.snowplow/consent_document/jsonschema/1-0-0';
 const timing = 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0';
+const deepLink =
+  'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0';
+const messageNotification =
+  'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0';
 
 // Context schemas
 const mobileApplicationContext =
   'iglu:com.snowplowanalytics.mobile/application/jsonschema/1-0-0';
 const mobileContext =
-  'iglu:com.snowplowanalytics.snowplow/mobile_context/jsonschema/1-0-1';
+  'iglu:com.snowplowanalytics.snowplow/mobile_context/jsonschema/1-0-2';
 const mobileScreenContext =
   'iglu:com.snowplowanalytics.mobile/screen/jsonschema/1-0-0';
 const clientSessionContext =
@@ -53,4 +57,6 @@ export {
   mobileScreenContext,
   clientSessionContext,
   gdprContext,
+  deepLink,
+  messageNotification,
 };

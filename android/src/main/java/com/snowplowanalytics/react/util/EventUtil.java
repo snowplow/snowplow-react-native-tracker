@@ -1,8 +1,13 @@
 package com.snowplowanalytics.react.util;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
-import com.snowplowanalytics.snowplow.event.SelfDescribing;
+import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
+import com.snowplowanalytics.snowplow.event.MessageNotification;
+import com.snowplowanalytics.snowplow.event.MessageNotificationAttachment;
+import com.snowplowanalytics.snowplow.event.MessageNotificationTrigger;
 import com.snowplowanalytics.snowplow.event.Structured;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.ScreenView;
@@ -15,6 +20,7 @@ import com.snowplowanalytics.snowplow.event.EcommerceTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class EventUtil {
@@ -37,165 +43,297 @@ public class EventUtil {
     }
 
     public static Structured createStructuredEvent(ReadableMap argmap) {
-        Structured.Builder eventBuilder = Structured.builder()
-            .category(argmap.getString("category"))
-            .action(argmap.getString("action"));
+        Structured event = new Structured(
+                Objects.requireNonNull(argmap.getString("category"), "category can't be null"),
+                Objects.requireNonNull(argmap.getString("action"), "action can't be null")
+        );
 
         if (argmap.hasKey("label")) {
-            eventBuilder.label(argmap.getString("label"));
+            event.label(argmap.getString("label"));
         }
         if (argmap.hasKey("property")) {
-            eventBuilder.property(argmap.getString("property"));
+            event.property(argmap.getString("property"));
         }
         // React Native forces primitive double type - so null "value" parameter is handled by not setting at all
         if (argmap.hasKey("value") && !argmap.isNull("value")) {
-            eventBuilder.value(argmap.getDouble("value"));
+            event.value(argmap.getDouble("value"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static ScreenView createScreenViewEvent(ReadableMap argmap) {
-        ScreenView.Builder eventBuilder = ScreenView.builder()
-            .name(argmap.getString("name"));
+        @NonNull String name = Objects.requireNonNull(argmap.getString("name"), "name can't be null");
+        ScreenView event = (
+                argmap.hasKey("id") ?
+                        new ScreenView(name, UUID.fromString(argmap.getString("id"))) :
+                        new ScreenView(name)
+        );
 
-        if (argmap.hasKey("id")) {
-            UUID idUUID = UUID.fromString(argmap.getString("id"));
-            eventBuilder.id(idUUID.toString());
-        }
         if (argmap.hasKey("type")) {
-            eventBuilder.type(argmap.getString("type"));
+            event.type(argmap.getString("type"));
         }
         if (argmap.hasKey("previousName")) {
-            eventBuilder.previousName(argmap.getString("previousName"));
+            event.previousName(argmap.getString("previousName"));
         }
         if (argmap.hasKey("previousType")) {
-            eventBuilder.previousType(argmap.getString("previousType"));
+            event.previousType(argmap.getString("previousType"));
         }
         if (argmap.hasKey("previousId")) {
-            eventBuilder.previousId(argmap.getString("previousId"));
+            event.previousId(argmap.getString("previousId"));
         }
         if (argmap.hasKey("transitionType")) {
-            eventBuilder.transitionType(argmap.getString("transitionType"));
+            event.transitionType(argmap.getString("transitionType"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static PageView createPageViewEvent(ReadableMap argmap) {
-        PageView.Builder eventBuilder = PageView.builder()
-            .pageUrl(argmap.getString("pageUrl"));
+        PageView event = new PageView(
+                Objects.requireNonNull(argmap.getString("pageUrl"), "pageUrl can't be null")
+        );
 
         if (argmap.hasKey("pageTitle")) {
-            eventBuilder.pageTitle(argmap.getString("pageTitle"));
+            event.pageTitle(argmap.getString("pageTitle"));
         }
         if (argmap.hasKey("referrer")) {
-            eventBuilder.referrer(argmap.getString("referrer"));
+            event.referrer(argmap.getString("referrer"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static Timing createTimingEvent(ReadableMap argmap) {
-        Timing.Builder eventBuilder = Timing.builder()
-            .category(argmap.getString("category"))
-            .variable(argmap.getString("variable"))
-            .timing(argmap.getInt("timing"));
+        Timing event = new Timing(
+                Objects.requireNonNull(argmap.getString("category"), "category can't be null"),
+                Objects.requireNonNull(argmap.getString("variable"), "variable can't be null"),
+                argmap.getInt("timing")
+        );
 
         if (argmap.hasKey("label")) {
-            eventBuilder.label(argmap.getString("label"));
+            event.label(argmap.getString("label"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static ConsentGranted createConsentGrantedEvent(ReadableMap argmap) {
-        ConsentGranted.Builder eventBuilder = ConsentGranted.builder()
-            .expiry(argmap.getString("expiry"))
-            .documentId(argmap.getString("documentId"))
-            .documentVersion(argmap.getString("version"));
+        ConsentGranted event = new ConsentGranted(
+                Objects.requireNonNull(argmap.getString("expiry"), "expiry can't be null"),
+                Objects.requireNonNull(argmap.getString("documentId"), "documentId can't be null"),
+                Objects.requireNonNull(argmap.getString("version"), "version can't be null")
+        );
 
         if (argmap.hasKey("name")) {
-            eventBuilder.documentName(argmap.getString("name"));
+            event.documentName(argmap.getString("name"));
         }
         if (argmap.hasKey("documentDescription")) {
-            eventBuilder.documentDescription(argmap.getString("documentDescription"));
+            event.documentDescription(argmap.getString("documentDescription"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static ConsentWithdrawn createConsentWithdrawnEvent(ReadableMap argmap) {
-        ConsentWithdrawn.Builder eventBuilder = ConsentWithdrawn.builder()
-            .all(argmap.getBoolean("all"))
-            .documentId(argmap.getString("documentId"))
-            .documentVersion(argmap.getString("version"));
+        ConsentWithdrawn event = new ConsentWithdrawn(
+                argmap.getBoolean("all"),
+                Objects.requireNonNull(argmap.getString("documentId"), "documentId can't be null"),
+                Objects.requireNonNull(argmap.getString("version"), "version can't be null")
+        );
 
         if (argmap.hasKey("name")) {
-            eventBuilder.documentName(argmap.getString("name"));
+            event.documentName(argmap.getString("name"));
         }
         if (argmap.hasKey("documentDescription")) {
-            eventBuilder.documentDescription(argmap.getString("documentDescription"));
+            event.documentDescription(argmap.getString("documentDescription"));
         }
 
-        return eventBuilder.build();
+        return event;
     }
 
     public static List<EcommerceTransactionItem> createEcommerceTransactionItems(ReadableArray items) {
         List<EcommerceTransactionItem> ecomItems = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
             ReadableMap argItem = items.getMap(i);
-            EcommerceTransactionItem.Builder itemBuilder = EcommerceTransactionItem.builder()
-                .sku(argItem.getString("sku"))
-                .price(argItem.getDouble("price"))
-                .quantity(argItem.getInt("quantity"));
+            EcommerceTransactionItem item = new EcommerceTransactionItem(
+                    Objects.requireNonNull(argItem.getString("sku"), "sku can't be null"),
+                    argItem.getDouble("price"),
+                    argItem.getInt("quantity")
+            );
 
             if (argItem.hasKey("name")) {
-                itemBuilder.name(argItem.getString("name"));
+                item.name(argItem.getString("name"));
             }
             if (argItem.hasKey("category")) {
-                itemBuilder.category(argItem.getString("category"));
+                item.category(argItem.getString("category"));
             }
             if (argItem.hasKey("currency")) {
-                itemBuilder.currency(argItem.getString("currency"));
+                item.currency(argItem.getString("currency"));
             }
 
-            ecomItems.add(itemBuilder.build());
+            ecomItems.add(item);
         }
 
         return ecomItems;
-}
+    }
 
     public static EcommerceTransaction createEcommerceTransactionEvent(ReadableMap argmap) {
-        List<EcommerceTransactionItem> ecomItems = createEcommerceTransactionItems(argmap.getArray("items"));
+        List<EcommerceTransactionItem> ecomItems = createEcommerceTransactionItems(
+                Objects.requireNonNull(argmap.getArray("items"), "items can't be null")
+        );
 
-        EcommerceTransaction.Builder eventBuilder = EcommerceTransaction.builder()
-            .orderId(argmap.getString("orderId"))
-            .totalValue(argmap.getDouble("totalValue"))
-            .items(ecomItems);
+        EcommerceTransaction event = new EcommerceTransaction(
+                Objects.requireNonNull(argmap.getString("orderId"), "orderId can't be null"),
+                argmap.getDouble("totalValue"),
+                ecomItems
+        );
 
         if (argmap.hasKey("affiliation")) {
-            eventBuilder.affiliation(argmap.getString("affiliation"));
+            event.affiliation(argmap.getString("affiliation"));
         }
         if (argmap.hasKey("taxValue")) {
-            eventBuilder.taxValue(argmap.getDouble("taxValue"));
+            event.taxValue(argmap.getDouble("taxValue"));
         }
         if (argmap.hasKey("shipping")) {
-            eventBuilder.shipping(argmap.getDouble("shipping"));
+            event.shipping(argmap.getDouble("shipping"));
         }
         if (argmap.hasKey("city")) {
-            eventBuilder.city(argmap.getString("city"));
+            event.city(argmap.getString("city"));
         }
         if (argmap.hasKey("state")) {
-            eventBuilder.state(argmap.getString("state"));
+            event.state(argmap.getString("state"));
         }
         if (argmap.hasKey("country")) {
-            eventBuilder.country(argmap.getString("country"));
+            event.country(argmap.getString("country"));
         }
         if (argmap.hasKey("currency")) {
-            eventBuilder.currency(argmap.getString("currency"));
+            event.currency(argmap.getString("currency"));
         }
 
-        return eventBuilder.build();
+        return event;
+    }
+
+    public static DeepLinkReceived createDeepLinkReceivedEvent(ReadableMap argmap) {
+        DeepLinkReceived event = new DeepLinkReceived(
+                Objects.requireNonNull(argmap.getString("url"), "url can't be null")
+        );
+
+        if (argmap.hasKey("referrer")) {
+            event.referrer(argmap.getString("referrer"));
+        }
+
+        return event;
+    }
+
+    public static List<MessageNotificationAttachment> createMessageNotificationAttachments(ReadableArray items) {
+        List<MessageNotificationAttachment> attachments = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            ReadableMap argItem = items.getMap(i);
+            MessageNotificationAttachment attachment = new MessageNotificationAttachment(
+                    Objects.requireNonNull(argItem.getString("identifier"), "identifier can't be null"),
+                    Objects.requireNonNull(argItem.getString("type"), "type can't be null"),
+                    Objects.requireNonNull(argItem.getString("url"), "url can't be null")
+            );
+            attachments.add(attachment);
+        }
+
+        return attachments;
+    }
+
+    public static List<String> createStrings(ReadableArray items) {
+        List<String> results = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            results.add(items.getString(i));
+        }
+        return results;
+    }
+
+    public static MessageNotification createMessageNotificationEvent(ReadableMap argmap) {
+
+        MessageNotificationTrigger trigger;
+        switch (Objects.requireNonNull(argmap.getString("trigger"), "trigger can't be null")) {
+            case "push":
+                trigger = MessageNotificationTrigger.push;
+                break;
+            case "location":
+                trigger = MessageNotificationTrigger.location;
+                break;
+            case "calendar":
+                trigger = MessageNotificationTrigger.calendar;
+                break;
+            case "timeInterval":
+                trigger = MessageNotificationTrigger.timeInterval;
+                break;
+            default:
+                trigger = MessageNotificationTrigger.other;
+                break;
+        }
+
+        MessageNotification event = new MessageNotification(
+                Objects.requireNonNull(argmap.getString("title"), "title can't be null"),
+                Objects.requireNonNull(argmap.getString("body"), "body can't be null"),
+                trigger
+        );
+
+        if (argmap.hasKey("action")) {
+            event.action(argmap.getString("action"));
+        }
+        if (argmap.hasKey("attachments")) {
+            ReadableArray attachments = argmap.getArray("attachments");
+            if (attachments != null) {
+                event.attachments(createMessageNotificationAttachments(attachments));
+            }
+        }
+        if (argmap.hasKey("bodyLocArgs")) {
+            ReadableArray bodyLocArgs = argmap.getArray("bodyLocArgs");
+            if (bodyLocArgs != null) {
+                event.bodyLocArgs(createStrings(bodyLocArgs));
+            }
+        }
+        if (argmap.hasKey("bodyLocKey")) {
+            event.bodyLocKey(argmap.getString("bodyLocKey"));
+        }
+        if (argmap.hasKey("category")) {
+            event.category(argmap.getString("category"));
+        }
+        if (argmap.hasKey("contentAvailable")) {
+            event.contentAvailable(argmap.getBoolean("contentAvailable"));
+        }
+        if (argmap.hasKey("group")) {
+            event.group(argmap.getString("group"));
+        }
+        if (argmap.hasKey("icon")) {
+            event.icon(argmap.getString("icon"));
+        }
+        if (argmap.hasKey("notificationCount")) {
+            event.notificationCount(argmap.getInt("notificationCount"));
+        }
+        if (argmap.hasKey("notificationTimestamp")) {
+            event.notificationTimestamp(argmap.getString("notificationTimestamp"));
+        }
+        if (argmap.hasKey("sound")) {
+            event.sound(argmap.getString("sound"));
+        }
+        if (argmap.hasKey("subtitle")) {
+            event.subtitle(argmap.getString("subtitle"));
+        }
+        if (argmap.hasKey("tag")) {
+            event.tag(argmap.getString("tag"));
+        }
+        if (argmap.hasKey("threadIdentifier")) {
+            event.threadIdentifier(argmap.getString("threadIdentifier"));
+        }
+        if (argmap.hasKey("titleLocArgs")) {
+            ReadableArray titleLocArgs = argmap.getArray("titleLocArgs");
+            if (titleLocArgs != null) {
+                event.titleLocArgs(createStrings(titleLocArgs));
+            }
+        }
+        if (argmap.hasKey("titleLocKey")) {
+            event.titleLocKey(argmap.getString("titleLocKey"));
+        }
+
+        return event;
     }
 }

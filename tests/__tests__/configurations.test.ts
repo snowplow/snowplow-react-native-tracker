@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -216,6 +216,7 @@ describe('test initValidate resolves', () => {
         platformContext: true,
         geoLocationContext: false,
         sessionContext: true,
+        deepLinkContext: true,
         screenContext: true,
         screenViewAutotracking: true,
         lifecycleAutotracking: false,
@@ -307,6 +308,7 @@ describe('test isValidTrackerConf', () => {
       screenContext: true,
       screenViewAutotracking: true,
       sessionContext: true,
+      deepLinkContext: true
     } as any;
     expect(c.isValidTrackerConf(testConf)).toBe(true);
   });

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -26,6 +26,8 @@ import type {
   ConsentWithdrawnProps,
   EcommerceItem,
   EcommerceTransactionProps,
+  DeepLinkReceivedProps,
+  MessageNotificationProps,
 } from './types';
 
 /**
@@ -203,6 +205,51 @@ function validateConsentWithdrawn(argmap: ConsentWithdrawnProps): Promise<boolea
 }
 
 /**
+ * Validates a deep link received event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateDeepLinkReceived(argmap: DeepLinkReceivedProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+  // validate required props
+  if (
+    typeof argmap.url !== 'string'
+  ) {
+    return Promise.reject(new Error(logMessages.deepLinkReq));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
+ * Validates a message notification event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateMessageNotification(argmap: MessageNotificationProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+  // validate required props
+  if (
+    typeof argmap.title !== 'string'
+    || typeof argmap.body !== 'string'
+    || typeof argmap.trigger !== 'string'
+    || !['push', 'location', 'calendar', 'timeInterval', 'other'].includes(argmap.trigger)
+  ) {
+    return Promise.reject(new Error(logMessages.messageNotificationReq));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
  * Validates whether an object is valid ecommerce-item
  *
  * @param item {Object} - the object to validate
@@ -269,4 +316,6 @@ export {
   isValidEcomItem,
   validItemsArg,
   validateEcommerceTransaction,
+  validateDeepLinkReceived,
+  validateMessageNotification
 };
