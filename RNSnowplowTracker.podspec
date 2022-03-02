@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.homepage     = package['homepage']
   s.author       = { "Snowplow Analytics Ltd" => "info@snowplowanalytics.com" }
 
-  s.platforms    = { :ios => "9.0" }
+  s.platforms    = { :ios => "9.0", :tvos => "9.0" }
 
   s.source       = { :git => "https://github.com/snowplow-incubator/snowplow-react-native-tracker.git", :tag => "#{s.version}" }
   s.source_files = "ios/**/*.{h,m}"

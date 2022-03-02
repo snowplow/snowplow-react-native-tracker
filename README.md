@@ -105,6 +105,30 @@ bash .scripts/cleanBuildAndRun.sh ios
 bash .scripts/cleanBuildAndRun.sh both
 ```
 
+### Launching the Demo App for Apple TV and Android TV
+
+Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository:
+
+```bash
+npm install
+npm run bootstrap
+cd DemoAppTV
+yarn
+```
+
+**For Android TV:**
+
+```bash
+yarn android
+```
+
+_Note_: Linux users who want to run the DemoApp for Android, would also need to run `yarn start` in a separate terminal.
+
+**For tvOS:**
+
+```bash
+yarn pods && yarn tvos
+```
 
 ### End-to-end tests
 
