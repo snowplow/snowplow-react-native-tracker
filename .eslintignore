@@ -4,3 +4,4 @@ node_modules
 dist
 # don't lint DemoApp here
 DemoApp
+DemoAppTV
