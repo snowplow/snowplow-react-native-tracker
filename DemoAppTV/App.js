@@ -62,7 +62,7 @@ const App = () => {
   const tracker = createTracker(
     'sp1',
     {
-      endpoint: 'http://localhost:9090',
+      endpoint: 'placeholder',
     },
     {
       trackerConfig: {
@@ -106,7 +106,7 @@ const App = () => {
   const secTracker = createTracker(
     'sp2',
     {
-      endpoint: 'http://localhost:9090',
+      endpoint: 'placeholder',
     },
     {
       trackerConfig: {

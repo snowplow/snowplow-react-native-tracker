@@ -70,6 +70,8 @@ npm run bootstrap
 cd DemoApp
 ```
 
+Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoApp/App.js`.
+
 **For Android:**
 
 ```bash
@@ -115,6 +117,8 @@ npm run bootstrap
 cd DemoAppTV
 yarn
 ```
+
+Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoAppTV/App.js`.
 
 **For Android TV:**
 
