@@ -7,7 +7,8 @@
     "tvos": "react-native run-ios --simulator \"Apple TV\" --scheme \"DemoAppTV-tvOS\"",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "pods": "cd ios && rimraf Pods && pod install"
   },
   "dependencies": {
     "react": "17.0.2",
