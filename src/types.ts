@@ -49,7 +49,9 @@ export type ScreenSize = [number, number];
 /**
  * SelfDescribing type
  */
-export type SelfDescribing = {
+export type SelfDescribing<
+  T extends Record<keyof T, unknown> = Record<string, unknown>
+> = {
   /**
    * Schema
    */
@@ -57,7 +59,7 @@ export type SelfDescribing = {
   /**
    * Data
    */
-  data: Record<string, unknown>;
+  data: T;
 };
 
 /**
@@ -658,9 +660,12 @@ export type ReactNativeTracker = {
    *
    * @param argmap - The self-describing event properties
    * @param contexts - The array of event contexts
+   * @typeParam TData - The type of the data object within the SelfDescribing object
    */
-  readonly trackSelfDescribingEvent: (
-    argmap: SelfDescribing,
+  readonly trackSelfDescribingEvent: <
+    TData extends Record<keyof TData, unknown> = Record<string, unknown>
+  >(
+    argmap: SelfDescribing<TData>,
     contexts?: EventContext[]
   ) => Promise<void>;
 
