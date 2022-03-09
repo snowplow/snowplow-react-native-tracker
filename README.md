@@ -134,6 +134,8 @@ _Note_: Linux users who want to run the DemoApp for Android, would also need to 
 yarn pods && yarn tvos
 ```
 
+Note: If you are using simulator with a name different than "Apple TV", you will need to update the `--simulator` parameter in the "tvos" script call in `DemoAppTV/package.json`.
+
 ### End-to-end tests
 
 Snowplow React-Native Tracker is being end-to-end tested using [Snowplow Micro][snowplow-micro] and [Detox][detox]. To run these tests locally:
