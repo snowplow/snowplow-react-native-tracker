@@ -68,7 +68,7 @@ const App = () => {
       trackerConfig: {
         appId: 'DemoAppId',
         base64Encoding: false,
-        devicePlatform: 'iot',
+        devicePlatform: 'tv',
         screenViewAutotracking: false, // for tests predictability
         installAutotracking: false,
       },
