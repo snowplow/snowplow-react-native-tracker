@@ -70,6 +70,8 @@ npm run bootstrap
 cd DemoApp
 ```
 
+Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoApp/App.js`.
+
 **For Android:**
 
 ```bash
@@ -105,6 +107,34 @@ bash .scripts/cleanBuildAndRun.sh ios
 bash .scripts/cleanBuildAndRun.sh both
 ```
 
+### Launching the Demo App for Apple TV and Android TV
+
+Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository:
+
+```bash
+npm install
+npm run bootstrap
+cd DemoAppTV
+yarn
+```
+
+Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoAppTV/App.js`.
+
+**For Android TV:**
+
+```bash
+yarn android
+```
+
+_Note_: Linux users who want to run the DemoApp for Android, would also need to run `yarn start` in a separate terminal.
+
+**For tvOS:**
+
+```bash
+yarn pods && yarn tvos
+```
+
+Note: If you are using simulator with a name different than "Apple TV", you will need to update the `--simulator` parameter in the "tvos" script call in `DemoAppTV/package.json`.
 
 ### End-to-end tests
 
