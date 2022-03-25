@@ -1,3 +1,9 @@
+Version 1.2.0 (2022-03-25)
+--------------------------
+Add support for React Native for tvOS (#154)
+Bump min RN version supported to v0.65+ (#153)
+Add generic type for SelfDescribing event data (#156)
+
 Version 1.1.0 (2022-02-07)
 --------------------------
 Update mobile tracker dependencies to v3 (#141)
