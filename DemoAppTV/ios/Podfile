@@ -16,6 +16,8 @@ target 'DemoAppTV' do
     :hermes_enabled => false
   )
 
+  use_frameworks! :linkage => :static
+
   target 'DemoAppTVTests' do
     inherit! :complete
     # Pods for testing
@@ -30,6 +32,8 @@ target 'DemoAppTV-tvOS' do
 
   # Hermes not yet available on tvOS
   use_react_native!(:path => config["reactNativePath"])
+
+  use_frameworks! :linkage => :static
 
   target 'DemoAppTV-tvOSTests' do
     inherit! :complete

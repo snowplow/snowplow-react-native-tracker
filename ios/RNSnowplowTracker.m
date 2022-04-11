@@ -21,10 +21,9 @@
 #import "RNSnowplowTracker.h"
 #import "RNConfigUtils.h"
 #import "RNUtilities.h"
+#import "NSDictionary+RNSP_TypeMethods.h"
 
 #import <SnowplowTracker/SPSnowplow.h>
-#import <SnowplowTracker/NSDictionary+SP_TypeMethods.h>
-#import <SnowplowTracker/SPUtilities.h>
 #import <SnowplowTracker/SPNetworkConfiguration.h>
 #import <SnowplowTracker/SPNetworkConnection.h>
 #import <SnowplowTracker/SPTrackerConfiguration.h>
@@ -61,7 +60,7 @@ RCT_EXPORT_METHOD(createTracker:
     NSDictionary *networkConfig =[argmap objectForKey:@"networkConfig"];
 
     // NetworkConfiguration
-    NSString *method = [networkConfig sp_stringForKey:@"method" defaultValue:nil];
+    NSString *method = [networkConfig rnsp_stringForKey:@"method" defaultValue:nil];
     SPHttpMethod httpMethod = [@"get" isEqualToString:method] ? SPHttpMethodGet : SPHttpMethodPost;
     SPNetworkConfiguration *networkConfiguration = [[SPNetworkConfiguration alloc] initWithEndpoint:networkConfig[@"endpoint"] method:httpMethod];
 
@@ -169,19 +168,19 @@ RCT_EXPORT_METHOD(trackStructuredEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *category = [argmap sp_stringForKey:@"category" defaultValue:nil];
-        NSString *action = [argmap sp_stringForKey:@"action" defaultValue:nil];
+        NSString *category = [argmap rnsp_stringForKey:@"category" defaultValue:nil];
+        NSString *action = [argmap rnsp_stringForKey:@"action" defaultValue:nil];
         SPStructured *event = [[SPStructured alloc] initWithCategory:category
                                                               action:action];
-        NSString *label = [argmap sp_stringForKey:@"label" defaultValue:nil];
+        NSString *label = [argmap rnsp_stringForKey:@"label" defaultValue:nil];
         if (label) {
             event.label = label;
         }
-        NSString *property = [argmap sp_stringForKey:@"property" defaultValue:nil];
+        NSString *property = [argmap rnsp_stringForKey:@"property" defaultValue:nil];
         if (property) {
             event.property = property;
         }
-        NSNumber *value = [argmap sp_numberForKey:@"value" defaultValue:nil];
+        NSNumber *value = [argmap rnsp_numberForKey:@"value" defaultValue:nil];
         if (label) {
             event.value = value;
         }
@@ -206,8 +205,8 @@ RCT_EXPORT_METHOD(trackScreenViewEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *screenName = [argmap sp_stringForKey:@"name" defaultValue:nil];
-        NSString *screenId = [argmap sp_stringForKey:@"id" defaultValue:nil];
+        NSString *screenName = [argmap rnsp_stringForKey:@"name" defaultValue:nil];
+        NSString *screenId = [argmap rnsp_stringForKey:@"id" defaultValue:nil];
         NSUUID *screenUuid = [[NSUUID alloc] initWithUUIDString:screenId];
         if (screenId != nil && screenUuid == nil) {
             NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
@@ -216,23 +215,23 @@ RCT_EXPORT_METHOD(trackScreenViewEvent:
         SPScreenView *event = [[SPScreenView alloc] initWithName:screenName
                                                         screenId:screenUuid];
 
-        NSString *type = [argmap sp_stringForKey:@"type" defaultValue:nil];
+        NSString *type = [argmap rnsp_stringForKey:@"type" defaultValue:nil];
         if (type) {
             event.type = type;
         }
-        NSString *previousName = [argmap sp_stringForKey:@"previousName" defaultValue:nil];
+        NSString *previousName = [argmap rnsp_stringForKey:@"previousName" defaultValue:nil];
         if (previousName) {
             event.previousName = previousName;
         }
-        NSString *previousId = [argmap sp_stringForKey:@"previousId" defaultValue:nil];
+        NSString *previousId = [argmap rnsp_stringForKey:@"previousId" defaultValue:nil];
         if (previousId) {
             event.previousId = previousId;
         }
-        NSString *previousType = [argmap sp_stringForKey:@"previousType" defaultValue:nil];
+        NSString *previousType = [argmap rnsp_stringForKey:@"previousType" defaultValue:nil];
         if (previousType) {
             event.previousType = previousType;
         }
-        NSString *transitionType = [argmap sp_stringForKey:@"transitionType" defaultValue:nil];
+        NSString *transitionType = [argmap rnsp_stringForKey:@"transitionType" defaultValue:nil];
         if (transitionType) {
             event.transitionType = transitionType;
         }
@@ -257,14 +256,14 @@ RCT_EXPORT_METHOD(trackPageViewEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *pageUrl = [argmap sp_stringForKey:@"pageUrl" defaultValue:nil];
+        NSString *pageUrl = [argmap rnsp_stringForKey:@"pageUrl" defaultValue:nil];
         SPPageView *event = [[SPPageView alloc] initWithPageUrl:pageUrl];
 
-        NSString *pageTitle = [argmap sp_stringForKey:@"pageTitle" defaultValue:nil];
+        NSString *pageTitle = [argmap rnsp_stringForKey:@"pageTitle" defaultValue:nil];
         if (pageTitle) {
             event.pageTitle = pageTitle;
         }
-        NSString *referrer = [argmap sp_stringForKey:@"referrer" defaultValue:nil];
+        NSString *referrer = [argmap rnsp_stringForKey:@"referrer" defaultValue:nil];
         if (referrer) {
             event.referrer = referrer;
         }
@@ -289,13 +288,13 @@ RCT_EXPORT_METHOD(trackTimingEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *category = [argmap sp_stringForKey:@"category" defaultValue:nil];
-        NSString *variable = [argmap sp_stringForKey:@"variable" defaultValue:nil];
-        NSNumber *timing = [argmap sp_numberForKey:@"timing" defaultValue:nil];
+        NSString *category = [argmap rnsp_stringForKey:@"category" defaultValue:nil];
+        NSString *variable = [argmap rnsp_stringForKey:@"variable" defaultValue:nil];
+        NSNumber *timing = [argmap rnsp_numberForKey:@"timing" defaultValue:nil];
         SPTiming *event = [[SPTiming alloc] initWithCategory:category
                                                     variable:variable
                                                       timing:timing];
-        NSString *label = [argmap sp_stringForKey:@"label" defaultValue:nil];
+        NSString *label = [argmap rnsp_stringForKey:@"label" defaultValue:nil];
         if (label) {
             event.label = label;
         }
@@ -320,18 +319,18 @@ RCT_EXPORT_METHOD(trackConsentGrantedEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *expiry = [argmap sp_stringForKey:@"expiry" defaultValue:nil];
-        NSString *documentId = [argmap sp_stringForKey:@"documentId" defaultValue:nil];
-        NSString *version = [argmap sp_stringForKey:@"version" defaultValue:nil];
+        NSString *expiry = [argmap rnsp_stringForKey:@"expiry" defaultValue:nil];
+        NSString *documentId = [argmap rnsp_stringForKey:@"documentId" defaultValue:nil];
+        NSString *version = [argmap rnsp_stringForKey:@"version" defaultValue:nil];
         SPConsentGranted *event = [[SPConsentGranted alloc] initWithExpiry:expiry
                                                                 documentId:documentId
                                                                    version:version];
 
-        NSString *name = [argmap sp_stringForKey:@"name" defaultValue:nil];
+        NSString *name = [argmap rnsp_stringForKey:@"name" defaultValue:nil];
         if (name) {
             event.name = name;
         }
-        NSString *documentDescription = [argmap sp_stringForKey:@"documentDescription" defaultValue:nil];
+        NSString *documentDescription = [argmap rnsp_stringForKey:@"documentDescription" defaultValue:nil];
         if (documentDescription) {
             event.documentDescription = documentDescription;
         }
@@ -358,17 +357,17 @@ RCT_EXPORT_METHOD(trackConsentWithdrawnEvent:
 
         SPConsentWithdrawn *event = [SPConsentWithdrawn new];
 
-        BOOL all = [argmap sp_boolForKey:@"all" defaultValue:nil];
+        BOOL all = [argmap rnsp_boolForKey:@"all" defaultValue:nil];
         event.all = all;
-        NSString *documentId = [argmap sp_stringForKey:@"documentId" defaultValue:nil];
+        NSString *documentId = [argmap rnsp_stringForKey:@"documentId" defaultValue:nil];
         event.documentId = documentId;
-        NSString *version = [argmap sp_stringForKey:@"version" defaultValue:nil];
+        NSString *version = [argmap rnsp_stringForKey:@"version" defaultValue:nil];
         event.version = version;
-        NSString *name = [argmap sp_stringForKey:@"name" defaultValue:nil];
+        NSString *name = [argmap rnsp_stringForKey:@"name" defaultValue:nil];
         if (name) {
             event.name = name;
         }
-        NSString *documentDescription = [argmap sp_stringForKey:@"documentDescription" defaultValue:nil];
+        NSString *documentDescription = [argmap rnsp_stringForKey:@"documentDescription" defaultValue:nil];
         if (documentDescription) {
             event.documentDescription = documentDescription;
         }
@@ -393,28 +392,28 @@ RCT_EXPORT_METHOD(trackEcommerceTransactionEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *orderId = [argmap sp_stringForKey:@"orderId" defaultValue:nil];
-        NSNumber *totalValue = [argmap sp_numberForKey:@"totalValue" defaultValue:nil];
+        NSString *orderId = [argmap rnsp_stringForKey:@"orderId" defaultValue:nil];
+        NSNumber *totalValue = [argmap rnsp_numberForKey:@"totalValue" defaultValue:nil];
         NSArray *items = [argmap objectForKey:@"items"];
 
         NSMutableArray *transItems = [NSMutableArray new];
         for (NSDictionary* item in items) {
-            NSString *sku = [item sp_stringForKey:@"sku" defaultValue:nil];
-            NSNumber *price = [item sp_numberForKey:@"price" defaultValue:nil];
-            NSNumber *quantity = [item sp_numberForKey:@"quantity" defaultValue:nil];
+            NSString *sku = [item rnsp_stringForKey:@"sku" defaultValue:nil];
+            NSNumber *price = [item rnsp_numberForKey:@"price" defaultValue:nil];
+            NSNumber *quantity = [item rnsp_numberForKey:@"quantity" defaultValue:nil];
             SPEcommerceItem *ecomItem = [[SPEcommerceItem alloc] initWithSku:sku
                                                                        price:price
                                                                     quantity:quantity];
 
-            NSString *name = [argmap sp_stringForKey:@"name" defaultValue:nil];
+            NSString *name = [argmap rnsp_stringForKey:@"name" defaultValue:nil];
             if (name) {
                 ecomItem.name = name;
             }
-            NSString *category = [argmap sp_stringForKey:@"category" defaultValue:nil];
+            NSString *category = [argmap rnsp_stringForKey:@"category" defaultValue:nil];
             if (category) {
                 ecomItem.category = category;
             }
-            NSString *currency = [argmap sp_stringForKey:@"currency" defaultValue:nil];
+            NSString *currency = [argmap rnsp_stringForKey:@"currency" defaultValue:nil];
             if (currency) {
                 ecomItem.currency = currency;
             }
@@ -446,10 +445,10 @@ RCT_EXPORT_METHOD(trackDeepLinkReceivedEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *url = [argmap sp_stringForKey:@"url" defaultValue:nil];
+        NSString *url = [argmap rnsp_stringForKey:@"url" defaultValue:nil];
         SPDeepLinkReceived *event = [[SPDeepLinkReceived alloc] initWithUrl:url];
 
-        NSString *referrer = [argmap sp_stringForKey:@"referrer" defaultValue:nil];
+        NSString *referrer = [argmap rnsp_stringForKey:@"referrer" defaultValue:nil];
         if (referrer) {
             event.referrer = referrer;
         }
@@ -474,9 +473,9 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
         NSDictionary *argmap = [details objectForKey:@"eventData"];
         NSArray<NSDictionary *> *contexts = [details objectForKey:@"contexts"];
 
-        NSString *title = [argmap sp_stringForKey:@"title" defaultValue:nil];
-        NSString *body = [argmap sp_stringForKey:@"body" defaultValue:nil];
-        NSString *triggerStr = [argmap sp_stringForKey:@"trigger" defaultValue:nil];
+        NSString *title = [argmap rnsp_stringForKey:@"title" defaultValue:nil];
+        NSString *body = [argmap rnsp_stringForKey:@"body" defaultValue:nil];
+        NSString *triggerStr = [argmap rnsp_stringForKey:@"trigger" defaultValue:nil];
         SPMessageNotificationTrigger trigger;
         if ([triggerStr isEqualToString:@"push"]) {
             trigger = SPMessageNotificationTriggerPush;
@@ -493,7 +492,7 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
                                                                                body: body
                                                                             trigger: trigger];
 
-        NSString *action = [argmap sp_stringForKey:@"action" defaultValue:nil];
+        NSString *action = [argmap rnsp_stringForKey:@"action" defaultValue:nil];
         if (action) {
             event.action = action;
         }
@@ -501,9 +500,9 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
         if (attachmentsMap) {
             NSMutableArray *attachments = [NSMutableArray new];
             for (NSDictionary* attachmentMap in attachmentsMap) {
-                NSString *identifier = [attachmentMap sp_stringForKey:@"identifier" defaultValue:nil];
-                NSString *type = [attachmentMap sp_stringForKey:@"type" defaultValue:nil];
-                NSString *url = [attachmentMap sp_stringForKey:@"url" defaultValue:nil];
+                NSString *identifier = [attachmentMap rnsp_stringForKey:@"identifier" defaultValue:nil];
+                NSString *type = [attachmentMap rnsp_stringForKey:@"type" defaultValue:nil];
+                NSString *url = [attachmentMap rnsp_stringForKey:@"url" defaultValue:nil];
                 SPMessageNotificationAttachment *attachment = [[SPMessageNotificationAttachment alloc] initWithIdentifier:identifier
                                                                                                                      type:type
                                                                                                                       url:url];
@@ -515,47 +514,47 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
         if (bodyLocArgs) {
             event.bodyLocArgs = bodyLocArgs;
         }
-        NSString *bodyLocKey = [argmap sp_stringForKey:@"bodyLocKey" defaultValue:nil];
+        NSString *bodyLocKey = [argmap rnsp_stringForKey:@"bodyLocKey" defaultValue:nil];
         if (bodyLocKey) {
             event.bodyLocKey = bodyLocKey;
         }
-        NSString *category = [argmap sp_stringForKey:@"category" defaultValue:nil];
+        NSString *category = [argmap rnsp_stringForKey:@"category" defaultValue:nil];
         if (category) {
             event.category = category;
         }
-        NSNumber *contentAvailable = [argmap sp_numberForKey:@"contentAvailable" defaultValue:nil];
+        NSNumber *contentAvailable = [argmap rnsp_numberForKey:@"contentAvailable" defaultValue:nil];
         if (contentAvailable != nil) {
             event.contentAvailable = contentAvailable;
         }
-        NSString *group = [argmap sp_stringForKey:@"group" defaultValue:nil];
+        NSString *group = [argmap rnsp_stringForKey:@"group" defaultValue:nil];
         if (group) {
             event.group = group;
         }
-        NSString *icon = [argmap sp_stringForKey:@"icon" defaultValue:nil];
+        NSString *icon = [argmap rnsp_stringForKey:@"icon" defaultValue:nil];
         if (icon) {
             event.icon = icon;
         }
-        NSNumber *notificationCount = [argmap sp_numberForKey:@"notificationCount" defaultValue:nil];
+        NSNumber *notificationCount = [argmap rnsp_numberForKey:@"notificationCount" defaultValue:nil];
         if (notificationCount) {
             event.notificationCount = notificationCount;
         }
-        NSString *notificationTimestamp = [argmap sp_stringForKey:@"notificationTimestamp" defaultValue:nil];
+        NSString *notificationTimestamp = [argmap rnsp_stringForKey:@"notificationTimestamp" defaultValue:nil];
         if (notificationTimestamp) {
             event.notificationTimestamp = notificationTimestamp;
         }
-        NSString *sound = [argmap sp_stringForKey:@"sound" defaultValue:nil];
+        NSString *sound = [argmap rnsp_stringForKey:@"sound" defaultValue:nil];
         if (sound) {
             event.sound = sound;
         }
-        NSString *subtitle = [argmap sp_stringForKey:@"subtitle" defaultValue:nil];
+        NSString *subtitle = [argmap rnsp_stringForKey:@"subtitle" defaultValue:nil];
         if (subtitle) {
             event.subtitle = subtitle;
         }
-        NSString *tag = [argmap sp_stringForKey:@"tag" defaultValue:nil];
+        NSString *tag = [argmap rnsp_stringForKey:@"tag" defaultValue:nil];
         if (tag) {
             event.tag = tag;
         }
-        NSString *threadIdentifier = [argmap sp_stringForKey:@"threadIdentifier" defaultValue:nil];
+        NSString *threadIdentifier = [argmap rnsp_stringForKey:@"threadIdentifier" defaultValue:nil];
         if (threadIdentifier) {
             event.threadIdentifier = threadIdentifier;
         }
@@ -563,7 +562,7 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
         if (titleLocArgs) {
             event.titleLocArgs = titleLocArgs;
         }
-        NSString *titleLocKey = [argmap sp_stringForKey:@"titleLocKey" defaultValue:nil];
+        NSString *titleLocKey = [argmap rnsp_stringForKey:@"titleLocKey" defaultValue:nil];
         if (titleLocKey) {
             event.titleLocKey = titleLocKey;
         }
@@ -625,7 +624,7 @@ RCT_EXPORT_METHOD(setUserId:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newUid = [details sp_stringForKey:@"userId" defaultValue:nil];
+        NSString *newUid = [details rnsp_stringForKey:@"userId" defaultValue:nil];
         [trackerController.subject setUserId:newUid];
         resolve(@YES);
     } else {
@@ -642,7 +641,7 @@ RCT_EXPORT_METHOD(setNetworkUserId:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newNuid = [details sp_stringForKey:@"networkUserId" defaultValue:nil];
+        NSString *newNuid = [details rnsp_stringForKey:@"networkUserId" defaultValue:nil];
         [trackerController.subject setNetworkUserId:newNuid];
         resolve(@YES);
     } else {
@@ -659,7 +658,7 @@ RCT_EXPORT_METHOD(setDomainUserId:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newDuid = [details sp_stringForKey:@"domainUserId" defaultValue:nil];
+        NSString *newDuid = [details rnsp_stringForKey:@"domainUserId" defaultValue:nil];
         [trackerController.subject setDomainUserId:newDuid];
         resolve(@YES);
     } else {
@@ -676,7 +675,7 @@ RCT_EXPORT_METHOD(setIpAddress:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newIp = [details sp_stringForKey:@"ipAddress" defaultValue:nil];
+        NSString *newIp = [details rnsp_stringForKey:@"ipAddress" defaultValue:nil];
         [trackerController.subject setIpAddress:newIp];
         resolve(@YES);
     } else {
@@ -693,7 +692,7 @@ RCT_EXPORT_METHOD(setUseragent:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newUagent = [details sp_stringForKey:@"useragent" defaultValue:nil];
+        NSString *newUagent = [details rnsp_stringForKey:@"useragent" defaultValue:nil];
         [trackerController.subject setUseragent:newUagent];
         resolve(@YES);
     } else {
@@ -710,7 +709,7 @@ RCT_EXPORT_METHOD(setTimezone:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newTz = [details sp_stringForKey:@"timezone" defaultValue:nil];
+        NSString *newTz = [details rnsp_stringForKey:@"timezone" defaultValue:nil];
         [trackerController.subject setTimezone:newTz];
         resolve(@YES);
     } else {
@@ -727,7 +726,7 @@ RCT_EXPORT_METHOD(setLanguage:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSString *newLang = [details sp_stringForKey:@"language" defaultValue:nil];
+        NSString *newLang = [details rnsp_stringForKey:@"language" defaultValue:nil];
         [trackerController.subject setLanguage:newLang];
         resolve(@YES);
     } else {
@@ -792,7 +791,7 @@ RCT_EXPORT_METHOD(setColorDepth:
     id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
 
     if (trackerController != nil) {
-        NSNumber *newColorD = [details sp_numberForKey:@"colorDepth" defaultValue:nil];
+        NSNumber *newColorD = [details rnsp_numberForKey:@"colorDepth" defaultValue:nil];
         [trackerController.subject setColorDepth:newColorD];
         resolve(@YES);
     } else {
