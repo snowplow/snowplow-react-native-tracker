@@ -11,15 +11,15 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		269984920579226908D49904 /* libPods-DemoAppTV.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2855AB2CCC04BED0978AE /* libPods-DemoAppTV.a */; };
+		1B21AA509CCC4CFB93B87C2B /* Pods_DemoAppTV_DemoAppTVTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEB4EC5EB97AD63E816FAF6C /* Pods_DemoAppTV_DemoAppTVTests.framework */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* DemoAppTVTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DemoAppTVTests.m */; };
-		41BF5F3596F87FEE707DDD11 /* libPods-DemoAppTV-DemoAppTVTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F21F13455730034D850CD1C /* libPods-DemoAppTV-DemoAppTVTests.a */; };
-		47EB63F3390701B2260096C6 /* libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0216F1136BF7C90703C880F /* libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a */; };
+		5C0028858DF8BA1E34D76B75 /* Pods_DemoAppTV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B05F792B3BCF57C35D5F88 /* Pods_DemoAppTV.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		EE57DEA5314790D63C074D03 /* libPods-DemoAppTV-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA54FCF2086BA3B4678F8237 /* libPods-DemoAppTV-tvOS.a */; };
+		B2A36A4783C1707C39244A4E /* Pods_DemoAppTV_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F1D521BD787F1CBAF09A4F6 /* Pods_DemoAppTV_tvOS.framework */; };
+		BEFFD09B3E86C49D0EE25B9E /* Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCC122DEBE3DCC69C23040B3 /* Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,19 +52,19 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = DemoAppTV/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = DemoAppTV/main.m; sourceTree = "<group>"; };
 		224D5D4AEB9A0A36B75746AA /* Pods-DemoAppTV.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV.release.xcconfig"; path = "Target Support Files/Pods-DemoAppTV/Pods-DemoAppTV.release.xcconfig"; sourceTree = "<group>"; };
+		27B05F792B3BCF57C35D5F88 /* Pods_DemoAppTV.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoAppTV.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C329346E04FD437DBF160C6 /* Pods-DemoAppTV-DemoAppTVTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-DemoAppTVTests.release.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-DemoAppTVTests/Pods-DemoAppTV-DemoAppTVTests.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* DemoAppTV-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DemoAppTV-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* DemoAppTV-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "DemoAppTV-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		36771B2C8C43AC6099096637 /* Pods-DemoAppTV-DemoAppTVTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-DemoAppTVTests.debug.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-DemoAppTVTests/Pods-DemoAppTV-DemoAppTVTests.debug.xcconfig"; sourceTree = "<group>"; };
 		388308430DF4BE056B0CEF13 /* Pods-DemoAppTV-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-tvOS.release.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-tvOS/Pods-DemoAppTV-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		3BDF8C4CCF278F944E8C6CBF /* Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests/Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		4F21F13455730034D850CD1C /* libPods-DemoAppTV-DemoAppTVTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DemoAppTV-DemoAppTVTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F1D521BD787F1CBAF09A4F6 /* Pods_DemoAppTV_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoAppTV_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DemoAppTV/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8DC2855AB2CCC04BED0978AE /* libPods-DemoAppTV.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DemoAppTV.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A0216F1136BF7C90703C880F /* libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCC122DEBE3DCC69C23040B3 /* Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCE9A90FED9D09047497AB6D /* Pods-DemoAppTV-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-tvOS/Pods-DemoAppTV-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		DEB4EC5EB97AD63E816FAF6C /* Pods_DemoAppTV_DemoAppTVTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoAppTV_DemoAppTVTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8891750AE2DFBD87A5BDB74 /* Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests/Pods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		EA54FCF2086BA3B4678F8237 /* libPods-DemoAppTV-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DemoAppTV-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -74,7 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41BF5F3596F87FEE707DDD11 /* libPods-DemoAppTV-DemoAppTVTests.a in Frameworks */,
+				1B21AA509CCC4CFB93B87C2B /* Pods_DemoAppTV_DemoAppTVTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				269984920579226908D49904 /* libPods-DemoAppTV.a in Frameworks */,
+				5C0028858DF8BA1E34D76B75 /* Pods_DemoAppTV.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE57DEA5314790D63C074D03 /* libPods-DemoAppTV-tvOS.a in Frameworks */,
+				B2A36A4783C1707C39244A4E /* Pods_DemoAppTV_tvOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47EB63F3390701B2260096C6 /* libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a in Frameworks */,
+				BEFFD09B3E86C49D0EE25B9E /* Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,10 +141,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				8DC2855AB2CCC04BED0978AE /* libPods-DemoAppTV.a */,
-				4F21F13455730034D850CD1C /* libPods-DemoAppTV-DemoAppTVTests.a */,
-				EA54FCF2086BA3B4678F8237 /* libPods-DemoAppTV-tvOS.a */,
-				A0216F1136BF7C90703C880F /* libPods-DemoAppTV-tvOS-DemoAppTV-tvOSTests.a */,
+				27B05F792B3BCF57C35D5F88 /* Pods_DemoAppTV.framework */,
+				DEB4EC5EB97AD63E816FAF6C /* Pods_DemoAppTV_DemoAppTVTests.framework */,
+				4F1D521BD787F1CBAF09A4F6 /* Pods_DemoAppTV_tvOS.framework */,
+				CCC122DEBE3DCC69C23040B3 /* Pods_DemoAppTV_tvOS_DemoAppTV_tvOSTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

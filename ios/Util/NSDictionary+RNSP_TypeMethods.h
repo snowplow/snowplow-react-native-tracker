@@ -1,5 +1,5 @@
 //
-//  RNTrackerVersion.m
+//  NSDictionary+RNSP_TypeMethods.h
 //
 //  Copyright (c) 2021-2022 Snowplow Analytics Ltd. All rights reserved.
 //
@@ -18,10 +18,16 @@
 //  License: Apache License Version 2.0
 //
 
-#import "RNTrackerVersion.h"
+#import <Foundation/Foundation.h>
 
-@implementation RNTrackerVersion
+NS_ASSUME_NONNULL_BEGIN
 
-NSString * const kRNTrackerVersion = @"rn-1.2.1";
+@interface NSDictionary (RNSP_TypeMethods)
+
+- (nullable NSString *)rnsp_stringForKey:(NSString *)key defaultValue:(nullable NSString *)defaultValue;
+- (nullable NSNumber *)rnsp_numberForKey:(NSString *)key defaultValue:(nullable NSNumber *)defaultValue;
+- (BOOL)rnsp_boolForKey:(NSString *)key defaultValue:(BOOL)defaultValue;
 
 @end
+
+NS_ASSUME_NONNULL_END

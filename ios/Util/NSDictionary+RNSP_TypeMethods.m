@@ -1,5 +1,5 @@
 //
-//  RNTrackerVersion.m
+//  NSDictionary+RNSP_TypeMethods.m
 //
 //  Copyright (c) 2021-2022 Snowplow Analytics Ltd. All rights reserved.
 //
@@ -18,10 +18,23 @@
 //  License: Apache License Version 2.0
 //
 
-#import "RNTrackerVersion.h"
+#import "NSDictionary+RNSP_TypeMethods.h"
 
-@implementation RNTrackerVersion
+@implementation NSDictionary (RNSP_TypeMethods)
 
-NSString * const kRNTrackerVersion = @"rn-1.2.1";
+- (nullable NSString *)rnsp_stringForKey:(NSString *)key defaultValue:(nullable NSString *)defaultValue {
+    NSObject *obj = [self objectForKey:key];
+    return [obj isKindOfClass:NSString.class] ? (NSString *)obj : defaultValue;
+}
+
+- (nullable NSNumber *)rnsp_numberForKey:(NSString *)key defaultValue:(nullable NSNumber *)defaultValue {
+    NSObject *obj = [self objectForKey:key];
+    return [obj isKindOfClass:NSNumber.class] ? (NSNumber *)obj : defaultValue;
+}
+
+- (BOOL)rnsp_boolForKey:(NSString *)key defaultValue:(BOOL)defaultValue {
+    NSNumber *num = [self rnsp_numberForKey:key defaultValue:nil];
+    return num ? num.boolValue : defaultValue;
+}
 
 @end

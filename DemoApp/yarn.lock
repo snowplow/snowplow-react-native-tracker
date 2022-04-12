@@ -1225,7 +1225,7 @@
     "@sinonjs/commons" "^1.7.0"
 
 "@snowplow/react-native-tracker@file:..":
-  version "1.0.0"
+  version "1.2.1"
 
 "@tootallnate/once@1":
   version "1.1.2"
