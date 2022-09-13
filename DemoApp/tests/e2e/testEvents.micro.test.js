@@ -19,11 +19,11 @@ test('no bad events', async () => {
 });
 
 test('number of screen_view events', async () => {
-  await commands.eventsWithSchema(schemas.screenView, 8);
+  await commands.eventsWithSchema(schemas.screenView, 9);
 });
 
 test('number of structured events', async () => {
-  await commands.eventsWithEventType('struct', 5);
+  await commands.eventsWithEventType('struct', 6);
 });
 
 test('number of page_view events', async () => {
@@ -269,6 +269,30 @@ test('second tracker events', async () => {
         {schema: schemas.mobileScreenContext},
         {schema: schemas.clientSessionContext},
       ],
+    },
+    2,
+  );
+});
+
+test('anonymous tracker events', async () => {
+  await commands.eventsWithProperties(
+    {
+      parameters: {
+        name_tracker: 'sp_anon',
+        network_userid: '00000000-0000-0000-0000-000000000000',
+      },
+      event: {
+        contexts: {
+          data: [
+            {
+              schema: schemas.clientSessionContext,
+              data: {
+                userId: '00000000-0000-0000-0000-000000000000',
+              },
+            },
+          ],
+        },
+      },
     },
     2,
   );

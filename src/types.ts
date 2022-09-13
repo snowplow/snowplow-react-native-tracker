@@ -163,6 +163,11 @@ export interface TrackerConfiguration {
    * @defaultValue false
    */
   diagnosticAutotracking?: boolean;
+  /**
+   * Whether to anonymise client-side user identifiers in session and platform context entities
+   * @defaultValue false
+   */
+  userAnonymisation?: boolean;
 }
 
 
@@ -215,6 +220,12 @@ export interface EmitterConfiguration {
    * @defaultValue 40000
    */
   byteLimitGet?: number;
+
+  /**
+   * Whether to anonymise server-side user identifiers including the `network_userid` and `user_ipaddress`
+   * @defaultValue false
+   */
+  serverAnonymisation?: boolean;
 }
 
 /**
