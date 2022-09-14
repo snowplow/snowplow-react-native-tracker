@@ -40,7 +40,7 @@ const mobileContext =
 const mobileScreenContext =
   'iglu:com.snowplowanalytics.mobile/screen/jsonschema/1-0-0';
 const clientSessionContext =
-  'iglu:com.snowplowanalytics.snowplow/client_session/jsonschema/1-0-1';
+  'iglu:com.snowplowanalytics.snowplow/client_session/jsonschema/1-0-2';
 const gdprContext = 'iglu:com.snowplowanalytics.snowplow/gdpr/jsonschema/1-0-0';
 
 export {
