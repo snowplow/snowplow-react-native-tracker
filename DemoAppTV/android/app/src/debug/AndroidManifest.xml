@@ -6,7 +6,8 @@
 
     <application
         android:usesCleartextTraffic="true"
-        tools:targetApi="28"
+        android:exported="true"
+        tools:targetApi="31"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
