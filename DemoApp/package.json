@@ -24,7 +24,8 @@
     "e2e:android": "run-p --race start e2e:test:android",
     "e2e:ios": "run-p --race start e2e:test:ios",
     "e2e:android:micro": "run-s -c micro:run e2e:android micro:stop",
-    "e2e:ios:micro": "run-s -c micro:run e2e:ios micro:stop"
+    "e2e:ios:micro": "run-s -c micro:run e2e:ios micro:stop",
+    "postinstall": "rimraf node_modules/@snowplow/react-native-tracker/{.git,node_modules,DemoApp,DemoAppTV}"
   },
   "dependencies": {
     "@jest/create-cache-key-function": "^27.0.2",
