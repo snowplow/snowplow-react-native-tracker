@@ -51,7 +51,7 @@ import type {
  * @returns {Promise}
  */
 function trackSelfDescribingEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: SelfDescribing,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -77,7 +77,7 @@ function trackSelfDescribingEvent(
  * @returns {Promise}
  */
 function trackScreenViewEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: ScreenViewProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -102,7 +102,7 @@ function trackScreenViewEvent(
  * @returns {Promise}
  */
 function trackStructuredEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: StructuredProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -127,7 +127,7 @@ function trackStructuredEvent(
  * @returns {Promise}
  */
 function trackPageViewEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: PageViewProps,
   contexts: EventContext[] = []
 ): Promise<void> {

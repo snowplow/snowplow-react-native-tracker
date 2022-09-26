@@ -16,15 +16,27 @@ import {
   useColorScheme,
   View,
   Button,
+  Dimensions,
 } from 'react-native';
+import {WebView} from 'react-native-webview';
 
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 import {
   createTracker,
   removeTracker,
-  // removeAllTrackers,
+  getWebViewCallback,
 } from '@snowplow/react-native-tracker';
+
+/**
+ * URI of the Snowplow collector (e.g., Micro, Mini, or BDP) to send events to
+ */
+const collectorEndpoint = 'http://0.0.0.0:9090';
+
+/**
+ * URI of a website to load in the webview component
+ */
+const webViewEndpoint = '';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -62,7 +74,7 @@ const App = () => {
   const tracker = createTracker(
     'sp1',
     {
-      endpoint: 'placeholder',
+      endpoint: collectorEndpoint,
     },
     {
       trackerConfig: {
@@ -106,7 +118,7 @@ const App = () => {
   const secTracker = createTracker(
     'sp2',
     {
-      endpoint: 'placeholder',
+      endpoint: collectorEndpoint,
     },
     {
       trackerConfig: {
@@ -119,7 +131,7 @@ const App = () => {
   const anonymousTracker = createTracker(
     'sp_anon',
     {
-      endpoint: 'placeholder',
+      endpoint: collectorEndpoint,
     },
     {
       trackerConfig: {
@@ -489,6 +501,21 @@ const App = () => {
               accessibilityLabel="testRemove"
             />
           </Section>
+          <Section title="Web view">
+            {webViewEndpoint ? (
+              <WebView
+                onMessage={getWebViewCallback()}
+                source={{uri: webViewEndpoint}}
+                style={{
+                  height: 400,
+                  width:
+                    Dimensions.get('window').width -
+                    styles.sectionContainer.paddingHorizontal,
+                }}
+              />
+            ) : null}
+          </Section>
+          <Section title="Last section"></Section>
         </View>
       </ScrollView>
     </SafeAreaView>

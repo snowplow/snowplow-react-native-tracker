@@ -39,7 +39,7 @@ jobs:
 
     - name: Prepare DemoApp for Micro
       working-directory: DemoApp
-      run: perl -i -pe "s/^.*endpoint:\K.*/ \'http:\/\/0.0.0.0:9090\'\,/" App.js
+      run: perl -i -pe "s/^.*collectorEndpoint =\K.*/ \'http:\/\/0.0.0.0:9090\'\;/" App.js
 
     # -- Tracker --
     - name: Use npm cache

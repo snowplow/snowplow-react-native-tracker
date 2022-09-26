@@ -14,8 +14,8 @@ const appFile = path.join(__dirname, '..', 'App.js');
 
 const validArg = ['android', 'ios'];
 
-const androidReplaceCmd = `perl -i -pe "s/^.*endpoint:\\K.*/ \\'http:\\/\\/${androidHost}:${microPort}\\'\\,/" ${appFile}`;
-const iosReplaceCmd = `perl -i -pe "s/^.*endpoint:\\K.*/ \\'http:\\/\\/${iosHost}:${microPort}\\'\\,/" ${appFile}`;
+const androidReplaceCmd = `perl -i -pe "s/^.*collectorEndpoint =\\K.*/ \\'http:\\/\\/${androidHost}:${microPort}\\'\\;/" ${appFile}`;
+const iosReplaceCmd = `perl -i -pe "s/^.*collectorEndpoint =\\K.*/ \\'http:\\/\\/${iosHost}:${microPort}\\'\\;/" ${appFile}`;
 
 const args = process.argv.slice(2);
 if (args.length === 1 && validArg.includes(args[0])) {
