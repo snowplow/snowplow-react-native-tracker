@@ -116,6 +116,23 @@ const App = () => {
     },
   );
 
+  const anonymousTracker = createTracker(
+    'sp_anon',
+    {
+      endpoint: 'placeholder',
+    },
+    {
+      trackerConfig: {
+        screenViewAutotracking: false, // for tests predictability
+        installAutotracking: false,
+        userAnonymisation: true,
+      },
+      emitterConfig: {
+        serverAnonymisation: true,
+      },
+    },
+  );
+
   const onPressTrackScreenViewEvent = () => {
     tracker.trackScreenViewEvent({name: 'onlyRequired'});
     tracker.trackScreenViewEvent({
@@ -298,6 +315,14 @@ const App = () => {
     });
   };
 
+  const onPressTestAnonymousTracker = () => {
+    anonymousTracker.trackScreenViewEvent({name: 'fromAnonymousTracker'});
+    anonymousTracker.trackStructuredEvent({
+      category: 'AnonymousTracker',
+      action: 'trackAnonymous',
+    });
+  };
+
   const onPressPlayGC = async () => {
     try {
       await tracker.removeGlobalContexts('testTag');
@@ -413,6 +438,14 @@ const App = () => {
               title="Track events with second tracker"
               color="#841584"
               accessibilityLabel="testSecTracker"
+            />
+          </Section>
+          <Section title="Anonymous tracker">
+            <Button
+              onPress={onPressTestAnonymousTracker}
+              title="Track events with anonymous tracking"
+              color="#841584"
+              accessibilityLabel="testAnonymousTracker"
             />
           </Section>
           <Section title="Warnings">

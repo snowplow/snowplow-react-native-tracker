@@ -161,6 +161,9 @@ public class ConfigUtil {
         if (trackerConfig.hasKey("deepLinkContext")) {
             trackerConfiguration.deepLinkContext(trackerConfig.getBoolean("deepLinkContext"));
         }
+        if (trackerConfig.hasKey("userAnonymisation")) {
+            trackerConfiguration.userAnonymisation(trackerConfig.getBoolean("userAnonymisation"));
+        }
 
         return trackerConfiguration;
     }
@@ -199,6 +202,9 @@ public class ConfigUtil {
         if (emitterConfig.hasKey("byteLimitGet")) {
             int byteLimitGet = (int) emitterConfig.getDouble("byteLimitGet");
             emitterConfiguration.byteLimitGet(byteLimitGet);
+        }
+        if (emitterConfig.hasKey("serverAnonymisation")) {
+            emitterConfiguration.serverAnonymisation(emitterConfig.getBoolean("serverAnonymisation"));
         }
 
         return emitterConfiguration;

@@ -222,7 +222,8 @@ describe('test initValidate resolves', () => {
         lifecycleAutotracking: false,
         installAutotracking: true,
         exceptionAutotracking: true,
-        diagnosticAutotracking: false
+        diagnosticAutotracking: false,
+        userAnonymisation: false
       },
       sessionConfig: {
         foregroundTimeout: 30,
@@ -234,6 +235,7 @@ describe('test initValidate resolves', () => {
         threadPoolSize: 15,
         byteLimitPost: 40000,
         byteLimitGet: 40000,
+        serverAnonymisation: false
       }
     };
     await expect(c.initValidate(testConfig as any)).resolves.toBe(true);
@@ -308,7 +310,8 @@ describe('test isValidTrackerConf', () => {
       screenContext: true,
       screenViewAutotracking: true,
       sessionContext: true,
-      deepLinkContext: true
+      deepLinkContext: true,
+      userAnonymisation: false
     } as any;
     expect(c.isValidTrackerConf(testConf)).toBe(true);
   });

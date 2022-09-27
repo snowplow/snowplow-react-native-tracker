@@ -48,7 +48,8 @@ const trackerProps= [
   'lifecycleAutotracking',
   'installAutotracking',
   'exceptionAutotracking',
-  'diagnosticAutotracking'
+  'diagnosticAutotracking',
+  'userAnonymisation'
 ];
 const sessionProps = [
   'foregroundTimeout',
@@ -60,6 +61,7 @@ const emitterProps = [
   'threadPoolSize',
   'byteLimitPost',
   'byteLimitGet',
+  'serverAnonymisation',
 ];
 const subjectProps = [
   'userId',
