@@ -36,6 +36,7 @@ const networkProps = [
   'endpoint',
   'method',
   'customPostPath',
+  'requestHeaders',
 ];
 const trackerProps= [
   'appId',

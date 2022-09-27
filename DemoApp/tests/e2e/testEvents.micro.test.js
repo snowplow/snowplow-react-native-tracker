@@ -210,6 +210,7 @@ test('common in all first tracker events', async () => {
         platform: 'iot',
         name_tracker: 'sp1',
       },
+      header: 'test: works',
       contexts: [
         {schema: schemas.mobileApplicationContext},
         {schema: schemas.mobileContext},

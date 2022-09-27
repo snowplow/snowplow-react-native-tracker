@@ -89,7 +89,12 @@ export interface NetworkConfiguration {
    * 
    * @defaultValue `com.snowplowanalytics.snowplow/tp2`.
    */
-   customPostPath?: string;
+  customPostPath?: string;
+
+  /**
+   * Custom headers for HTTP requests to the Collector.
+   */
+  requestHeaders?: [string: string];
 }
 
 
