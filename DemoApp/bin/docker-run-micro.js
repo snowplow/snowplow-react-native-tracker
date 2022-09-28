@@ -16,7 +16,7 @@ if (args.length === 1 && typeof args[0] === 'string') {
   const microAll = `http://0.0.0.0:${microPort}/micro/all`;
   const microMountPath = path.join(shell.pwd().toString(), 'tests');
 
-  const dockerCommand = `docker run --detach --rm --name ${containerName} --mount type=bind,source=${microMountPath}/micro,destination=/config -p ${microPort}:9090 snowplow/snowplow-micro:1.1.2 --collector-config /config/micro.conf --iglu /config/iglu.json`;
+  const dockerCommand = `docker run --detach --rm --name ${containerName} --mount type=bind,source=${microMountPath}/micro,destination=/config -p ${microPort}:9090 snowplow/snowplow-micro:1.3.3 --collector-config /config/micro.conf --iglu /config/iglu.json`;
 
   shell.exec(dockerCommand);
 
