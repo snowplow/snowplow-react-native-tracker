@@ -31,7 +31,7 @@ import {
 /**
  * URI of the Snowplow collector (e.g., Micro, Mini, or BDP) to send events to
  */
-const collectorEndpoint = 'http://0.0.0.0:9090';
+const collectorEndpoint = 'placeholder';
 
 /**
  * URI of a website to load in the webview component
@@ -515,7 +515,6 @@ const App = () => {
               />
             ) : null}
           </Section>
-          <Section title="Last section"></Section>
         </View>
       </ScrollView>
     </SafeAreaView>
