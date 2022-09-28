@@ -107,7 +107,7 @@ jobs:
 
   build_ios:
     needs: ["test", "version_check"]
-    runs-on: macos-10.15
+    runs-on: macos-latest
 
     steps:
     - name: Checkout
