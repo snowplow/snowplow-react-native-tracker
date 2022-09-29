@@ -82,6 +82,12 @@ export interface NetworkConfiguration {
    * @defaultValue 'post'
    */
   method?: HttpMethod;
+
+  /**
+   * A custom path which will be added to the endpoint URL to specify the
+   * complete URL of the collector when paired with the POST method.
+   */
+   customPostPath?: string;
 }
 
 
