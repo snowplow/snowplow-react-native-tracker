@@ -20,6 +20,7 @@ import type {
   TrackerControllerConfiguration,
   ReactNativeTracker
 } from './types';
+import { getWebViewCallback } from './webViewInterface';
 
 /**
  * Creates a React Native Tracker object
@@ -143,6 +144,7 @@ export {
   createTracker,
   removeTracker,
   removeAllTrackers,
+  getWebViewCallback,
 };
 
 export type {
