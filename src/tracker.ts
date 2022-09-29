@@ -51,7 +51,7 @@ import type {
  * @returns {Promise}
  */
 function trackSelfDescribingEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: SelfDescribing,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -77,7 +77,7 @@ function trackSelfDescribingEvent(
  * @returns {Promise}
  */
 function trackScreenViewEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: ScreenViewProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -102,7 +102,7 @@ function trackScreenViewEvent(
  * @returns {Promise}
  */
 function trackStructuredEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: StructuredProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -127,7 +127,7 @@ function trackStructuredEvent(
  * @returns {Promise}
  */
 function trackPageViewEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: PageViewProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -152,7 +152,7 @@ function trackPageViewEvent(
  * @returns {Promise}
  */
 function trackTimingEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: TimingProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -177,7 +177,7 @@ function trackTimingEvent(
  * @returns {Promise}
  */
 function trackConsentGrantedEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: ConsentGrantedProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -202,7 +202,7 @@ function trackConsentGrantedEvent(
  * @returns {Promise}
  */
 function trackConsentWithdrawnEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: ConsentWithdrawnProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -227,7 +227,7 @@ function trackConsentWithdrawnEvent(
  * @returns {Promise}
  */
 function trackEcommerceTransactionEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: EcommerceTransactionProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -252,7 +252,7 @@ function trackEcommerceTransactionEvent(
  * @returns {Promise}
  */
 function trackDeepLinkReceivedEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: DeepLinkReceivedProps,
   contexts: EventContext[] = []
 ): Promise<void> {
@@ -277,7 +277,7 @@ function trackDeepLinkReceivedEvent(
  * @returns {Promise}
  */
 function trackMessageNotificationEvent(
-  namespace: string,
+  namespace: string | null,
   argmap: MessageNotificationProps,
   contexts: EventContext[] = []
 ): Promise<void> {
