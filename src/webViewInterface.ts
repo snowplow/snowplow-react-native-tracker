@@ -3,14 +3,14 @@ import {
   trackScreenViewEvent,
   trackSelfDescribingEvent,
   trackStructuredEvent,
-} from "./tracker";
+} from './tracker';
 import type {
   ScreenViewProps,
   SelfDescribing,
   StructuredProps,
   WebViewPageViewEvent,
   WebViewMessage,
-} from "./types";
+} from './types';
 
 function forEachTracker(
   trackers: Array<string> | undefined,
