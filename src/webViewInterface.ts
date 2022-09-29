@@ -3,25 +3,14 @@ import {
   trackScreenViewEvent,
   trackSelfDescribingEvent,
   trackStructuredEvent,
-} from './tracker';
-import type { ScreenViewProps, SelfDescribing, StructuredProps } from './types';
-
-interface FullPageViewEvent {
-  title?: string | null;
-  url?: string;
-  referrer?: string;
-}
-
-type WebViewMessage = {
-  command:
-    | 'trackSelfDescribingEvent'
-    | 'trackStructEvent'
-    | 'trackPageView'
-    | 'trackScreenView';
-  event: StructuredProps | SelfDescribing | ScreenViewProps | FullPageViewEvent;
-  context?: Array<SelfDescribing> | null;
-  trackers?: Array<string>;
-};
+} from "./tracker";
+import type {
+  ScreenViewProps,
+  SelfDescribing,
+  StructuredProps,
+  WebViewPageViewEvent,
+  WebViewMessage,
+} from "./types";
 
 function forEachTracker(
   trackers: Array<string> | undefined,
@@ -73,7 +62,7 @@ export function getWebViewCallback() {
 
     case 'trackPageView':
       forEachTracker(data.trackers, (namespace) => {
-        const event = data.event as FullPageViewEvent;
+        const event = data.event as WebViewPageViewEvent;
         trackPageViewEvent(namespace, {
           pageTitle: event.title ?? '',
           pageUrl: event.url ?? '',

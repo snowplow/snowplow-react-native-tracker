@@ -912,3 +912,26 @@ export type ReactNativeTracker = {
    */
   readonly getForegroundIndex: () => Promise<number | undefined>;
 };
+
+/**
+ * Internal event type for page views tracked using the WebView tracker.
+ */
+export interface WebViewPageViewEvent {
+  title?: string | null;
+  url?: string;
+  referrer?: string;
+}
+
+/**
+ * Internal type exchanged in messages received from the WebView tracker in Web views through the web view callback.
+ */
+export type WebViewMessage = {
+  command:
+    | 'trackSelfDescribingEvent'
+    | 'trackStructEvent'
+    | 'trackPageView'
+    | 'trackScreenView';
+  event: StructuredProps | SelfDescribing | ScreenViewProps | WebViewPageViewEvent;
+  context?: Array<SelfDescribing> | null;
+  trackers?: Array<string>;
+};
