@@ -1,3 +1,13 @@
+Version 1.3.0 (2022-10-03)
+--------------------------
+Upgrade Snowplow mobile trackers to v4 (#167)
+Add anonymous tracking features (#168)
+Add interface to subscribe for events tracked in Web views (#169)
+Add option to add custom headers (#165)
+Enable setting custom path for POST requests (#178)
+Upgrade internal and demo app dependencies (#172)
+Remove circular imports of demo app dendencies when running in demo apps (#174)
+
 Version 1.2.1 (2022-04-12)
 --------------------------
 Fix import of non-published NSDictionary helpers from SnowplowTracker on iOS (#161)
