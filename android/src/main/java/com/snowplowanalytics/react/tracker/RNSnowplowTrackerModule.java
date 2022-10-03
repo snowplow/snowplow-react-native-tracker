@@ -73,6 +73,10 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             } else {
                 networkConfiguration = new NetworkConfiguration(networkConfig.getString("endpoint"));
             }
+            if (networkConfig.hasKey("customPostPath") && !networkConfig.isNull("customPostPath")) {
+                String customPostPath = networkConfig.getString("customPostPath");
+                networkConfiguration.customPostPath = customPostPath;
+            }
 
             // Configurations
             List<Configuration> controllers = new ArrayList<Configuration>();

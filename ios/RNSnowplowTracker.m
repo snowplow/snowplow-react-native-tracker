@@ -63,6 +63,10 @@ RCT_EXPORT_METHOD(createTracker:
     NSString *method = [networkConfig rnsp_stringForKey:@"method" defaultValue:nil];
     SPHttpMethod httpMethod = [@"get" isEqualToString:method] ? SPHttpMethodGet : SPHttpMethodPost;
     SPNetworkConfiguration *networkConfiguration = [[SPNetworkConfiguration alloc] initWithEndpoint:networkConfig[@"endpoint"] method:httpMethod];
+    NSString *customPostPath = [networkConfig rnsp_stringForKey:@"customPostPath" defaultValue:nil];
+    if (customPostPath != nil) {
+        networkConfiguration.customPostPath = customPostPath;
+    }
 
     // Configurations
     NSMutableArray *controllers = [NSMutableArray array];
