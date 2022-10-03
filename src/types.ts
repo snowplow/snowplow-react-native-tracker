@@ -86,6 +86,8 @@ export interface NetworkConfiguration {
   /**
    * A custom path which will be added to the endpoint URL to specify the
    * complete URL of the collector when paired with the POST method.
+   * 
+   * The default is `com.snowplowanalytics.snowplow/tp2`.
    */
    customPostPath?: string;
 }
