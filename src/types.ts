@@ -94,7 +94,7 @@ export interface NetworkConfiguration {
   /**
    * Custom headers for HTTP requests to the Collector.
    */
-  requestHeaders?: [name: string]
+  requestHeaders?: Record<string, string>;
 }
 
 
