@@ -8,12 +8,12 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.snowplowanalytics.snowplow.Snowplow;
 import com.snowplowanalytics.snowplow.configuration.Configuration;
 import com.snowplowanalytics.snowplow.configuration.EmitterConfiguration;
 import com.snowplowanalytics.snowplow.configuration.GdprConfiguration;
 import com.snowplowanalytics.snowplow.configuration.NetworkConfiguration;
-import com.snowplowanalytics.snowplow.configuration.RemoteConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SessionConfiguration;
 import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
@@ -22,6 +22,7 @@ import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
 import com.snowplowanalytics.snowplow.event.MessageNotification;
 import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.controller.TrackerController;
+import com.snowplowanalytics.snowplow.network.CollectorCookieJar;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.SelfDescribing;
 import com.snowplowanalytics.snowplow.event.ScreenView;
@@ -30,17 +31,19 @@ import com.snowplowanalytics.snowplow.event.PageView;
 import com.snowplowanalytics.snowplow.event.Timing;
 import com.snowplowanalytics.snowplow.event.ConsentGranted;
 import com.snowplowanalytics.snowplow.event.ConsentWithdrawn;
-import com.snowplowanalytics.snowplow.event.EcommerceTransactionItem;
 import com.snowplowanalytics.snowplow.event.EcommerceTransaction;
 import com.snowplowanalytics.snowplow.network.HttpMethod;
-import com.snowplowanalytics.snowplow.internal.utils.Util;
 import com.snowplowanalytics.snowplow.util.Size;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.snowplowanalytics.react.util.EventUtil;
 import com.snowplowanalytics.react.util.ConfigUtil;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
@@ -76,6 +79,26 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             if (networkConfig.hasKey("customPostPath") && !networkConfig.isNull("customPostPath")) {
                 String customPostPath = networkConfig.getString("customPostPath");
                 networkConfiguration.customPostPath = customPostPath;
+            }
+            if (networkConfig.hasKey("requestHeaders") && !networkConfig.isNull("requestHeaders")) {
+                ReadableMap requestHeaders = networkConfig.getMap("requestHeaders");
+                if (requestHeaders != null) {
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(15, TimeUnit.SECONDS)
+                            .readTimeout(15, TimeUnit.SECONDS)
+                            .cookieJar(new CollectorCookieJar(reactContext))
+                            .addInterceptor(chain -> {
+                                Request.Builder requestBuilder = chain.request().newBuilder();
+                                ReadableMapKeySetIterator it = requestHeaders.keySetIterator();
+                                while (it.hasNextKey()) {
+                                    String key = it.nextKey();
+                                    String value = requestHeaders.getString(key);
+                                    if (value != null) { requestBuilder.header(key, value); }
+                                }
+                                return chain.proceed(requestBuilder.build());
+                            }).build();
+                    networkConfiguration.okHttpClient(client);
+                }
             }
 
             // Configurations

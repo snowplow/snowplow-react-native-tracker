@@ -67,20 +67,24 @@ RCT_EXPORT_METHOD(createTracker:
     if (customPostPath != nil) {
         networkConfiguration.customPostPath = customPostPath;
     }
+    NSObject *requestHeaders = [networkConfig objectForKey:@"requestHeaders"];
+    if (requestHeaders != nil && [requestHeaders isKindOfClass:NSDictionary.class]) {
+        networkConfiguration.requestHeaders = (NSDictionary *)requestHeaders;
+    }
 
     // Configurations
     NSMutableArray *controllers = [NSMutableArray array];
 
     // TrackerConfiguration
     NSObject *trackerArg = [argmap objectForKey:@"trackerConfig"];
-    if (trackerArg !=nil && [trackerArg isKindOfClass:NSDictionary.class]) {
+    if (trackerArg != nil && [trackerArg isKindOfClass:NSDictionary.class]) {
         SPTrackerConfiguration *trackerConfiguration = [RNConfigUtils mkTrackerConfig:(NSDictionary *)trackerArg];
         [controllers addObject:trackerConfiguration];
     }
 
     // SessionConfiguration
     NSObject *sessionArg = [argmap objectForKey:@"sessionConfig"];
-    if (sessionArg !=nil && [sessionArg isKindOfClass:NSDictionary.class]) {
+    if (sessionArg != nil && [sessionArg isKindOfClass:NSDictionary.class]) {
         SPSessionConfiguration *sessionConfiguration = [RNConfigUtils mkSessionConfig:(NSDictionary *)sessionArg];
         [controllers addObject:sessionConfiguration];
     }

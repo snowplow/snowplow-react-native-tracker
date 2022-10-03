@@ -75,6 +75,9 @@ const App = () => {
     'sp1',
     {
       endpoint: collectorEndpoint,
+      requestHeaders: {
+        test: 'works',
+      },
     },
     {
       trackerConfig: {

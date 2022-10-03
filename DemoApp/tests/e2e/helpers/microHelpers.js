@@ -137,6 +137,21 @@ function matchByContexts(eventsArray, expectedContextsArray) {
 }
 
 /**
+ * Filters an array of Snowplow events based on the request headers
+ *
+ * ```
+ * matchByHeader(goodEventsArray, "Connection: keep-alive");
+ *
+ * ```
+ * @param {Array} eventsArray An array of Snowplow events
+ * @param {string} header The HTTP request header to match
+ * @returns {Array} An array with the matching events
+ */
+function matchByHeader(eventsArray, header) {
+  return eventsArray.filter(hasHeader(header));
+}
+
+/**
  * Filters an array of Snowplow events based on event's Properties
  *
  * ```
@@ -155,7 +170,8 @@ function matchByContexts(eventsArray, expectedContextsArray) {
  *                 parameters: {
  *                     user_id: "tester",
  *                     name_tracker: "myTrackerName"
- *                 }
+ *                 },
+ *                 header: 'the: header',
  *             });
  * ```
  *
@@ -188,6 +204,10 @@ function matchEvents(microEvents, eventProps) {
 
   if (eventProps.parameters) {
     res = matchByParams(res, eventProps.parameters);
+  }
+
+  if (eventProps.header) {
+    res = matchByHeader(res, eventProps.header);
   }
 
   return res;
@@ -252,6 +272,12 @@ function hasContexts(expCoArr) {
   };
 }
 
+function hasHeader(header) {
+  return function (ev) {
+    return ev.rawEvent.context.headers.includes(header);
+  };
+}
+
 function keyIncludedIn(obj) {
   return function (key) {
     return Object.keys(obj).includes(key);
@@ -312,6 +338,7 @@ export {
   matchByVals,
   matchByParams,
   matchByContexts,
+  matchByHeader,
   matchEvents,
   compare,
   request,
