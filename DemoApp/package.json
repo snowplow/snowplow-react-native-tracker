@@ -52,8 +52,8 @@
     "react-test-renderer": "^18.2.0",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.5",
-    "wait-on": "^6.0.1",
-    "ts-jest": "^29.0.1"
+    "ts-jest": "^29.0.1",
+    "wait-on": "^6.0.1"
   },
   "resolutions": {
     "@jest/create-cache-key-function": "^29.0.3"
