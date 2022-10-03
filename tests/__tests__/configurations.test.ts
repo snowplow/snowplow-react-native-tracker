@@ -149,7 +149,7 @@ describe('test initValidate resolves', () => {
   test('test valid networkConfig', async () => {
     const testConfig = {
       namespace: 'sp1',
-      networkConfig: {endpoint: 'test', method: 'get', customPostPath: '/custom/path'}
+      networkConfig: {endpoint: 'test', method: 'get', customPostPath: 'custom/path'}
     };
     await expect(c.initValidate(testConfig as any)).resolves.toBe(true);
   });
@@ -207,7 +207,7 @@ describe('test initValidate resolves', () => {
   test('test with all defaults', async () => {
     const testConfig = {
       namespace: 'sp1',
-      networkConfig: {endpoint: 'test', method: 'post', customPostPath: '/'},
+      networkConfig: {endpoint: 'test', method: 'post', customPostPath: 'com.snowplowanalytics.snowplow/tp2'},
       trackerConfig: {
         devicePlatform: 'mob',
         base64Encoding: true,
@@ -275,7 +275,7 @@ describe('test isValidNetworkConf', () => {
     const testConf = {
       endpoint: '0.0.0.0:9090',
       method: 'post',
-      customPostPath: '/'
+      customPostPath: 'com.snowplowanalytics.snowplow/tp2'
     } as any;
     expect(c.isValidNetworkConf(testConf)).toBe(true);
   });
