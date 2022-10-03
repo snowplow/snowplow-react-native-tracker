@@ -99,6 +99,7 @@ function eventsWithEventType(eventType, n = 1) {
  *     values: {
  *         testProperty: true
  *     },
+ *     header: "the: header"
  *     contexts: [{
  *         schema: "iglu:com.acme/test_context/jsonschema/1-0-0",
  *         data: {
@@ -123,11 +124,30 @@ function eventsWithProperties(eventOptions, n = 1) {
   });
 }
 
+/**
+ * Asserts on the number of events having a given HTTP request header
+ *
+ * ```
+ * eventsWithHeader("Connection: keep-alive", 2);
+ * ```
+ *
+ * @param {string} header The request header to match
+ * @param {number} [n=1] The expected number of matching events
+ */
+function eventsWithHeader(header, n = 1) {
+  n = parseInt(n, 10);
+  return getMicroGood().then(arr => {
+    const res = Micro.matchByHeader(arr, header);
+    expect(res.length).toBe(n);
+  });
+}
+
 export {
   assertNoBadEvents,
   eventsWithSchema,
   eventsWithEventType,
   eventsWithProperties,
+  eventsWithHeader,
   resetMicro,
   sleep,
 };

@@ -149,7 +149,7 @@ describe('test initValidate resolves', () => {
   test('test valid networkConfig', async () => {
     const testConfig = {
       namespace: 'sp1',
-      networkConfig: {endpoint: 'test', method: 'get', customPostPath: 'custom/path'}
+      networkConfig: {endpoint: 'test', method: 'get', customPostPath: 'custom/path', requestHeaders: {the: 'header'}}
     };
     await expect(c.initValidate(testConfig as any)).resolves.toBe(true);
   });
