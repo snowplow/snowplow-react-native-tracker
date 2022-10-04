@@ -18,10 +18,10 @@
 //  License: Apache License Version 2.0
 //
 
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
-#else
+#if __has_include(<React/RCTBridgeModule.h>)
 #import <React/RCTBridgeModule.h>
+#else
+#import "RCTBridgeModule.h"
 #endif
 
 #import <Foundation/Foundation.h>
