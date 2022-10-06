@@ -70,6 +70,7 @@
     trackerConfiguration.installAutotracking = [trackerConfig rnsp_boolForKey:@"installAutotracking" defaultValue:YES];
     trackerConfiguration.exceptionAutotracking = [trackerConfig rnsp_boolForKey:@"exceptionAutotracking" defaultValue:YES];
     trackerConfiguration.diagnosticAutotracking = [trackerConfig rnsp_boolForKey:@"diagnosticAutotracking" defaultValue:NO];
+    trackerConfiguration.userAnonymisation = [trackerConfig rnsp_boolForKey:@"userAnonymisation" defaultValue:NO];
 
     return trackerConfiguration;
 }
@@ -98,6 +99,7 @@
     emitterConfiguration.threadPoolSize = [[emitterConfig rnsp_numberForKey:@"threadPoolSize" defaultValue:@15] integerValue];
     emitterConfiguration.byteLimitGet = [[emitterConfig rnsp_numberForKey:@"byteLimitGet" defaultValue:@40000] integerValue];
     emitterConfiguration.byteLimitPost = [[emitterConfig rnsp_numberForKey:@"byteLimitPost" defaultValue:@40000] integerValue];
+    emitterConfiguration.serverAnonymisation = [emitterConfig rnsp_boolForKey:@"serverAnonymisation" defaultValue:NO];
 
     return emitterConfiguration;
 }

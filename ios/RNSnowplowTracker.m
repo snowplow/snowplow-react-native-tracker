@@ -63,20 +63,28 @@ RCT_EXPORT_METHOD(createTracker:
     NSString *method = [networkConfig rnsp_stringForKey:@"method" defaultValue:nil];
     SPHttpMethod httpMethod = [@"get" isEqualToString:method] ? SPHttpMethodGet : SPHttpMethodPost;
     SPNetworkConfiguration *networkConfiguration = [[SPNetworkConfiguration alloc] initWithEndpoint:networkConfig[@"endpoint"] method:httpMethod];
+    NSString *customPostPath = [networkConfig rnsp_stringForKey:@"customPostPath" defaultValue:nil];
+    if (customPostPath != nil) {
+        networkConfiguration.customPostPath = customPostPath;
+    }
+    NSObject *requestHeaders = [networkConfig objectForKey:@"requestHeaders"];
+    if (requestHeaders != nil && [requestHeaders isKindOfClass:NSDictionary.class]) {
+        networkConfiguration.requestHeaders = (NSDictionary *)requestHeaders;
+    }
 
     // Configurations
     NSMutableArray *controllers = [NSMutableArray array];
 
     // TrackerConfiguration
     NSObject *trackerArg = [argmap objectForKey:@"trackerConfig"];
-    if (trackerArg !=nil && [trackerArg isKindOfClass:NSDictionary.class]) {
+    if (trackerArg != nil && [trackerArg isKindOfClass:NSDictionary.class]) {
         SPTrackerConfiguration *trackerConfiguration = [RNConfigUtils mkTrackerConfig:(NSDictionary *)trackerArg];
         [controllers addObject:trackerConfiguration];
     }
 
     // SessionConfiguration
     NSObject *sessionArg = [argmap objectForKey:@"sessionConfig"];
-    if (sessionArg !=nil && [sessionArg isKindOfClass:NSDictionary.class]) {
+    if (sessionArg != nil && [sessionArg isKindOfClass:NSDictionary.class]) {
         SPSessionConfiguration *sessionConfiguration = [RNConfigUtils mkSessionConfig:(NSDictionary *)sessionArg];
         [controllers addObject:sessionConfiguration];
     }
@@ -123,7 +131,7 @@ RCT_EXPORT_METHOD(removeTracker: (NSDictionary *)details
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
     BOOL removed = [SPSnowplow removeTracker:trackerController];
     resolve(@(removed));
 }
@@ -138,7 +146,7 @@ RCT_EXPORT_METHOD(trackSelfDescribingEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -162,7 +170,7 @@ RCT_EXPORT_METHOD(trackStructuredEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -199,7 +207,7 @@ RCT_EXPORT_METHOD(trackScreenViewEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -250,7 +258,7 @@ RCT_EXPORT_METHOD(trackPageViewEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -282,7 +290,7 @@ RCT_EXPORT_METHOD(trackTimingEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -313,7 +321,7 @@ RCT_EXPORT_METHOD(trackConsentGrantedEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -349,7 +357,7 @@ RCT_EXPORT_METHOD(trackConsentWithdrawnEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -386,7 +394,7 @@ RCT_EXPORT_METHOD(trackEcommerceTransactionEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -439,7 +447,7 @@ RCT_EXPORT_METHOD(trackDeepLinkReceivedEvent:
             resolver:(RCTPromiseResolveBlock)resolve
             rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -467,7 +475,7 @@ RCT_EXPORT_METHOD(trackMessageNotificationEvent:
             resolver:(RCTPromiseResolveBlock)resolve
             rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *argmap = [details objectForKey:@"eventData"];
@@ -581,7 +589,7 @@ RCT_EXPORT_METHOD(removeGlobalContexts:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *tag = [details objectForKey:@"removeTag"];
@@ -598,7 +606,7 @@ RCT_EXPORT_METHOD(addGlobalContexts:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSDictionary *gcArg = [details objectForKey:@"addGlobalContext"];
@@ -621,7 +629,7 @@ RCT_EXPORT_METHOD(setUserId:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newUid = [details rnsp_stringForKey:@"userId" defaultValue:nil];
@@ -638,7 +646,7 @@ RCT_EXPORT_METHOD(setNetworkUserId:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newNuid = [details rnsp_stringForKey:@"networkUserId" defaultValue:nil];
@@ -655,7 +663,7 @@ RCT_EXPORT_METHOD(setDomainUserId:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newDuid = [details rnsp_stringForKey:@"domainUserId" defaultValue:nil];
@@ -672,7 +680,7 @@ RCT_EXPORT_METHOD(setIpAddress:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newIp = [details rnsp_stringForKey:@"ipAddress" defaultValue:nil];
@@ -689,7 +697,7 @@ RCT_EXPORT_METHOD(setUseragent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newUagent = [details rnsp_stringForKey:@"useragent" defaultValue:nil];
@@ -706,7 +714,7 @@ RCT_EXPORT_METHOD(setTimezone:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newTz = [details rnsp_stringForKey:@"timezone" defaultValue:nil];
@@ -723,7 +731,7 @@ RCT_EXPORT_METHOD(setLanguage:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *newLang = [details rnsp_stringForKey:@"language" defaultValue:nil];
@@ -740,7 +748,7 @@ RCT_EXPORT_METHOD(setScreenResolution:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSObject *newRes = [details objectForKey:@"screenResolution"];
@@ -764,7 +772,7 @@ RCT_EXPORT_METHOD(setScreenViewport:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSObject *newView = [details objectForKey:@"screenViewport"];
@@ -788,7 +796,7 @@ RCT_EXPORT_METHOD(setColorDepth:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSNumber *newColorD = [details rnsp_numberForKey:@"colorDepth" defaultValue:nil];
@@ -805,7 +813,7 @@ RCT_EXPORT_METHOD(getSessionUserId:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *suid = [trackerController.session userId];
@@ -821,7 +829,7 @@ RCT_EXPORT_METHOD(getSessionId:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSString *sid = [trackerController.session sessionId];
@@ -837,7 +845,7 @@ RCT_EXPORT_METHOD(getSessionIndex:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSInteger sidx = [trackerController.session sessionIndex];
@@ -853,7 +861,7 @@ RCT_EXPORT_METHOD(getIsInBackground:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         BOOL isInBg = [trackerController.session isInBackground];
@@ -869,7 +877,7 @@ RCT_EXPORT_METHOD(getBackgroundIndex:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSInteger bgIdx = [trackerController.session backgroundIndex];
@@ -885,7 +893,7 @@ RCT_EXPORT_METHOD(getForegroundIndex:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     NSString *namespace = [details objectForKey:@"tracker"];
-    id<SPTrackerController> trackerController = [SPSnowplow trackerByNamespace:namespace];
+    id<SPTrackerController> trackerController = [self trackerByNamespace:namespace];
 
     if (trackerController != nil) {
         NSInteger fgIdx = [trackerController.session foregroundIndex];
@@ -894,6 +902,10 @@ RCT_EXPORT_METHOD(getForegroundIndex:
         NSError* error = [NSError errorWithDomain:@"SnowplowTracker" code:200 userInfo:nil];
         reject(@"ERROR", @"tracker with given namespace not found", error);
     }
+}
+
+- (nullable id<SPTrackerController>)trackerByNamespace:(NSString *)namespace {
+    return [namespace isEqual:[NSNull null]] ? [SPSnowplow defaultTracker] : [SPSnowplow trackerByNamespace:namespace];
 }
 
 @end

@@ -16,15 +16,27 @@ import {
   useColorScheme,
   View,
   Button,
+  Dimensions,
 } from 'react-native';
+import {WebView} from 'react-native-webview';
 
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 import {
   createTracker,
   removeTracker,
-  // removeAllTrackers,
+  getWebViewCallback,
 } from '@snowplow/react-native-tracker';
+
+/**
+ * URI of the Snowplow collector (e.g., Micro, Mini, or BDP) to send events to
+ */
+const collectorEndpoint = 'placeholder';
+
+/**
+ * URI of a website to load in the webview component
+ */
+const webViewEndpoint = '';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -62,7 +74,10 @@ const App = () => {
   const tracker = createTracker(
     'sp1',
     {
-      endpoint: 'placeholder',
+      endpoint: collectorEndpoint,
+      requestHeaders: {
+        test: 'works',
+      },
     },
     {
       trackerConfig: {
@@ -106,12 +121,29 @@ const App = () => {
   const secTracker = createTracker(
     'sp2',
     {
-      endpoint: 'placeholder',
+      endpoint: collectorEndpoint,
     },
     {
       trackerConfig: {
         screenViewAutotracking: false, // for tests predictability
         installAutotracking: false,
+      },
+    },
+  );
+
+  const anonymousTracker = createTracker(
+    'sp_anon',
+    {
+      endpoint: collectorEndpoint,
+    },
+    {
+      trackerConfig: {
+        screenViewAutotracking: false, // for tests predictability
+        installAutotracking: false,
+        userAnonymisation: true,
+      },
+      emitterConfig: {
+        serverAnonymisation: true,
       },
     },
   );
@@ -298,6 +330,14 @@ const App = () => {
     });
   };
 
+  const onPressTestAnonymousTracker = () => {
+    anonymousTracker.trackScreenViewEvent({name: 'fromAnonymousTracker'});
+    anonymousTracker.trackStructuredEvent({
+      category: 'AnonymousTracker',
+      action: 'trackAnonymous',
+    });
+  };
+
   const onPressPlayGC = async () => {
     try {
       await tracker.removeGlobalContexts('testTag');
@@ -415,6 +455,14 @@ const App = () => {
               accessibilityLabel="testSecTracker"
             />
           </Section>
+          <Section title="Anonymous tracker">
+            <Button
+              onPress={onPressTestAnonymousTracker}
+              title="Track events with anonymous tracking"
+              color="#841584"
+              accessibilityLabel="testAnonymousTracker"
+            />
+          </Section>
           <Section title="Warnings">
             <Button
               onPress={onPressShowMeSomeWarnings}
@@ -455,6 +503,20 @@ const App = () => {
               color="#AA2222"
               accessibilityLabel="testRemove"
             />
+          </Section>
+          <Section title="Web view">
+            {webViewEndpoint ? (
+              <WebView
+                onMessage={getWebViewCallback()}
+                source={{uri: webViewEndpoint}}
+                style={{
+                  height: 400,
+                  width:
+                    Dimensions.get('window').width -
+                    styles.sectionContainer.paddingHorizontal,
+                }}
+              />
+            ) : null}
           </Section>
         </View>
       </ScrollView>

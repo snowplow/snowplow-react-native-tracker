@@ -32,7 +32,12 @@ import type {
 /**
  * Configuration properties
  */
-const networkProps = ['endpoint', 'method'];
+const networkProps = [
+  'endpoint',
+  'method',
+  'customPostPath',
+  'requestHeaders',
+];
 const trackerProps= [
   'appId',
   'devicePlatform',
@@ -48,7 +53,8 @@ const trackerProps= [
   'lifecycleAutotracking',
   'installAutotracking',
   'exceptionAutotracking',
-  'diagnosticAutotracking'
+  'diagnosticAutotracking',
+  'userAnonymisation'
 ];
 const sessionProps = [
   'foregroundTimeout',
@@ -60,6 +66,7 @@ const emitterProps = [
   'threadPoolSize',
   'byteLimitPost',
   'byteLimitGet',
+  'serverAnonymisation',
 ];
 const subjectProps = [
   'userId',

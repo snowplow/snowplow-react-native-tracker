@@ -8,12 +8,12 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.snowplowanalytics.snowplow.Snowplow;
 import com.snowplowanalytics.snowplow.configuration.Configuration;
 import com.snowplowanalytics.snowplow.configuration.EmitterConfiguration;
 import com.snowplowanalytics.snowplow.configuration.GdprConfiguration;
 import com.snowplowanalytics.snowplow.configuration.NetworkConfiguration;
-import com.snowplowanalytics.snowplow.configuration.RemoteConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SessionConfiguration;
 import com.snowplowanalytics.snowplow.configuration.TrackerConfiguration;
 import com.snowplowanalytics.snowplow.configuration.SubjectConfiguration;
@@ -22,6 +22,7 @@ import com.snowplowanalytics.snowplow.event.DeepLinkReceived;
 import com.snowplowanalytics.snowplow.event.MessageNotification;
 import com.snowplowanalytics.snowplow.globalcontexts.GlobalContext;
 import com.snowplowanalytics.snowplow.controller.TrackerController;
+import com.snowplowanalytics.snowplow.network.CollectorCookieJar;
 import com.snowplowanalytics.snowplow.payload.SelfDescribingJson;
 import com.snowplowanalytics.snowplow.event.SelfDescribing;
 import com.snowplowanalytics.snowplow.event.ScreenView;
@@ -30,17 +31,19 @@ import com.snowplowanalytics.snowplow.event.PageView;
 import com.snowplowanalytics.snowplow.event.Timing;
 import com.snowplowanalytics.snowplow.event.ConsentGranted;
 import com.snowplowanalytics.snowplow.event.ConsentWithdrawn;
-import com.snowplowanalytics.snowplow.event.EcommerceTransactionItem;
 import com.snowplowanalytics.snowplow.event.EcommerceTransaction;
 import com.snowplowanalytics.snowplow.network.HttpMethod;
-import com.snowplowanalytics.snowplow.internal.utils.Util;
 import com.snowplowanalytics.snowplow.util.Size;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.snowplowanalytics.react.util.EventUtil;
 import com.snowplowanalytics.react.util.ConfigUtil;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
@@ -72,6 +75,30 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                     ("get".equalsIgnoreCase(method) ? HttpMethod.GET : HttpMethod.POST));
             } else {
                 networkConfiguration = new NetworkConfiguration(networkConfig.getString("endpoint"));
+            }
+            if (networkConfig.hasKey("customPostPath") && !networkConfig.isNull("customPostPath")) {
+                String customPostPath = networkConfig.getString("customPostPath");
+                networkConfiguration.customPostPath = customPostPath;
+            }
+            if (networkConfig.hasKey("requestHeaders") && !networkConfig.isNull("requestHeaders")) {
+                ReadableMap requestHeaders = networkConfig.getMap("requestHeaders");
+                if (requestHeaders != null) {
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(15, TimeUnit.SECONDS)
+                            .readTimeout(15, TimeUnit.SECONDS)
+                            .cookieJar(new CollectorCookieJar(reactContext))
+                            .addInterceptor(chain -> {
+                                Request.Builder requestBuilder = chain.request().newBuilder();
+                                ReadableMapKeySetIterator it = requestHeaders.keySetIterator();
+                                while (it.hasNextKey()) {
+                                    String key = it.nextKey();
+                                    String value = requestHeaders.getString(key);
+                                    if (value != null) { requestBuilder.header(key, value); }
+                                }
+                                return chain.proceed(requestBuilder.build());
+                            }).build();
+                    networkConfiguration.okHttpClient(client);
+                }
             }
 
             // Configurations
@@ -137,7 +164,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                               Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             promise.resolve(Snowplow.removeTracker(trackerController));
 
@@ -165,7 +192,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             SelfDescribingJson sdj = EventUtil.createSelfDescribingJson(argmap);
             SelfDescribing event = new SelfDescribing(sdj);
@@ -189,7 +216,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             Structured event = EventUtil.createStructuredEvent(argmap);
 
@@ -212,7 +239,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             ScreenView event = EventUtil.createScreenViewEvent(argmap);
 
@@ -235,7 +262,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             PageView event = EventUtil.createPageViewEvent(argmap);
 
@@ -258,7 +285,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             Timing event = EventUtil.createTimingEvent(argmap);
 
@@ -281,7 +308,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             ConsentGranted event = EventUtil.createConsentGrantedEvent(argmap);
 
@@ -304,7 +331,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             ConsentWithdrawn event = EventUtil.createConsentWithdrawnEvent(argmap);
 
@@ -327,7 +354,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             EcommerceTransaction event = EventUtil.createEcommerceTransactionEvent(argmap);
 
@@ -350,7 +377,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             DeepLinkReceived event = EventUtil.createDeepLinkReceivedEvent(argmap);
 
@@ -373,7 +400,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             ReadableMap argmap = details.getMap("eventData");
             ReadableArray contexts = details.getArray("contexts");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             MessageNotification event = EventUtil.createMessageNotificationEvent(argmap);
 
@@ -395,7 +422,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             String namespace = details.getString("tracker");
             String tag = details.getString("removeTag");
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             trackerController.getGlobalContexts().remove(tag);
             promise.resolve(true);
@@ -422,7 +449,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             }
             GlobalContext gcStatic = new GlobalContext(staticContexts);
 
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             trackerController.getGlobalContexts().add(tag, gcStatic);
             promise.resolve(true);
@@ -437,7 +464,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                           Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("userId")) {
                 trackerController.getSubject().setUserId(null);
@@ -456,7 +483,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                  Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("networkUserId")) {
                 trackerController.getSubject().setNetworkUserId(null);
@@ -475,7 +502,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                 Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("domainUserId")) {
                 trackerController.getSubject().setDomainUserId(null);
@@ -494,7 +521,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                              Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("ipAddress")) {
                 trackerController.getSubject().setIpAddress(null);
@@ -513,7 +540,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                              Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("useragent")) {
                 trackerController.getSubject().setUseragent(null);
@@ -532,7 +559,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                             Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("timezone")) {
                 trackerController.getSubject().setTimezone(null);
@@ -551,7 +578,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                             Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("language")) {
                 trackerController.getSubject().setLanguage(null);
@@ -570,7 +597,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                     Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("screenResolution")) {
                 trackerController.getSubject().setScreenResolution(null);
@@ -594,7 +621,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                   Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("screenViewport")) {
                 trackerController.getSubject().setScreenViewPort(null);
@@ -618,7 +645,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                               Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             if (details.isNull("colorDepth")) {
                 trackerController.getSubject().setColorDepth(null);
@@ -637,7 +664,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                  Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             String suid = trackerController.getSession().getUserId();
             promise.resolve(suid);
@@ -651,7 +678,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                              Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             String sid = trackerController.getSession().getSessionId();
             promise.resolve(sid);
@@ -665,7 +692,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                 Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             int sidx = trackerController.getSession().getSessionIndex();
             promise.resolve(sidx);
@@ -679,7 +706,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                   Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             boolean isInBg = trackerController.getSession().isInBackground();
             promise.resolve(isInBg);
@@ -693,7 +720,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                    Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             int bgIdx = trackerController.getSession().getBackgroundIndex();
             promise.resolve(bgIdx);
@@ -707,13 +734,17 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
                                    Promise promise) {
         try {
             String namespace = details.getString("tracker");
-            TrackerController trackerController = Snowplow.getTracker(namespace);
+            TrackerController trackerController = getTracker(namespace);
 
             int fgIdx = trackerController.getSession().getForegroundIndex();
             promise.resolve(fgIdx);
         } catch(Throwable t) {
             promise.reject("ERROR", t.getMessage());
         }
+    }
+
+    private TrackerController getTracker(String namespace) {
+        return namespace == null ? Snowplow.getDefaultTracker() : Snowplow.getTracker(namespace);
     }
 
 }
