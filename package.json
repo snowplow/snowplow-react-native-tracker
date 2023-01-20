@@ -38,6 +38,9 @@
     "type": "git",
     "url": "https://github.com/snowplow-incubator/snowplow-react-native-tracker"
   },
+  "dependencies": {
+    "@snowplow/tracker-core": "3.8.0"
+  },
   "peerDependencies": {
     "react": ">=16.8.6",
     "react-native": ">=0.65.0"
