@@ -28,7 +28,7 @@ import type {
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
   MessageNotificationProps,
-} from "./types";
+} from './types';
 
 import {
   Payload,
@@ -41,11 +41,11 @@ import {
   buildConsentGranted,
   buildConsentWithdrawn,
   buildEcommerceTransaction,
-} from "@snowplow/tracker-core";
-import type { TrackerCore } from "@snowplow/tracker-core";
+} from '@snowplow/tracker-core';
+import type { TrackerCore } from '@snowplow/tracker-core';
 
-const packageJson = require('../package.json');
-const trackerVersion = `rn-${packageJson.version}`;
+// Tracker version added to the events
+const trackerVersion = 'rn-1.3.0';
 
 interface Tracker extends TrackerCore {
   setDomainUserId: (duid: string | undefined) => void;
@@ -53,15 +53,91 @@ interface Tracker extends TrackerCore {
 
 let trackers: { [namespace: string]: Tracker } = {};
 
+function preparePayload(payload: Payload): Record<string, string> {
+  const stringifiedPayload: Record<string, string> = {};
+
+  payload['stm'] = new Date().getTime().toString();
+
+  for (const key in payload) {
+    if (Object.prototype.hasOwnProperty.call(payload, key)) {
+      stringifiedPayload[key] = String(payload[key]);
+    }
+  }
+  return stringifiedPayload;
+}
+
+function createEmitCallback(configuration: InitTrackerConfiguration): (e: Payload) => void {
+  return (e: Payload) => {
+    const postJson = {
+      schema:
+        'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
+      data: [preparePayload(e)],
+    };
+    const endpoint = configuration.networkConfig.endpoint;
+    const postPath =
+      configuration.networkConfig.customPostPath ??
+      '/com.snowplowanalytics.snowplow/tp2';
+    fetch(endpoint + postPath, {
+      method: 'POST',
+      body: JSON.stringify(postJson),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).catch(console.error);
+  };
+}
+
+function updateTrackerProperties(tracker: Tracker, configuration: InitTrackerConfiguration): void {
+  tracker.setPlatform(configuration.trackerConfig?.devicePlatform ?? 'mob');
+  tracker.setTrackerVersion(trackerVersion);
+  tracker.setTrackerNamespace(configuration.namespace);
+  if (configuration.trackerConfig?.appId != null) {
+    tracker.setAppId(configuration.trackerConfig.appId);
+  }
+  if (configuration.subjectConfig?.colorDepth != null) {
+    tracker.setColorDepth(String(configuration.subjectConfig.colorDepth));
+  }
+  if (configuration.subjectConfig?.domainUserId != null) {
+    tracker.setDomainUserId(configuration.subjectConfig.domainUserId);
+  }
+  if (configuration.subjectConfig?.ipAddress != null) {
+    tracker.setIpAddress(configuration.subjectConfig.ipAddress);
+  }
+  if (configuration.subjectConfig?.language != null) {
+    tracker.setLang(configuration.subjectConfig.language);
+  }
+  if (configuration.subjectConfig?.screenResolution != null) {
+    tracker.setScreenResolution(
+      String(configuration.subjectConfig.screenResolution[0]),
+      String(configuration.subjectConfig.screenResolution[1])
+    );
+  }
+  if (configuration.subjectConfig?.screenViewport != null) {
+    tracker.setViewport(
+      String(configuration.subjectConfig.screenViewport[0]),
+      String(configuration.subjectConfig.screenViewport[1])
+    );
+  }
+  if (configuration.subjectConfig?.timezone != null) {
+    tracker.setTimezone(configuration.subjectConfig.timezone);
+  }
+  if (configuration.subjectConfig?.userId != null) {
+    tracker.setUserId(configuration.subjectConfig.userId);
+  }
+  if (configuration.subjectConfig?.useragent != null) {
+    tracker.setUseragent(configuration.subjectConfig.useragent);
+  }
+}
+
 function createTracker(
   configuration: InitTrackerConfiguration,
   emitCallback?: (e: Payload) => void
-) {
+): Promise<void> {
   // create an emit callback if not given
-  emitCallback ??= createEmitCallback(configuration);
+  const emitter = emitCallback ?? createEmitCallback(configuration);
 
   // the tracker core does not provide an option to set the duid, so we need to add custom
-  let domainUserId: String | undefined;
+  let domainUserId: string | undefined;
   const setDomainUserId = (userId: string | undefined): void => {
     domainUserId = userId;
   };
@@ -70,13 +146,11 @@ function createTracker(
   const core = trackerCore({
     base64: configuration.trackerConfig?.base64Encoding ?? true,
     callback: (payload: PayloadBuilder) => {
-      if (domainUserId) {
-        payload.add("duid", domainUserId);
+      if (domainUserId != null) {
+        payload.add('duid', domainUserId);
       }
       const builtPayload = payload.build();
-      if (emitCallback) {
-        emitCallback(builtPayload);
-      }
+      emitter(builtPayload);
     },
   });
   const tracker = { ...core, setDomainUserId };
@@ -88,84 +162,34 @@ function createTracker(
   return <Promise<void>>Promise.resolve();
 }
 
-function createEmitCallback(configuration: InitTrackerConfiguration) {
-  return (e: Payload) => {
-    const postJson = {
-      schema:
-        "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4",
-      data: [preparePayload(e)],
-    };
-    let endpoint = configuration.networkConfig.endpoint;
-    let postPath =
-      configuration.networkConfig.customPostPath ??
-      "/com.snowplowanalytics.snowplow/tp2";
-    fetch(endpoint + postPath, {
-      method: "POST",
-      body: JSON.stringify(postJson),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).catch(console.error);
-  };
-}
-
-function updateTrackerProperties(tracker: Tracker, configuration: InitTrackerConfiguration) {
-  tracker.setPlatform(configuration.trackerConfig?.devicePlatform ?? "mob");
-  tracker.setTrackerVersion(trackerVersion);
-  tracker.setTrackerNamespace(configuration.namespace);
-  if (configuration.trackerConfig?.appId) {
-    tracker.setAppId(configuration.trackerConfig?.appId);
-  }
-  if (configuration.subjectConfig?.colorDepth) {
-    tracker.setColorDepth(String(configuration.subjectConfig.colorDepth));
-  }
-  if (configuration.subjectConfig?.domainUserId) {
-    tracker.setDomainUserId(configuration.subjectConfig.domainUserId);
-  }
-  if (configuration.subjectConfig?.ipAddress) {
-    tracker.setIpAddress(configuration.subjectConfig.ipAddress);
-  }
-  if (configuration.subjectConfig?.language) {
-    tracker.setLang(configuration.subjectConfig.language);
-  }
-  if (configuration.subjectConfig?.screenResolution) {
-    tracker.setScreenResolution(
-      String(configuration.subjectConfig.screenResolution[0]),
-      String(configuration.subjectConfig.screenResolution[1])
-    );
-  }
-  if (configuration.subjectConfig?.screenViewport) {
-    tracker.setViewport(
-      String(configuration.subjectConfig.screenViewport[0]),
-      String(configuration.subjectConfig.screenViewport[1])
-    );
-  }
-  if (configuration.subjectConfig?.timezone) {
-    tracker.setTimezone(configuration.subjectConfig.timezone);
-  }
-  if (configuration.subjectConfig?.userId) {
-    tracker.setUserId(configuration.subjectConfig.userId);
-  }
-  if (configuration.subjectConfig?.useragent) {
-    tracker.setUseragent(configuration.subjectConfig.useragent);
-  }
-}
-
-function removeTracker(details: { tracker: string }) {
+function removeTracker(details: { tracker: string }): Promise<void> {
   delete trackers[details.tracker];
   return <Promise<void>>Promise.resolve();
 }
 
-function removeAllTrackers() {
+function removeAllTrackers(): Promise<void> {
   trackers = {};
   return <Promise<void>>Promise.resolve();
+}
+
+function forTracker(
+  namespace: string | null,
+  callback: (tracker: Tracker) => void
+): void {
+  const tracker = namespace != null ? trackers[namespace] : Object.values(trackers)[0];
+
+  if (tracker) {
+    callback(tracker);
+  } else {
+    console.error('No such tracker found.');
+  }
 }
 
 function trackSelfDescribingEvent(details: {
   tracker: string | null;
   eventData: SelfDescribing;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
     tracker.track(
       buildSelfDescribingEvent({
@@ -181,7 +205,7 @@ function trackStructuredEvent(details: {
   tracker: string | null;
   eventData: StructuredProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
     tracker.track(buildStructEvent(details.eventData), details.contexts);
   });
@@ -192,7 +216,7 @@ function trackScreenViewEvent(details: {
   tracker: string | null;
   eventData: ScreenViewProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
     tracker.track(buildScreenView(details.eventData), details.contexts);
   });
@@ -203,7 +227,7 @@ function trackPageViewEvent(details: {
   tracker: string | null;
   eventData: PageViewProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
     tracker.track(buildPageView(details.eventData), details.contexts);
   });
@@ -214,25 +238,24 @@ function trackTimingEvent(details: {
   tracker: string | null;
   eventData: TimingProps;
   contexts: EventContext[];
-}) {
-  trackSelfDescribingEvent({
+}): Promise<void> {
+  return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
-      schema: "iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0",
+      schema: 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0',
       data: details.eventData,
     },
     contexts: details.contexts,
   });
-  return <Promise<void>>Promise.resolve();
 }
 
 function trackConsentGrantedEvent(details: {
   tracker: string | null;
   eventData: ConsentGrantedProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
-    let built = buildConsentGranted({
+    const built = buildConsentGranted({
       id: details.eventData.documentId,
       version: details.eventData.version,
       description: details.eventData.documentDescription,
@@ -247,9 +270,9 @@ function trackConsentWithdrawnEvent(details: {
   tracker: string | null;
   eventData: ConsentWithdrawnProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
-    let built = buildConsentWithdrawn({
+    const built = buildConsentWithdrawn({
       all: details.eventData.all,
       id: details.eventData.documentId,
       version: details.eventData.version,
@@ -264,7 +287,7 @@ function trackEcommerceTransactionEvent(details: {
   tracker: string | null;
   eventData: EcommerceTransactionProps;
   contexts: EventContext[];
-}) {
+}): Promise<void> {
   forTracker(details.tracker, (tracker) => {
     tracker.track(
       buildEcommerceTransaction({
@@ -288,96 +311,91 @@ function trackDeepLinkReceivedEvent(details: {
   tracker: string | null;
   eventData: DeepLinkReceivedProps;
   contexts: EventContext[];
-}) {
-  trackSelfDescribingEvent({
+}): Promise<void> {
+  return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
       schema:
-        "iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0",
+        'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0',
       data: details.eventData,
     },
     contexts: details.contexts,
   });
-  return <Promise<void>>Promise.resolve();
 }
 
 function trackMessageNotificationEvent(details: {
   tracker: string | null;
   eventData: MessageNotificationProps;
   contexts: EventContext[];
-}) {
-  trackSelfDescribingEvent({
+}): Promise<void> {
+  return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
       schema:
-        "iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0",
+        'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
       data: details.eventData,
     },
     contexts: details.contexts,
   });
-  return <Promise<void>>Promise.resolve();
 }
 
-function removeGlobalContexts(details: { tracker: string; removeTag: string }) {
+function removeGlobalContexts(details: { tracker: string; removeTag: string }): Promise<void> {
   details;
-  return <Promise<void>>Promise.reject("Not implemented");
+  return <Promise<void>>Promise.reject('Not implemented');
 }
 
 function addGlobalContexts(details: {
   tracker: string;
   addGlobalContext: GlobalContext;
-}) {
+}): Promise<void> {
   details;
-  return <Promise<void>>Promise.reject("Not implemented");
+  return <Promise<void>>Promise.reject('Not implemented');
 }
 
-function setUserId(details: { tracker: string; userId: string | null }) {
-  if (details.userId) {
+function setUserId(details: { tracker: string; userId: string | null }): Promise<void> {
+  if (details.userId != null) {
     trackers[details.tracker]?.setUserId(details.userId);
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function setNetworkUserId(_: {
-  tracker: string;
-  networkUserId: string | null;
-}) {
-  return <Promise<void>>Promise.reject("Not implemented");
+function setNetworkUserId(): Promise<void> {
+  return <Promise<void>>Promise.reject('Not implemented');
 }
 
 function setDomainUserId(details: {
   tracker: string;
   domainUserId: string | null;
-}) {
-  if (details.domainUserId) {
+}): Promise<void> {
+  if (details.domainUserId != null) {
     trackers[details.tracker]?.setDomainUserId(details.domainUserId);
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function setIpAddress(details: { tracker: string; ipAddress: string | null }) {
-  if (details.ipAddress) {
+function setIpAddress(details: { tracker: string; ipAddress: string | null }): Promise<void> {
+  if (details.ipAddress != null) {
     trackers[details.tracker]?.setIpAddress(details.ipAddress);
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function setUseragent(details: { tracker: string; useragent: string | null }) {
-  if (details.useragent) {
+function setUseragent(details: { tracker: string; useragent: string | null }): Promise<void> {
+  if (details.useragent != null) {
     trackers[details.tracker]?.setUseragent(details.useragent);
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function setTimezone(details: { tracker: string; timezone: string | null }) {
-  if (details.timezone) {
+function setTimezone(details: { tracker: string; timezone: string | null }): Promise<void> {
+  if (details.timezone != null) {
     trackers[details.tracker]?.setTimezone(details.timezone);
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function setLanguage(details: { tracker: string; language: string | null }) {
-  if (details.language) {
+function setLanguage(details: { tracker: string; language: string | null }): Promise<void> {
+  if (details.language != null) {
     trackers[details.tracker]?.setLang(details.language);
   }
   return <Promise<void>>Promise.resolve();
@@ -386,7 +404,7 @@ function setLanguage(details: { tracker: string; language: string | null }) {
 function setScreenResolution(details: {
   tracker: string;
   screenResolution: ScreenSize | null;
-}) {
+}): Promise<void> {
   if (details.screenResolution) {
     trackers[details.tracker]?.setScreenResolution(
       String(details.screenResolution[0]),
@@ -399,7 +417,7 @@ function setScreenResolution(details: {
 function setScreenViewport(details: {
   tracker: string;
   screenViewport: ScreenSize | null;
-}) {
+}): Promise<void> {
   if (details.screenViewport) {
     trackers[details.tracker]?.setViewport(
       String(details.screenViewport[0]),
@@ -412,61 +430,35 @@ function setScreenViewport(details: {
 function setColorDepth(details: {
   tracker: string;
   colorDepth: number | null;
-}) {
-  if (details.colorDepth) {
+}): Promise<void> {
+  if (details.colorDepth != null) {
     trackers[details.tracker]?.setColorDepth(String(details.colorDepth));
   }
   return <Promise<void>>Promise.resolve();
 }
 
-function getSessionUserId(_: { tracker: string }) {
-  return <Promise<string>>Promise.reject("Not implemented");
+function getSessionUserId(): Promise<string> {
+  return <Promise<string>>Promise.reject('Not implemented');
 }
 
-function getSessionId(_: { tracker: string }) {
-  return <Promise<string>>Promise.reject("Not implemented");
+function getSessionId(): Promise<string> {
+  return <Promise<string>>Promise.reject('Not implemented');
 }
 
-function getSessionIndex(_: { tracker: string }) {
-  return <Promise<number>>Promise.reject("Not implemented");
+function getSessionIndex(): Promise<number> {
+  return <Promise<number>>Promise.reject('Not implemented');
 }
 
-function getIsInBackground(_: { tracker: string }) {
-  return <Promise<boolean>>Promise.reject("Not implemented");
+function getIsInBackground(): Promise<boolean> {
+  return <Promise<boolean>>Promise.reject('Not implemented');
 }
 
-function getBackgroundIndex(_: { tracker: string }) {
-  return <Promise<number>>Promise.reject("Not implemented");
+function getBackgroundIndex(): Promise<number> {
+  return <Promise<number>>Promise.reject('Not implemented');
 }
 
-function getForegroundIndex(_: { tracker: string }) {
-  return <Promise<number>>Promise.reject("Not implemented");
-}
-
-function forTracker(
-  namespace: string | null,
-  callback: (tracker: Tracker) => void
-) {
-  let tracker = namespace ? trackers[namespace] : Object.values(trackers)[0];
-
-  if (tracker) {
-    callback(tracker);
-  } else {
-    console.error("No such tracker found.");
-  }
-}
-
-function preparePayload(payload: Payload) {
-  const stringifiedPayload: Record<string, string> = {};
-
-  payload["stm"] = new Date().getTime().toString();
-
-  for (const key in payload) {
-    if (Object.prototype.hasOwnProperty.call(payload, key)) {
-      stringifiedPayload[key] = String(payload[key]);
-    }
-  }
-  return stringifiedPayload;
+function getForegroundIndex(): Promise<number> {
+  return <Promise<number>>Promise.reject('Not implemented');
 }
 
 const JSSnowplowTracker = {

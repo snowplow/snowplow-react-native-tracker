@@ -16,10 +16,10 @@
 import { NativeModules } from 'react-native';
 import { JSSnowplowTracker } from './jsCore';
 
-const isAvailable = !!NativeModules.RNSnowplowTracker;
+const isAvailable = NativeModules.RNSnowplowTracker != null;
 if (!isAvailable) {
   console.warn(
-    "Unable to access the native iOS/Android Snowplow tracker, a tracker implementation with very limited functionality is used."
+    'Unable to access the native iOS/Android Snowplow tracker, a tracker implementation with very limited functionality is used.'
   );
 }
 
