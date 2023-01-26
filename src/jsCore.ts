@@ -78,11 +78,13 @@ function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) =
     const endpoint = networkConfig.endpoint;
     const postPath =
       networkConfig.customPostPath ?? '/com.snowplowanalytics.snowplow/tp2';
+    const headers = networkConfig.requestHeaders ?? {};
     fetch(endpoint + postPath, {
       method: 'POST',
       body: JSON.stringify(postJson),
       headers: {
         'Content-Type': 'application/json',
+        ...headers,
       },
     }).catch(errorHandler);
   };
