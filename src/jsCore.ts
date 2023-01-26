@@ -162,14 +162,14 @@ function createTracker(
   return <Promise<void>>Promise.resolve();
 }
 
-function removeTracker(details: { tracker: string }): Promise<void> {
+function removeTracker(details: { tracker: string }): Promise<boolean> {
   delete trackers[details.tracker];
-  return <Promise<void>>Promise.resolve();
+  return <Promise<boolean>>Promise.resolve(true);
 }
 
-function removeAllTrackers(): Promise<void> {
+function removeAllTrackers(): Promise<boolean> {
   trackers = {};
-  return <Promise<void>>Promise.resolve();
+  return <Promise<boolean>>Promise.resolve(true);
 }
 
 function forTracker(
