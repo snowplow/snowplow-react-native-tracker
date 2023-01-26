@@ -28,6 +28,7 @@ import type {
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
   MessageNotificationProps,
+  NetworkConfiguration,
 } from './types';
 
 import {
@@ -66,17 +67,16 @@ function preparePayload(payload: Payload): Record<string, string> {
   return stringifiedPayload;
 }
 
-function createEmitCallback(configuration: InitTrackerConfiguration): (e: Payload) => void {
+function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) => void {
   return (e: Payload) => {
     const postJson = {
       schema:
         'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
       data: [preparePayload(e)],
     };
-    const endpoint = configuration.networkConfig.endpoint;
+    const endpoint = networkConfig.endpoint;
     const postPath =
-      configuration.networkConfig.customPostPath ??
-      '/com.snowplowanalytics.snowplow/tp2';
+      networkConfig.customPostPath ?? '/com.snowplowanalytics.snowplow/tp2';
     fetch(endpoint + postPath, {
       method: 'POST',
       body: JSON.stringify(postJson),
@@ -134,7 +134,7 @@ function createTracker(
   emitCallback?: (e: Payload) => void
 ): Promise<void> {
   // create an emit callback if not given
-  const emitter = emitCallback ?? createEmitCallback(configuration);
+  const emitter = emitCallback ?? createEmitCallback(configuration.networkConfig);
 
   // the tracker core does not provide an option to set the duid, so we need to add custom
   let domainUserId: string | undefined;
