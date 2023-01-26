@@ -19,7 +19,6 @@ import type {
   EventContext,
   StructuredProps,
   ScreenViewProps,
-  GlobalContext,
   ScreenSize,
   PageViewProps,
   TimingProps,
@@ -44,12 +43,14 @@ import {
   buildEcommerceTransaction,
 } from '@snowplow/tracker-core';
 import type { TrackerCore } from '@snowplow/tracker-core';
+import { errorHandler } from './utils';
 
 // Tracker version added to the events
 const trackerVersion = 'rn-1.3.0';
 
 interface Tracker extends TrackerCore {
   setDomainUserId: (duid: string | undefined) => void;
+  setNetworkUserId: (nuid: string | undefined) => void;
 }
 
 let trackers: { [namespace: string]: Tracker } = {};
@@ -83,7 +84,7 @@ function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) =
       headers: {
         'Content-Type': 'application/json',
       },
-    }).catch(console.error);
+    }).catch(errorHandler);
   };
 }
 
@@ -141,6 +142,10 @@ function createTracker(
   const setDomainUserId = (userId: string | undefined): void => {
     domainUserId = userId;
   };
+  let networkUserId: string | undefined;
+  const setNetworkUserId = (userId: string | undefined): void => {
+    networkUserId = userId;
+  };
 
   // initialize the tracker core
   const core = trackerCore({
@@ -149,11 +154,14 @@ function createTracker(
       if (domainUserId != null) {
         payload.add('duid', domainUserId);
       }
+      if (networkUserId != null) {
+        payload.add('tnuid', networkUserId);
+      }
       const builtPayload = payload.build();
       emitter(builtPayload);
     },
   });
-  const tracker = { ...core, setDomainUserId };
+  const tracker = { ...core, setDomainUserId, setNetworkUserId };
   trackers[configuration.namespace] = tracker;
 
   // update tracker properties to reflect subject and tracker info
@@ -181,7 +189,7 @@ function forTracker(
   if (tracker) {
     callback(tracker);
   } else {
-    console.error('No such tracker found.');
+    errorHandler(new Error('No such tracker found.'));
   }
 }
 
@@ -339,16 +347,11 @@ function trackMessageNotificationEvent(details: {
   });
 }
 
-function removeGlobalContexts(details: { tracker: string; removeTag: string }): Promise<void> {
-  details;
+function removeGlobalContexts(): Promise<void> {
   return <Promise<void>>Promise.reject('Not implemented');
 }
 
-function addGlobalContexts(details: {
-  tracker: string;
-  addGlobalContext: GlobalContext;
-}): Promise<void> {
-  details;
+function addGlobalContexts(): Promise<void> {
   return <Promise<void>>Promise.reject('Not implemented');
 }
 
@@ -359,8 +362,14 @@ function setUserId(details: { tracker: string; userId: string | null }): Promise
   return <Promise<void>>Promise.resolve();
 }
 
-function setNetworkUserId(): Promise<void> {
-  return <Promise<void>>Promise.reject('Not implemented');
+function setNetworkUserId(details: {
+  tracker: string;
+  networkUserId: string | null;
+}): Promise<void> {
+  if (details.networkUserId != null) {
+    trackers[details.tracker]?.setNetworkUserId(details.networkUserId);
+  }
+  return <Promise<void>>Promise.resolve();
 }
 
 function setDomainUserId(details: {
