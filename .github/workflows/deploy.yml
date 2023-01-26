@@ -49,11 +49,13 @@ jobs:
       env:
         IOS_VER_FILEPATH: 'ios/Util/RNTrackerVersion.m'
         ANDR_VER_FILEPATH: 'android/src/main/java/com/snowplowanalytics/react/util/TrackerVersion.java'
+        JS_VER_FILEPATH: 'src/jsCore.ts'
       run: |
         echo ::set-output name=TAG_VERSION::${GITHUB_REF#refs/*/}
         echo "##[set-output name=RN_TRACKER_VERSION;]$(node -p "require('./package.json').version")"
         echo "##[set-output name=RN_IOS_TRACKER_VERSION;]$(cat "${IOS_VER_FILEPATH}" | sed -n -e 's/^.*kRNTrackerVersion = @"rn-\(.*\)";/\1/p')"
         echo "##[set-output name=RN_ANDROID_TRACKER_VERSION;]$(cat "${ANDR_VER_FILEPATH}" | sed -n -e 's/^.*RN_TRACKER_VERSION = "rn-\(.*\)";/\1/p')"
+        echo "##[set-output name=RN_JS_TRACKER_VERSION;]$(cat "${JS_VER_FILEPATH}" | sed -n -e 's/^.*trackerVersion = 'rn-\(.*\)';/\1/p')"
 
     - name: Fail if version mismatch
       run: |
@@ -67,6 +69,10 @@ jobs:
         fi
         if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ steps.version.outputs.RN_ANDROID_TRACKER_VERSION }}" ] ; then
           echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project(android) (${{ steps.version.outputs.RN_ANDROID_TRACKER_VERSION }})"
+          exit 1
+        fi
+        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ steps.version.outputs.RN_JS_TRACKER_VERSION }}" ] ; then
+          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in project(js) (${{ steps.version.outputs.RN_JS_TRACKER_VERSION }})"
           exit 1
         fi
 
