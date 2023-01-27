@@ -28,7 +28,7 @@ jobs:
 
     - name: Get micro
       if: steps.cache-micro.outputs.cache-hit != 'true'
-      run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.3.3/snowplow-micro-1.3.3.jar
+      run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.3.4/snowplow-micro-1.3.4.jar
 
     - name: Run Micro in background
       run: java -jar micro.jar --collector-config DemoApp/tests/micro/micro.conf --iglu DemoApp/tests/micro/iglu.json &
