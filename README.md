@@ -199,7 +199,7 @@ Feedback and contributions are welcome - if you have identified a bug, please lo
 
 ## Copyright and license
 
-The Snowplow React Native Tracker is copyright 2020-2022 Snowplow Analytics Ltd, 2019 DataCamp.
+The Snowplow React Native Tracker is copyright 2020-2023 Snowplow Analytics Ltd, 2019 DataCamp.
 
 Licensed under the **[Apache License, Version 2.0][license]** (the "License");
 you may not use this software except in compliance with the License.
