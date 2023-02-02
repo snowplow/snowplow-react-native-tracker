@@ -358,9 +358,7 @@ function addGlobalContexts(): Promise<void> {
 }
 
 function setUserId(details: { tracker: string; userId: string | null }): Promise<void> {
-  if (details.userId != null) {
-    trackers[details.tracker]?.setUserId(details.userId);
-  }
+  trackers[details.tracker]?.setUserId(details.userId ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
@@ -368,9 +366,7 @@ function setNetworkUserId(details: {
   tracker: string;
   networkUserId: string | null;
 }): Promise<void> {
-  if (details.networkUserId != null) {
-    trackers[details.tracker]?.setNetworkUserId(details.networkUserId);
-  }
+  trackers[details.tracker]?.setNetworkUserId(details.networkUserId ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
@@ -378,37 +374,27 @@ function setDomainUserId(details: {
   tracker: string;
   domainUserId: string | null;
 }): Promise<void> {
-  if (details.domainUserId != null) {
-    trackers[details.tracker]?.setDomainUserId(details.domainUserId);
-  }
+  trackers[details.tracker]?.setDomainUserId(details.domainUserId ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
 function setIpAddress(details: { tracker: string; ipAddress: string | null }): Promise<void> {
-  if (details.ipAddress != null) {
-    trackers[details.tracker]?.setIpAddress(details.ipAddress);
-  }
+  trackers[details.tracker]?.setIpAddress(details.ipAddress ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
 function setUseragent(details: { tracker: string; useragent: string | null }): Promise<void> {
-  if (details.useragent != null) {
-    trackers[details.tracker]?.setUseragent(details.useragent);
-  }
+  trackers[details.tracker]?.setUseragent(details.useragent ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
 function setTimezone(details: { tracker: string; timezone: string | null }): Promise<void> {
-  if (details.timezone != null) {
-    trackers[details.tracker]?.setTimezone(details.timezone);
-  }
+  trackers[details.tracker]?.setTimezone(details.timezone ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
 function setLanguage(details: { tracker: string; language: string | null }): Promise<void> {
-  if (details.language != null) {
-    trackers[details.tracker]?.setLang(details.language);
-  }
+  trackers[details.tracker]?.setLang(details.language ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
@@ -421,6 +407,8 @@ function setScreenResolution(details: {
       String(details.screenResolution[0]),
       String(details.screenResolution[1])
     );
+  } else {
+    trackers[details.tracker]?.addPayloadPair('res', '');
   }
   return <Promise<void>>Promise.resolve();
 }
@@ -434,6 +422,8 @@ function setScreenViewport(details: {
       String(details.screenViewport[0]),
       String(details.screenViewport[1])
     );
+  } else {
+    trackers[details.tracker]?.addPayloadPair('vp', '');
   }
   return <Promise<void>>Promise.resolve();
 }
@@ -442,9 +432,7 @@ function setColorDepth(details: {
   tracker: string;
   colorDepth: number | null;
 }): Promise<void> {
-  if (details.colorDepth != null) {
-    trackers[details.tracker]?.setColorDepth(String(details.colorDepth));
-  }
+  trackers[details.tracker]?.setColorDepth(String(details.colorDepth ?? ''));
   return <Promise<void>>Promise.resolve();
 }
 
