@@ -44,6 +44,7 @@ import {
 } from '@snowplow/tracker-core';
 import type { TrackerCore } from '@snowplow/tracker-core';
 import { errorHandler } from './utils';
+import { schemas } from './constants';
 
 // Tracker version added to the events
 const trackerVersion = 'rn-1.3.0';
@@ -71,8 +72,7 @@ function preparePayload(payload: Payload): Record<string, string> {
 function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) => void {
   return (e: Payload) => {
     const postJson = {
-      schema:
-        'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
+      schema: schemas.payloadData,
       data: [preparePayload(e)],
     };
     const endpoint = networkConfig.endpoint;
@@ -252,7 +252,7 @@ function trackTimingEvent(details: {
   return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
-      schema: 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0',
+      schema: schemas.timingSchema,
       data: details.eventData,
     },
     contexts: details.contexts,
@@ -325,8 +325,7 @@ function trackDeepLinkReceivedEvent(details: {
   return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
-      schema:
-        'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0',
+      schema: schemas.deepLinkReceivedSchema,
       data: details.eventData,
     },
     contexts: details.contexts,
@@ -341,8 +340,7 @@ function trackMessageNotificationEvent(details: {
   return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
-      schema:
-        'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
+      schema: schemas.messageNotificationSchema,
       data: details.eventData,
     },
     contexts: details.contexts,
