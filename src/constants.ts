@@ -75,8 +75,7 @@ const logMessages = {
   setSubjectData: 'setSubjectData:',
 };
 
-const jsCoreConstants = {
-  postPath: '/com.snowplowanalytics.snowplow/tp2',
+const schemas = {
   payloadData:
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
   timingSchema: 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0',
@@ -86,5 +85,5 @@ const jsCoreConstants = {
 
 export {
   logMessages,
-  jsCoreConstants,
+  schemas,
 };
