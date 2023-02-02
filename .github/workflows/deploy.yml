@@ -55,7 +55,7 @@ jobs:
         echo "##[set-output name=RN_TRACKER_VERSION;]$(node -p "require('./package.json').version")"
         echo "##[set-output name=RN_IOS_TRACKER_VERSION;]$(cat "${IOS_VER_FILEPATH}" | sed -n -e 's/^.*kRNTrackerVersion = @"rn-\(.*\)";/\1/p')"
         echo "##[set-output name=RN_ANDROID_TRACKER_VERSION;]$(cat "${ANDR_VER_FILEPATH}" | sed -n -e 's/^.*RN_TRACKER_VERSION = "rn-\(.*\)";/\1/p')"
-        echo "##[set-output name=RN_JS_TRACKER_VERSION;]$(cat "${JS_VER_FILEPATH}" | sed -n -e 's/^.*trackerVersion = 'rn-\(.*\)';/\1/p')"
+        echo "##[set-output name=RN_JS_TRACKER_VERSION;]$(cat "${JS_VER_FILEPATH}" | sed -n -e 's/^.*trackerVersion = '\''rn-\(.*\)'\'';/\1/p')"
 
     - name: Fail if version mismatch
       run: |
