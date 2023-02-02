@@ -268,6 +268,7 @@ function trackConsentGrantedEvent(details: {
     const built = buildConsentGranted({
       id: details.eventData.documentId,
       version: details.eventData.version,
+      name: details.eventData.name,
       description: details.eventData.documentDescription,
       expiry: details.eventData.expiry,
     });
@@ -286,6 +287,7 @@ function trackConsentWithdrawnEvent(details: {
       all: details.eventData.all,
       id: details.eventData.documentId,
       version: details.eventData.version,
+      name: details.eventData.name,
       description: details.eventData.documentDescription,
     });
     tracker.track(built.event, details.contexts.concat(built.context));
@@ -458,7 +460,7 @@ function getForegroundIndex(): Promise<number> {
   return <Promise<number>>Promise.reject(new Error('Not implemented'));
 }
 
-const JSSnowplowTracker = {
+const JSSnowplowTracker = Object.freeze({
   createTracker,
   removeTracker,
   removeAllTrackers,
@@ -490,6 +492,6 @@ const JSSnowplowTracker = {
   getIsInBackground,
   getBackgroundIndex,
   getForegroundIndex,
-};
+});
 
 export { JSSnowplowTracker };
