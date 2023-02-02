@@ -348,11 +348,11 @@ function trackMessageNotificationEvent(details: {
 }
 
 function removeGlobalContexts(): Promise<void> {
-  return <Promise<void>>Promise.reject('Not implemented');
+  return <Promise<void>>Promise.reject(new Error('Not implemented'));
 }
 
 function addGlobalContexts(): Promise<void> {
-  return <Promise<void>>Promise.reject('Not implemented');
+  return <Promise<void>>Promise.reject(new Error('Not implemented'));
 }
 
 function setUserId(details: { tracker: string; userId: string | null }): Promise<void> {
@@ -435,27 +435,27 @@ function setColorDepth(details: {
 }
 
 function getSessionUserId(): Promise<string> {
-  return <Promise<string>>Promise.reject('Not implemented');
+  return <Promise<string>>Promise.reject(new Error('Not implemented'));
 }
 
 function getSessionId(): Promise<string> {
-  return <Promise<string>>Promise.reject('Not implemented');
+  return <Promise<string>>Promise.reject(new Error('Not implemented'));
 }
 
 function getSessionIndex(): Promise<number> {
-  return <Promise<number>>Promise.reject('Not implemented');
+  return <Promise<number>>Promise.reject(new Error('Not implemented'));
 }
 
 function getIsInBackground(): Promise<boolean> {
-  return <Promise<boolean>>Promise.reject('Not implemented');
+  return <Promise<boolean>>Promise.reject(new Error('Not implemented'));
 }
 
 function getBackgroundIndex(): Promise<number> {
-  return <Promise<number>>Promise.reject('Not implemented');
+  return <Promise<number>>Promise.reject(new Error('Not implemented'));
 }
 
 function getForegroundIndex(): Promise<number> {
-  return <Promise<number>>Promise.reject('Not implemented');
+  return <Promise<number>>Promise.reject(new Error('Not implemented'));
 }
 
 const JSSnowplowTracker = {
