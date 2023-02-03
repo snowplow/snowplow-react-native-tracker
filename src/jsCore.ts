@@ -36,7 +36,6 @@ import {
   PayloadBuilder,
   buildSelfDescribingEvent,
   buildStructEvent,
-  buildScreenView,
   buildPageView,
   buildConsentGranted,
   buildConsentWithdrawn,
@@ -227,10 +226,14 @@ function trackScreenViewEvent(details: {
   eventData: ScreenViewProps;
   contexts: EventContext[];
 }): Promise<void> {
-  forTracker(details.tracker, (tracker) => {
-    tracker.track(buildScreenView(details.eventData), details.contexts);
+  return trackSelfDescribingEvent({
+    tracker: details.tracker,
+    eventData: {
+      schema: schemas.screenViewSchema,
+      data: details.eventData,
+    },
+    contexts: details.contexts,
   });
-  return <Promise<void>>Promise.resolve();
 }
 
 function trackPageViewEvent(details: {

@@ -80,7 +80,8 @@ const schemas = {
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
   timingSchema: 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0',
   deepLinkReceivedSchema: 'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0',
-  messageNotificationSchema: 'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0'
+  messageNotificationSchema: 'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
+  screenViewSchema: 'iglu:com.snowplowanalytics.mobile/screen_view/jsonschema/1-0-0',
 };
 
 export {
