@@ -40,6 +40,7 @@ import {
   buildConsentGranted,
   buildConsentWithdrawn,
   buildEcommerceTransaction,
+  buildEcommerceTransactionItem,
 } from '@snowplow/tracker-core';
 import type { TrackerCore } from '@snowplow/tracker-core';
 import { errorHandler } from './utils';
@@ -304,6 +305,15 @@ function trackEcommerceTransactionEvent(details: {
   contexts: EventContext[];
 }): Promise<void> {
   forTracker(details.tracker, (tracker) => {
+    details.eventData.items.forEach(item => {
+      tracker.track(
+        buildEcommerceTransactionItem({
+          ...item,
+          orderId: details.eventData.orderId
+        }),
+        details.contexts
+      );
+    });
     tracker.track(
       buildEcommerceTransaction({
         orderId: details.eventData.orderId,
