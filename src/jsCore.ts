@@ -45,6 +45,7 @@ import {
 import type { TrackerCore } from '@snowplow/tracker-core';
 import { errorHandler } from './utils';
 import { schemas } from './constants';
+import { v4 as uuid } from 'uuid';
 
 // Tracker version added to the events
 const trackerVersion = 'rn-1.3.0';
@@ -227,11 +228,31 @@ function trackScreenViewEvent(details: {
   eventData: ScreenViewProps;
   contexts: EventContext[];
 }): Promise<void> {
+  const data: ScreenViewProps = {
+    name: details.eventData.name,
+    id: details.eventData.id ?? uuid()
+  };
+  if (details.eventData.type != null) {
+    data.type = details.eventData.type;
+  }
+  if (details.eventData.previousName != null) {
+    data.previousName = details.eventData.previousName;
+  }
+  if (details.eventData.previousId != null) {
+    data.previousId = details.eventData.previousId;
+  }
+  if (details.eventData.previousType != null) {
+    data.previousType = details.eventData.previousType;
+  }
+  if (details.eventData.transitionType != null) {
+    data.transitionType = details.eventData.transitionType;
+  }
+
   return trackSelfDescribingEvent({
     tracker: details.tracker,
     eventData: {
       schema: schemas.screenViewSchema,
-      data: details.eventData,
+      data: data
     },
     contexts: details.contexts,
   });
