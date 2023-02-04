@@ -249,9 +249,9 @@ PODS:
     - React-jsi (= 0.66.3-1)
     - React-logger (= 0.66.3-1)
     - React-perflogger (= 0.66.3-1)
-  - RNSnowplowTracker (1.3.0):
+  - RNSnowplowTracker (1.4.0):
     - React-Core
-    - SnowplowTracker (~> 4.0)
+    - SnowplowTracker (~> 4.1)
   - SnowplowTracker (4.1.0):
     - FMDB (~> 2.7)
   - Yoga (1.14.0)
@@ -387,7 +387,7 @@ SPEC CHECKSUMS:
   React-RCTText: 2d5191e551df3e74dbf27f71c2785081aaba4299
   React-runtimeexecutor: 04662d38a5b1fae4f8a0b5bf517946d0e7d6721a
   ReactCommon: 67042925ef6455377bb5edbc8d5c631a89dab901
-  RNSnowplowTracker: 4f395a9a7be502c486720f756ab6ee0d5cb33f6e
+  RNSnowplowTracker: b6a5a8514c515ff8bdff732ce7f239d46359d7a2
   SnowplowTracker: 3f35a60dcb2cf9c4a56fa4cad46d5af6d1b5db44
   Yoga: 56a884d4fa5c2f709125202018f44ea7b6e901a2
 

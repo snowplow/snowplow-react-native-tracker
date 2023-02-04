@@ -1,3 +1,9 @@
+Version 1.4.0 (2022-02-04)
+--------------------------
+Add JavaScript tracker core to be used in Expo managed workflow when native trackers are not available (#188)
+Bump Snowplow native tracker dependency to 4.1 (#186)
+Update year in copyright headers to 2023 (#187)
+
 Version 1.3.0 (2022-10-03)
 --------------------------
 Upgrade Snowplow mobile trackers to v4 (#167)
