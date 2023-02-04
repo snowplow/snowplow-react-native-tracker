@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 Snowplow Analytics Ltd. All rights reserved.
+ * Copyright (c) 2020-2023 Snowplow Analytics Ltd. All rights reserved.
  *
  * This program is licensed to you under the Apache License Version 2.0,
  * and you may not use this file except in compliance with the Apache License Version 2.0.
@@ -14,8 +14,20 @@
 'use strict';
 
 import { NativeModules } from 'react-native';
+import { JSSnowplowTracker } from './jsCore';
+import type { Native } from './types';
+import { errorHandler } from './utils';
 
-const { RNSnowplowTracker } = NativeModules;
+const isAvailable = NativeModules.RNSnowplowTracker != null;
+if (!isAvailable) {
+  errorHandler(
+    new Error(
+      'Unable to access the native iOS/Android Snowplow tracker, a tracker implementation with very limited functionality is used.'
+    )
+  );
+}
+
+const RNSnowplowTracker: Native = isAvailable ? NativeModules.RNSnowplowTracker as Native : JSSnowplowTracker;
 
 export {
   RNSnowplowTracker
