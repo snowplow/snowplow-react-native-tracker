@@ -28,7 +28,7 @@
     "postinstall": "rimraf node_modules/@snowplow/react-native-tracker/{.git,node_modules,DemoApp,DemoAppTV}"
   },
   "dependencies": {
-    "@jest/create-cache-key-function": "^29.0.3",
+    "@jest/create-cache-key-function": "^29.4.3",
     "@snowplow/react-native-tracker": "file:..",
     "react": "18.1.0",
     "react-native": "0.69.5",
