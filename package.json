@@ -39,7 +39,7 @@
     "url": "https://github.com/snowplow-incubator/snowplow-react-native-tracker"
   },
   "dependencies": {
-    "@snowplow/tracker-core": "3.8.0",
+    "@snowplow/tracker-core": "3.9.0",
     "uuid": "^3.4.0"
   },
   "peerDependencies": {
