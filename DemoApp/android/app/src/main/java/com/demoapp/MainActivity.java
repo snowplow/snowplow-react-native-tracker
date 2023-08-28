@@ -1,10 +1,9 @@
 package com.demoapp;
 
-import android.view.KeyEvent;
-
 import com.facebook.react.ReactActivity;
-import com.snowplowanalytics.snowplow.Snowplow;
-import com.snowplowanalytics.snowplow.event.Structured;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
+import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
 public class MainActivity extends ReactActivity {
 
@@ -18,11 +17,16 @@ public class MainActivity extends ReactActivity {
   }
 
   /**
-   * Demonstrates the use of a tracker initialized in React native.
+   * Returns the instance of the {@link ReactActivityDelegate}. Here we use a util class {@link
+   * DefaultReactActivityDelegate} which allows you to easily enable Fabric and Concurrent React
+   * (aka React 18) with two boolean flags.
    */
   @Override
-  public boolean onKeyDown(int keyCode, KeyEvent event) {
-    Snowplow.getDefaultTracker().track(new Structured("key", "press"));
-    return super.onKeyDown(keyCode, event);
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new DefaultReactActivityDelegate(
+        this,
+        getMainComponentName(),
+        // If you opted-in for the New Architecture, we enable the Fabric Renderer.
+        DefaultNewArchitectureEntryPoint.getFabricEnabled());
   }
 }
