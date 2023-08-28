@@ -1,7 +1,7 @@
 name: e2e-ios
 
 on:
-  pull_request:
+  push:
 
 jobs:
   e2e:

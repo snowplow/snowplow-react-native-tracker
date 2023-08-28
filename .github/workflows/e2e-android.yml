@@ -1,7 +1,7 @@
 name: e2e-android
 
 on:
-  pull_request:
+  push:
 
 jobs:
   e2e:
