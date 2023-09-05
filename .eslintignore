@@ -2,6 +2,5 @@
 node_modules
 # don't lint build output
 dist
-# don't lint DemoApp here
-DemoApp
-DemoAppTV
+# don't lint example app here
+example

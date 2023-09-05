@@ -18,7 +18,7 @@ import { safeWait, safeWaitCallback, errorHandler } from './utils';
 import type {
   NetworkConfiguration,
   TrackerControllerConfiguration,
-  ReactNativeTracker
+  ReactNativeTracker,
 } from './types';
 import { getWebViewCallback } from './webViewInterface';
 
@@ -40,7 +40,7 @@ function createTracker(
     api.createTracker({
       namespace,
       networkConfig,
-      ...controllerConfig
+      ...controllerConfig,
     })
   );
 
@@ -51,16 +51,28 @@ function createTracker(
   const mkCallback = safeWaitCallback(initTrackerPromise, errorHandler);
 
   // track methods
-  const trackSelfDescribingEvent = mkMethod(api.trackSelfDescribingEvent(namespace));
+  const trackSelfDescribingEvent = mkMethod(
+    api.trackSelfDescribingEvent(namespace)
+  );
   const trackScreenViewEvent = mkMethod(api.trackScreenViewEvent(namespace));
   const trackStructuredEvent = mkMethod(api.trackStructuredEvent(namespace));
   const trackPageViewEvent = mkMethod(api.trackPageViewEvent(namespace));
   const trackTimingEvent = mkMethod(api.trackTimingEvent(namespace));
-  const trackConsentGrantedEvent = mkMethod(api.trackConsentGrantedEvent(namespace));
-  const trackConsentWithdrawnEvent = mkMethod(api.trackConsentWithdrawnEvent(namespace));
-  const trackEcommerceTransactionEvent = mkMethod(api.trackEcommerceTransactionEvent(namespace));
-  const trackDeepLinkReceivedEvent = mkMethod(api.trackDeepLinkReceivedEvent(namespace));
-  const trackMessageNotificationEvent = mkMethod(api.trackMessageNotificationEvent(namespace));
+  const trackConsentGrantedEvent = mkMethod(
+    api.trackConsentGrantedEvent(namespace)
+  );
+  const trackConsentWithdrawnEvent = mkMethod(
+    api.trackConsentWithdrawnEvent(namespace)
+  );
+  const trackEcommerceTransactionEvent = mkMethod(
+    api.trackEcommerceTransactionEvent(namespace)
+  );
+  const trackDeepLinkReceivedEvent = mkMethod(
+    api.trackDeepLinkReceivedEvent(namespace)
+  );
+  const trackMessageNotificationEvent = mkMethod(
+    api.trackMessageNotificationEvent(namespace)
+  );
   // Global Contexts
   const removeGlobalContexts = mkMethod(api.removeGlobalContexts(namespace));
   const addGlobalContexts = mkMethod(api.addGlobalContexts(namespace));
@@ -125,8 +137,9 @@ function createTracker(
  * @returns - A boolean promise
  */
 function removeTracker(trackerNamespace: string): Promise<boolean> {
-  return <Promise<boolean>>api.removeTracker(trackerNamespace)
-    .catch((e) => errorHandler(e));
+  return <Promise<boolean>>(
+    api.removeTracker(trackerNamespace).catch((e) => errorHandler(e))
+  );
 }
 
 /**
@@ -135,17 +148,12 @@ function removeTracker(trackerNamespace: string): Promise<boolean> {
  * @returns - A boolean promise
  */
 function removeAllTrackers(): Promise<boolean> {
-  return <Promise<boolean>>api.removeAllTrackers()
-    .catch((e) => errorHandler(e));
+  return <Promise<boolean>>(
+    api.removeAllTrackers().catch((e) => errorHandler(e))
+  );
 }
 
-
-export {
-  createTracker,
-  removeTracker,
-  removeAllTrackers,
-  getWebViewCallback,
-};
+export { createTracker, removeTracker, removeAllTrackers, getWebViewCallback };
 
 export type {
   ReactNativeTracker,
@@ -177,5 +185,5 @@ export type {
   Basis,
   BufferOption,
   ScreenSize,
-  Trigger
+  Trigger,
 } from './types';

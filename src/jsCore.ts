@@ -31,9 +31,9 @@ import type {
 } from './types';
 
 import {
-  Payload,
+  type Payload,
   trackerCore,
-  PayloadBuilder,
+  type PayloadBuilder,
   buildSelfDescribingEvent,
   buildStructEvent,
   buildPageView,
@@ -70,7 +70,9 @@ function preparePayload(payload: Payload): Record<string, string> {
   return stringifiedPayload;
 }
 
-function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) => void {
+function createEmitCallback(
+  networkConfig: NetworkConfiguration
+): (e: Payload) => void {
   return (e: Payload) => {
     const postJson = {
       schema: schemas.payloadData,
@@ -91,7 +93,10 @@ function createEmitCallback(networkConfig: NetworkConfiguration): (e: Payload) =
   };
 }
 
-function updateTrackerProperties(tracker: Tracker, configuration: InitTrackerConfiguration): void {
+function updateTrackerProperties(
+  tracker: Tracker,
+  configuration: InitTrackerConfiguration
+): void {
   tracker.setPlatform(configuration.trackerConfig?.devicePlatform ?? 'mob');
   tracker.setTrackerVersion(trackerVersion);
   tracker.setTrackerNamespace(configuration.namespace);
@@ -138,7 +143,8 @@ function createTracker(
   emitCallback?: (e: Payload) => void
 ): Promise<void> {
   // create an emit callback if not given
-  const emitter = emitCallback ?? createEmitCallback(configuration.networkConfig);
+  const emitter =
+    emitCallback ?? createEmitCallback(configuration.networkConfig);
 
   // the tracker core does not provide an option to set the duid, so we need to add custom
   let domainUserId: string | undefined;
@@ -187,7 +193,8 @@ function forTracker(
   namespace: string | null,
   callback: (tracker: Tracker) => void
 ): void {
-  const tracker = namespace != null ? trackers[namespace] : Object.values(trackers)[0];
+  const tracker =
+    namespace != null ? trackers[namespace] : Object.values(trackers)[0];
 
   if (tracker) {
     callback(tracker);
@@ -230,7 +237,7 @@ function trackScreenViewEvent(details: {
 }): Promise<void> {
   const data: ScreenViewProps = {
     name: details.eventData.name,
-    id: details.eventData.id ?? uuid()
+    id: details.eventData.id ?? uuid(),
   };
   if (details.eventData.type != null) {
     data.type = details.eventData.type;
@@ -252,7 +259,7 @@ function trackScreenViewEvent(details: {
     tracker: details.tracker,
     eventData: {
       schema: schemas.screenViewSchema,
-      data: data
+      data: data,
     },
     contexts: details.contexts,
   });
@@ -326,11 +333,11 @@ function trackEcommerceTransactionEvent(details: {
   contexts: EventContext[];
 }): Promise<void> {
   forTracker(details.tracker, (tracker) => {
-    details.eventData.items.forEach(item => {
+    details.eventData.items.forEach((item) => {
       tracker.track(
         buildEcommerceTransactionItem({
           ...item,
-          orderId: details.eventData.orderId
+          orderId: details.eventData.orderId,
         }),
         details.contexts
       );
@@ -391,7 +398,10 @@ function addGlobalContexts(): Promise<void> {
   return <Promise<void>>Promise.reject(new Error('Not implemented'));
 }
 
-function setUserId(details: { tracker: string; userId: string | null }): Promise<void> {
+function setUserId(details: {
+  tracker: string;
+  userId: string | null;
+}): Promise<void> {
   trackers[details.tracker]?.setUserId(details.userId ?? '');
   return <Promise<void>>Promise.resolve();
 }
@@ -412,22 +422,34 @@ function setDomainUserId(details: {
   return <Promise<void>>Promise.resolve();
 }
 
-function setIpAddress(details: { tracker: string; ipAddress: string | null }): Promise<void> {
+function setIpAddress(details: {
+  tracker: string;
+  ipAddress: string | null;
+}): Promise<void> {
   trackers[details.tracker]?.setIpAddress(details.ipAddress ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
-function setUseragent(details: { tracker: string; useragent: string | null }): Promise<void> {
+function setUseragent(details: {
+  tracker: string;
+  useragent: string | null;
+}): Promise<void> {
   trackers[details.tracker]?.setUseragent(details.useragent ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
-function setTimezone(details: { tracker: string; timezone: string | null }): Promise<void> {
+function setTimezone(details: {
+  tracker: string;
+  timezone: string | null;
+}): Promise<void> {
   trackers[details.tracker]?.setTimezone(details.timezone ?? '');
   return <Promise<void>>Promise.resolve();
 }
 
-function setLanguage(details: { tracker: string; language: string | null }): Promise<void> {
+function setLanguage(details: {
+  tracker: string;
+  language: string | null;
+}): Promise<void> {
   trackers[details.tracker]?.setLang(details.language ?? '');
   return <Promise<void>>Promise.resolve();
 }
