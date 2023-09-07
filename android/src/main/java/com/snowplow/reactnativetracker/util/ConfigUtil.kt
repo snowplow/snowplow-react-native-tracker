@@ -15,68 +15,6 @@ import com.snowplowanalytics.snowplow.util.TimeMeasure
 import java.util.concurrent.TimeUnit
 
 object ConfigUtil {
-  fun mkDevicePlatform(devPlatform: String): DevicePlatform {
-    var devicePlatform = DevicePlatform.Mobile
-    if (devPlatform == "web") {
-      devicePlatform = DevicePlatform.Web
-    } else if (devPlatform == "srv") {
-      devicePlatform = DevicePlatform.ServerSideApp
-    } else if (devPlatform == "pc") {
-      devicePlatform = DevicePlatform.Desktop
-    } else if (devPlatform == "app") {
-      devicePlatform = DevicePlatform.General
-    } else if (devPlatform == "tv") {
-      devicePlatform = DevicePlatform.ConnectedTV
-    } else if (devPlatform == "cnsl") {
-      devicePlatform = DevicePlatform.GameConsole
-    } else if (devPlatform == "iot") {
-      devicePlatform = DevicePlatform.InternetOfThings
-    }
-    return devicePlatform
-  }
-
-  fun mkLogLevel(logLvl: String): LogLevel {
-    var logLevel = LogLevel.OFF
-    if (logLvl == "error") {
-      logLevel = LogLevel.ERROR
-    } else if (logLvl == "debug") {
-      logLevel = LogLevel.DEBUG
-    } else if (logLvl == "verbose") {
-      logLevel = LogLevel.VERBOSE
-    }
-    return logLevel
-  }
-
-  fun mkBufferOption(bufferOpt: String): BufferOption {
-    var bufferOption = BufferOption.Single
-    if (bufferOpt == "default") {
-      bufferOption = BufferOption.DefaultGroup
-    } else if (bufferOpt == "heavy") {
-      bufferOption = BufferOption.HeavyGroup
-    }
-    return bufferOption
-  }
-
-  fun mkBasis(basis: String): Basis {
-    var basisForProcessing = Basis.CONSENT
-    if (basis == "contract") {
-      basisForProcessing = Basis.CONTRACT
-    }
-    if (basis == "legal_obligation") {
-      basisForProcessing = Basis.LEGAL_OBLIGATION
-    }
-    if (basis == "legitimate_interests") {
-      basisForProcessing = Basis.LEGITIMATE_INTERESTS
-    }
-    if (basis == "public_task") {
-      basisForProcessing = Basis.PUBLIC_TASK
-    }
-    if (basis == "vital_interests") {
-      basisForProcessing = Basis.VITAL_INTERESTS
-    }
-    return basisForProcessing
-  }
-
   fun mkTrackerConfiguration(
     trackerConfig: ReadableMap,
     context: ReactApplicationContext
@@ -146,10 +84,7 @@ object ConfigUtil {
 
   fun mkEmitterConfiguration(emitterConfig: ReadableMap): EmitterConfiguration {
     val emitterConfiguration = EmitterConfiguration()
-    if (emitterConfig.hasKey("bufferOption")) {
-      val bufferOption = mkBufferOption(emitterConfig.getString("bufferOption")!!)
-      emitterConfiguration.bufferOption(bufferOption)
-    }
+    emitterConfig.getString("bufferOption")?.let { opt -> mkBufferOption(opt)?.let { emitterConfiguration.bufferOption(it) } }
     if (emitterConfig.hasKey("emitRange")) {
       val emitRange = emitterConfig.getDouble("emitRange").toInt()
       emitterConfiguration.emitRange(emitRange)
@@ -288,5 +223,47 @@ object ConfigUtil {
       }
     }
     return GlobalContextsConfiguration(contextGens)
+  }
+
+  private fun mkDevicePlatform(devPlatform: String): DevicePlatform {
+    return when (devPlatform) {
+      "web" -> DevicePlatform.Web
+      "srv" -> DevicePlatform.ServerSideApp
+      "pc" -> DevicePlatform.Desktop
+      "app" -> DevicePlatform.General
+      "tv" -> DevicePlatform.ConnectedTV
+      "cnsl" -> DevicePlatform.GameConsole
+      "iot" -> DevicePlatform.InternetOfThings
+      else -> DevicePlatform.Mobile
+    }
+  }
+
+  private fun mkLogLevel(logLvl: String): LogLevel {
+    return when (logLvl) {
+      "error" -> LogLevel.ERROR
+      "debug" -> LogLevel.DEBUG
+      "verbose" -> LogLevel.VERBOSE
+      else -> LogLevel.OFF
+    }
+  }
+
+  private fun mkBufferOption(bufferOpt: String): BufferOption? {
+    return when (bufferOpt) {
+      "single" -> BufferOption.Single
+      "default" -> BufferOption.DefaultGroup
+      "large" -> BufferOption.HeavyGroup
+      else -> null
+    }
+  }
+
+  private fun mkBasis(basis: String): Basis {
+    return when (basis) {
+      "contract" -> Basis.CONTRACT
+      "legal_obligation" -> Basis.LEGAL_OBLIGATION
+      "legitimate_interests" -> Basis.LEGITIMATE_INTERESTS
+      "public_task" -> Basis.PUBLIC_TASK
+      "vital_interests" -> Basis.VITAL_INTERESTS
+      else -> Basis.CONSENT
+    }
   }
 }
