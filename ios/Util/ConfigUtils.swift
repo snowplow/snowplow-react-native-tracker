@@ -3,7 +3,7 @@ import SnowplowTracker
 
 class ConfigUtils {
     
-    static func mkTrackerConfig(_ trackerConfig: NSDictionary) -> TrackerConfiguration? {
+    static func mkTrackerConfig(_ trackerConfig: NSDictionary) -> TrackerConfiguration {
         let trackerConfiguration = TrackerConfiguration()
         trackerConfiguration.trackerVersionSuffix = kRNTrackerVersion
 
@@ -47,6 +47,8 @@ class ConfigUtils {
         }
         if let screenViewAutotracking = trackerConfig.object(forKey: "screenViewAutotracking") as? NSNumber {
             trackerConfiguration.screenViewAutotracking = screenViewAutotracking.boolValue
+        } else {
+            trackerConfiguration.screenViewAutotracking = false
         }
         if let lifecycleAutotracking = trackerConfig.object(forKey: "lifecycleAutotracking") as? NSNumber {
             trackerConfiguration.lifecycleAutotracking = lifecycleAutotracking.boolValue

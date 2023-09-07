@@ -91,11 +91,8 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val controllers: MutableList<Configuration> = ArrayList()
 
       // TrackerConfiguration
-      argmap.getMap("trackerConfig")?.let { trackerConfig ->
-        val trackerConfiguration: TrackerConfiguration =
-          ConfigUtil.mkTrackerConfiguration(trackerConfig, this.reactContext)
-        controllers.add(trackerConfiguration)
-      }
+      val trackerConfiguration = ConfigUtil.mkTrackerConfiguration(argmap.getMap("trackerConfig"), this.reactContext)
+      controllers.add(trackerConfiguration)
 
       // SessionConfiguration
       argmap.getMap("sessionConfig")?.let { sessionConfig ->

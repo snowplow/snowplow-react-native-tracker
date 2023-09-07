@@ -25,10 +25,8 @@ class ReactNativeTracker: NSObject {
         var controllers: [ConfigurationProtocol] = []
 
         // TrackerConfiguration
-        if let trackerArg = argmap.object(forKey: "trackerConfig") as? NSDictionary,
-           let trackerConfiguration = ConfigUtils.mkTrackerConfig(trackerArg) {
-            controllers.append(trackerConfiguration)
-        }
+        let trackerConfiguration = ConfigUtils.mkTrackerConfig(argmap.object(forKey: "trackerConfig") as? NSDictionary ?? NSDictionary())
+        controllers.append(trackerConfiguration)
 
         // SessionConfiguration
         if let sessionArg = argmap.object(forKey: "sessionConfig") as? NSDictionary,
