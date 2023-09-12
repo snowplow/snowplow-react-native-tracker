@@ -149,7 +149,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       promise.resolve(removeTracker(trackerController))
     } catch (t: Throwable) {
@@ -173,7 +173,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -194,7 +194,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts: ReadableArray = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -214,7 +214,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -234,7 +234,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -254,7 +254,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -274,7 +274,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -294,7 +294,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -314,7 +314,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -334,7 +334,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -354,7 +354,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val argmap = details.getMap("eventData")!!
       val contexts = details.getArray("contexts")!!
       val trackerController = getTracker(namespace)
@@ -374,7 +374,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val tag = details.getString("removeTag")!!
       val trackerController = getTracker(namespace)
       trackerController.globalContexts.remove(tag)
@@ -390,7 +390,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val gcArg = details.getMap("addGlobalContext")!!
       val tag = gcArg.getString("tag")!!
       val globalContexts = gcArg.getArray("globalContexts")!!
@@ -415,7 +415,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("userId")) {
         trackerController.subject.userId = null
@@ -434,7 +434,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("networkUserId")) {
         trackerController.subject.networkUserId = null
@@ -453,7 +453,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("domainUserId")) {
         trackerController.subject.domainUserId = null
@@ -472,7 +472,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("ipAddress")) {
         trackerController.subject.ipAddress = null
@@ -491,7 +491,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("useragent")) {
         trackerController.subject.useragent = null
@@ -510,7 +510,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("timezone")) {
         trackerController.subject.timezone = null
@@ -529,7 +529,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("language")) {
         trackerController.subject.language = null
@@ -548,7 +548,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("screenResolution")) {
         trackerController.subject.screenResolution = null
@@ -571,7 +571,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("screenViewport")) {
         trackerController.subject.screenViewPort = null
@@ -594,7 +594,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       if (details.isNull("colorDepth")) {
         trackerController.subject.colorDepth = null
@@ -613,7 +613,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val suid = trackerController.session!!.userId
       promise.resolve(suid)
@@ -628,7 +628,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val sid = trackerController.session!!.sessionId
       promise.resolve(sid)
@@ -643,7 +643,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val sidx = trackerController.session!!.sessionIndex!!
       promise.resolve(sidx)
@@ -658,7 +658,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val isInBg = trackerController.session!!.isInBackground
       promise.resolve(isInBg)
@@ -673,7 +673,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val bgIdx = trackerController.session!!.backgroundIndex
       promise.resolve(bgIdx)
@@ -688,7 +688,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
     promise: Promise
   ) {
     try {
-      val namespace = details.getString("tracker")!!
+      val namespace = details.getString("tracker")
       val trackerController = getTracker(namespace)
       val fgIdx = trackerController.session!!.foregroundIndex
       promise.resolve(fgIdx)
