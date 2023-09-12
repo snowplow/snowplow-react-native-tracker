@@ -136,8 +136,8 @@ object ConfigUtil {
   }
 
   fun mkSessionConfiguration(sessionConfig: ReadableMap): SessionConfiguration {
-    val foregroundTimeout = sessionConfig.getDouble("foregroundTimeout") as Long
-    val backgroundTimeout = sessionConfig.getDouble("backgroundTimeout") as Long
+    val foregroundTimeout = sessionConfig.getDouble("foregroundTimeout").toLong()
+    val backgroundTimeout = sessionConfig.getDouble("backgroundTimeout").toLong()
     return SessionConfiguration(
       TimeMeasure(foregroundTimeout, TimeUnit.SECONDS),
       TimeMeasure(backgroundTimeout, TimeUnit.SECONDS)

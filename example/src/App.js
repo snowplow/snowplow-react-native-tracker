@@ -89,6 +89,10 @@ const App = () => {
         screenViewAutotracking: false, // for tests predictability
         installAutotracking: false,
       },
+      sessionConfig: {
+        foregroundTimeout: 5,
+        backgroundTimeout: 10,
+      },
       subjectConfig: {
         userId: 'tester',
         screenViewport: [200, 200],
