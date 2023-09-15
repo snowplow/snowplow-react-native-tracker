@@ -27,17 +27,24 @@ const logMessages = {
 
   // event errors
   context: 'invalid contexts parameter',
-  selfDesc: 'selfDescribing event requires schema and data parameters to be set',
+  selfDesc:
+    'selfDescribing event requires schema and data parameters to be set',
   evType: 'event argument can only be an object',
   screenViewReq: 'screenView event requires name as string parameter to be set',
-  structuredReq: 'structured event requires category and action parameters to be set',
+  structuredReq:
+    'structured event requires category and action parameters to be set',
   pageviewReq: 'pageView event requires pageUrl parameter to be set',
-  timingReq: 'timing event requires category, variable and timing parameters to be set',
-  consentGReq: 'consentGranted event requires expiry, documentId and version parameters to be set',
-  consentWReq: 'consentWithdrawn event requires all, documentId and version parameters to be set',
-  ecomReq: 'ecommerceTransaction event requires orderId, totalValue to be set and items to be an array of valid ecommerceItems',
+  timingReq:
+    'timing event requires category, variable and timing parameters to be set',
+  consentGReq:
+    'consentGranted event requires expiry, documentId and version parameters to be set',
+  consentWReq:
+    'consentWithdrawn event requires all, documentId and version parameters to be set',
+  ecomReq:
+    'ecommerceTransaction event requires orderId, totalValue to be set and items to be an array of valid ecommerceItems',
   deepLinkReq: 'deepLinkReceived event requires the url parameter to be set',
-  messageNotificationReq: 'messageNotification event requires title, body, and trigger parameters to be set',
+  messageNotificationReq:
+    'messageNotification event requires title, body, and trigger parameters to be set',
 
   // global contexts errors
   gcTagType: 'tag argument is required to be a string',
@@ -63,15 +70,20 @@ const logMessages = {
 
   // setters
   setUserId: 'setUserId: userId can only be a string or null',
-  setNetworkUserId: 'setNetworkUserId: networkUserId can only be a string(UUID) or null',
-  setDomainUserId: 'setDomainUserId: domainUserId can only be a string(UUID) or null',
+  setNetworkUserId:
+    'setNetworkUserId: networkUserId can only be a string(UUID) or null',
+  setDomainUserId:
+    'setDomainUserId: domainUserId can only be a string(UUID) or null',
   setIpAddress: 'setIpAddress: ipAddress can only be a string or null',
   setUseragent: 'setUseragent: useragent can only be a string or null',
   setTimezone: 'setTimezone: timezone can only be a string or null',
   setLanguage: 'setLanguage: language can only be a string or null',
-  setScreenResolution: 'setScreenResolution: screenResolution can only be of ScreenSize type or null',
-  setScreenViewport: 'setScreenViewport: screenViewport can only be of ScreenSize type or null',
-  setColorDepth: 'setColorDepth: colorDepth can only be a number(integer) or null',
+  setScreenResolution:
+    'setScreenResolution: screenResolution can only be of ScreenSize type or null',
+  setScreenViewport:
+    'setScreenViewport: screenViewport can only be of ScreenSize type or null',
+  setColorDepth:
+    'setColorDepth: colorDepth can only be a number(integer) or null',
   setSubjectData: 'setSubjectData:',
 };
 
@@ -79,12 +91,12 @@ const schemas = {
   payloadData:
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4',
   timingSchema: 'iglu:com.snowplowanalytics.snowplow/timing/jsonschema/1-0-0',
-  deepLinkReceivedSchema: 'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0',
-  messageNotificationSchema: 'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
-  screenViewSchema: 'iglu:com.snowplowanalytics.mobile/screen_view/jsonschema/1-0-0',
+  deepLinkReceivedSchema:
+    'iglu:com.snowplowanalytics.mobile/deep_link_received/jsonschema/1-0-0',
+  messageNotificationSchema:
+    'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
+  screenViewSchema:
+    'iglu:com.snowplowanalytics.mobile/screen_view/jsonschema/1-0-0',
 };
 
-export {
-  logMessages,
-  schemas,
-};
+export { logMessages, schemas };

@@ -1,7 +1,6 @@
 # Demo app
 #
-DemoApp/
-DemoAppTV/
+example/
 
 # Local testing workflow
 #
@@ -52,8 +51,8 @@ local.properties
 *.iml
 android/.project
 android/.settings/org.eclipse.buildship.core.prefs
-DemoApp/android/.settings/org.eclipse.buildship.core.prefs
-DemoApp/android/.project
+example/android/.settings/org.eclipse.buildship.core.prefs
+example/android/.project
 
 # BUCK
 buck-out/

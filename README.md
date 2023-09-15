@@ -1,4 +1,3 @@
-
 # @snowplow/react-native-tracker
 
 [![actively-maintained]][tracker-classification]
@@ -9,11 +8,9 @@
 [![RN version][react-native-v-image]][react-native-v]
 [![downloads][downloads-dm-image]][downloads-dm]
 
-
 Snowplow is a scalable open-source platform for rich, high quality, low-latency data collection. It is designed to collect high quality, complete behavioral data for enterprise business.
 
 **To find out more, please check out the [Snowplow website][website] and our [documentation][docs].**
-
 
 ## Snowplow React-Native Tracker Overview
 
@@ -21,14 +18,19 @@ The Snowplow React Native Tracker allows you to add analytics to your React Nati
 
 With this library you can collect granular event-level data as your users interact with your React Native applications. It is build on top of Snowplow's [Mobile Native][native-trackers] [iOS][objc-tracker] and [Android][android-tracker] Trackers, in order to support the full range of out-of-the-box Snowplow events and tracking capabilities.
 
-
 ## Quick start
 
 From the root of your [React Native][react-native] project:
 
-```
+```sh
 npm install --save @snowplow/react-native-tracker
 npx pod-install
+```
+
+In your `ios/Podfile` file (unless using Expo Go), please add the `FMDB` dependency with `modular_headers` set to `true`. This is necessary to make the `FMDB` package generate module maps so that it can be used by the tracker:
+
+```rb
+pod 'FMDB', :modular_headers => true
 ```
 
 Then, instrument the tracker in your app and start tracking events. For example:
@@ -48,7 +50,6 @@ The Snowplow React Native Tracker also provides first-class support for TypeScri
 
 See also our [DemoApp][demoapp] for an example implementation.
 
-
 ## Find out more
 
 | Technical Docs                    | Setup Guide                 |
@@ -56,135 +57,50 @@ See also our [DemoApp][demoapp] for an example implementation.
 | [![i1][techdocs-image]][techdocs] | [![i2][setup-image]][setup] |
 | [Technical Docs][techdocs]        | [Setup Guide][setup]        |
 
-
-
 ## Maintainer quick start
-
-### Launching the DemoApp
 
 Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository:
 
 ```bash
-npm install
-npm run bootstrap
-cd DemoApp
+yarn
 ```
+
+### Unit tests
+
+To run the unit tests, simply execute:
+
+```sh
+yarn test
+```
+
+### Launching the example app
 
 Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoApp/App.js`.
 
 **For Android:**
 
 ```bash
-yarn android
+yarn example android
 ```
 _Note_: Linux users who want to run the DemoApp for Android, would also need to run `yarn start` in a separate terminal.
 
 **For iOS:**
 
 ```bash
-yarn pods && yarn ios
+yarn example ios
 ```
-
-During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used.
-
-```bash
-# android
-bash .scripts/quickTest.sh android
-# ios
-bash .scripts/quickTest.sh ios
-# both
-bash .scripts/quickTest.sh both
-```
-
-Similarly, the `.scripts/cleanBuildAndRun.sh` script offers a naive way to clean-rebuild the entire project with your changes.
-
-```bash
-# android
-bash .scripts/cleanBuildAndRun.sh android
-# ios
-bash .scripts/cleanBuildAndRun.sh ios
-# both
-bash .scripts/cleanBuildAndRun.sh both
-```
-
-### Launching the Demo App for Apple TV and Android TV
-
-Assuming a [react-native environment][react-native-environment] is set up, from the root of the repository:
-
-```bash
-npm install
-npm run bootstrap
-cd DemoAppTV
-yarn
-```
-
-Replace "placeholder" with the URI for your Snowplow Mini or other Snowplow collector in `DemoAppTV/App.js`.
-
-**For Android TV:**
-
-```bash
-yarn android
-```
-
-_Note_: Linux users who want to run the DemoApp for Android, would also need to run `yarn start` in a separate terminal.
-
-**For tvOS:**
-
-```bash
-yarn pods && yarn tvos
-```
-
-Note: If you are using simulator with a name different than "Apple TV", you will need to update the `--simulator` parameter in the "tvos" script call in `DemoAppTV/package.json`.
 
 ### End-to-end tests
 
 Snowplow React-Native Tracker is being end-to-end tested using [Snowplow Micro][snowplow-micro] and [Detox][detox]. To run these tests locally:
 
-#### Prerequisites
-
-1. **Docker**: Used to launch Snowplow Micro and expose its collector endpoint on `http://0.0.0.0:9090`.
-2. **Perl**: Used to substitute the endpoint placeholders in `DemoApp/App.js` with Micro's endpoint for respective emulator/simulator.
-3. **Detox** platform-specific development environment setup:
-    - [For Android][detox-android-env]. Namely:
-      - Java 8
-      - Android SDK
-      - Android Open-Source Project emulator
-    - [For iOS][detox-ios-env]. Namely:
-      - applesimutils
-
 #### Testing
 
-Once the prerequisites are in place:
-
-```
-npm install
-npm run bootstrap
-cd DemoApp
-```
-
- - **e2e-android**
-```
-yarn e2e:android:micro
-```
-
- - **e2e-ios**
-```
-yarn e2e:ios:micro
-```
-
-The above commands will take care to kill Micro's running container before exiting. If you'd prefer to keep Micro running in order to inspect the tracked events through Micro's REST API, you can alternatively control Micro through:
-
-```
-yarn micro:run
-yarn micro:stop
-```
-and run the e2e-tests on their own:
-```
-yarn e2e:android
-# or
-yarn e2e:ios
-```
-
+1. Start your [Snowplow Micro][snowplow-micro] instance locally.
+2. Replace the `placeholder` value for the `collectorEndpoint` variable in `example/src/App.js` (use the network IP address of your computer or ngrok).
+3. Start the end-to-end tests:
+   * On Android, run `yarn e2e:android`
+   * On iOS, run `yarn e2e:ios`
 
 ## Contributing
 
@@ -194,8 +110,6 @@ Feedback and contributions are welcome - if you have identified a bug, please lo
 |-------------------------------------------|
 | [![i3][contributing-image]][contributing] |
 | [Contributing][contributing]              |
-
-
 
 ## Copyright and license
 
@@ -209,7 +123,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 
 [tracker-classification]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/tracker-maintenance-classification/
 [actively-maintained]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Actively%20Maintained&color=6638b8&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
