@@ -19,7 +19,15 @@ export type HttpMethod = 'post' | 'get';
 /**
  * DevicePlatform type
  */
-export type DevicePlatform = 'web' | 'mob' | 'pc' | 'srv' | 'app' | 'tv' | 'cnsl' | 'iot';
+export type DevicePlatform =
+  | 'web'
+  | 'mob'
+  | 'pc'
+  | 'srv'
+  | 'app'
+  | 'tv'
+  | 'cnsl'
+  | 'iot';
 
 /**
  * LogLevel type
@@ -29,7 +37,13 @@ export type LogLevel = 'off' | 'error' | 'debug' | 'verbose';
 /**
  * BasisForProsessing
  */
-export type Basis = 'consent' | 'contract' | 'legal_obligation' | 'legitimate_interests' | 'public_task' | 'vital_interests';
+export type Basis =
+  | 'consent'
+  | 'contract'
+  | 'legal_obligation'
+  | 'legitimate_interests'
+  | 'public_task'
+  | 'vital_interests';
 
 /**
  * BufferOption
@@ -39,7 +53,12 @@ export type BufferOption = 'single' | 'default' | 'large';
 /**
  * Trigger for MessageNotification event
  */
-export type Trigger = 'push' | 'location' | 'calendar' | 'timeInterval' | 'other';
+export type Trigger =
+  | 'push'
+  | 'location'
+  | 'calendar'
+  | 'timeInterval'
+  | 'other';
 
 /**
  * ScreenSize
@@ -86,7 +105,7 @@ export interface NetworkConfiguration {
   /**
    * A custom path which will be added to the endpoint URL to specify the
    * complete URL of the collector when paired with the POST method.
-   * 
+   *
    * @defaultValue `com.snowplowanalytics.snowplow/tp2`.
    */
   customPostPath?: string;
@@ -96,7 +115,6 @@ export interface NetworkConfiguration {
    */
   requestHeaders?: Record<string, string>;
 }
-
 
 /**
  * TrackerConfiguration
@@ -182,7 +200,6 @@ export interface TrackerConfiguration {
    */
   userAnonymisation?: boolean;
 }
-
 
 /**
  * SessionConfiguration
@@ -317,11 +334,11 @@ export interface GlobalContext {
   /**
    * tag
    */
-  tag: string,
+  tag: string;
   /**
    * contexts
    */
-  globalContexts: SelfDescribing[]
+  globalContexts: SelfDescribing[];
 }
 
 /**
@@ -333,20 +350,21 @@ export type GCConfiguration = GlobalContext[];
  * The TrackerControllerConfiguration
  */
 export interface TrackerControllerConfiguration {
-  trackerConfig?: TrackerConfiguration,
-  sessionConfig?: SessionConfiguration,
-  emitterConfig?: EmitterConfiguration,
-  subjectConfig?: SubjectConfiguration,
-  gdprConfig?: GdprConfiguration,
-  gcConfig?: GCConfiguration
+  trackerConfig?: TrackerConfiguration;
+  sessionConfig?: SessionConfiguration;
+  emitterConfig?: EmitterConfiguration;
+  subjectConfig?: SubjectConfiguration;
+  gdprConfig?: GdprConfiguration;
+  gcConfig?: GCConfiguration;
 }
 
 /**
  * The TrackerConfiguration
  */
-export interface InitTrackerConfiguration extends TrackerControllerConfiguration {
-  namespace: string,
-  networkConfig: NetworkConfiguration
+export interface InitTrackerConfiguration
+  extends TrackerControllerConfiguration {
+  namespace: string;
+  networkConfig: NetworkConfiguration;
 }
 
 /**
@@ -370,7 +388,7 @@ export type ScreenViewProps = {
    * The name of the previous screen that was viewed
    */
   previousName?: string;
-   /**
+  /**
    * The id(UUID) of the previous screen that was viewed
    */
   previousId?: string;
@@ -616,63 +634,63 @@ export type MessageNotificationProps = {
   /**
    * The key to the body string in the app's string resources to use to localize the body text to the user's current localization.
    */
-   bodyLocKey?: string;
+  bodyLocKey?: string;
   /**
    * The category associated to the notification.
    */
-   category?: string;
+  category?: string;
   /**
    * The application is notified of the delivery of the notification if it's in the foreground or background, the app will be woken up (iOS only).
    */
-   contentAvailable?: boolean;
+  contentAvailable?: boolean;
   /**
    * The group which this notification is part of.
    */
-   group?: string;
+  group?: string;
   /**
    * The icon associated to the notification (Android only).
    */
-   icon?: string;
+  icon?: string;
   /**
    * The number of items this notification represent.
    */
-   notificationCount?: number;
+  notificationCount?: number;
   /**
    * The time when the event of the notification occurred.
    */
-   notificationTimestamp?: string;
+  notificationTimestamp?: string;
   /**
    * The sound played when the device receives the notification.
    */
-   sound?: string;
+  sound?: string;
   /**
    * The notification's subtitle. (iOS only)
    */
-   subtitle?: string;
+  subtitle?: string;
   /**
    * An identifier similar to 'group' but usable for different purposes (Android only).
    */
-   tag?: string;
+  tag?: string;
   /**
    * An identifier similar to 'group' but usable for different purposes (iOS only).
    */
-   threadIdentifier?: string;
+  threadIdentifier?: string;
   /**
    * The notification's title.
    */
-   title: string;
+  title: string;
   /**
    * Variable string values to be used in place of the format specifiers in titleLocArgs to use to localize the title text to the user's current localization.
    */
-   titleLocArgs?: string[];
+  titleLocArgs?: string[];
   /**
    * The key to the title string in the app's string resources to use to localize the title text to the user's current localization.
    */
-   titleLocKey?: string;
+  titleLocKey?: string;
   /**
    * The trigger that raised the notification message. Must be one of: push, location, calendar, timeInterval, other
    */
-   trigger: Trigger;
+  trigger: Trigger;
 };
 
 /**
@@ -944,7 +962,11 @@ export type WebViewMessage = {
     | 'trackStructEvent'
     | 'trackPageView'
     | 'trackScreenView';
-  event: StructuredProps | SelfDescribing | ScreenViewProps | WebViewPageViewEvent;
+  event:
+    | StructuredProps
+    | SelfDescribing
+    | ScreenViewProps
+    | WebViewPageViewEvent;
   context?: Array<SelfDescribing> | null;
   trackers?: Array<string>;
 };
@@ -1054,22 +1076,10 @@ export interface Native {
     tracker: string;
     colorDepth: number | null;
   }) => Promise<void>;
-  getSessionUserId: (details: {
-    tracker: string;
-  }) => Promise<string>;
-  getSessionId: (details: {
-    tracker: string;
-  }) => Promise<string>;
-  getSessionIndex: (details: {
-    tracker: string;
-  }) => Promise<number>;
-  getIsInBackground: (details: {
-    tracker: string;
-  }) => Promise<boolean>;
-  getBackgroundIndex: (details: {
-    tracker: string;
-  }) => Promise<number>;
-  getForegroundIndex: (details: {
-    tracker: string;
-  }) => Promise<number>;
+  getSessionUserId: (details: { tracker: string }) => Promise<string>;
+  getSessionId: (details: { tracker: string }) => Promise<string>;
+  getSessionIndex: (details: { tracker: string }) => Promise<number>;
+  getIsInBackground: (details: { tracker: string }) => Promise<boolean>;
+  getBackgroundIndex: (details: { tracker: string }) => Promise<number>;
+  getForegroundIndex: (details: { tracker: string }) => Promise<number>;
 }

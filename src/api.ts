@@ -61,7 +61,11 @@ function removeTracker(trackerNamespace: string): Promise<boolean> {
   if (typeof trackerNamespace !== 'string') {
     return Promise.reject(new Error(logMessages.removeTracker));
   }
-  return <Promise<boolean>>Promise.resolve(RNSnowplowTracker.removeTracker({tracker:trackerNamespace}));
+  return <Promise<boolean>>(
+    Promise.resolve(
+      RNSnowplowTracker.removeTracker({ tracker: trackerNamespace })
+    )
+  );
 }
 
 /**
@@ -70,7 +74,9 @@ function removeTracker(trackerNamespace: string): Promise<boolean> {
  * @returns - A void promise
  */
 function removeAllTrackers(): Promise<boolean> {
-  return <Promise<boolean>>Promise.resolve(RNSnowplowTracker.removeAllTrackers());
+  return <Promise<boolean>>(
+    Promise.resolve(RNSnowplowTracker.removeAllTrackers())
+  );
 }
 
 /**
@@ -229,12 +235,21 @@ function trackMessageNotificationEvent(namespace: string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to remove global contexts
  */
-function removeGlobalContexts(namespace:string) {
+function removeGlobalContexts(namespace: string) {
   return function (tag: string): Promise<void> {
     if (typeof tag !== 'string') {
-      return Promise.reject(new Error(`${logMessages.removeGlobalContexts} ${logMessages.gcTagType}`));
+      return Promise.reject(
+        new Error(
+          `${logMessages.removeGlobalContexts} ${logMessages.gcTagType}`
+        )
+      );
     }
-    return <Promise<void>>Promise.resolve(RNSnowplowTracker.removeGlobalContexts({tracker:namespace, removeTag: tag}));
+    return Promise.resolve(
+      RNSnowplowTracker.removeGlobalContexts({
+        tracker: namespace,
+        removeTag: tag,
+      })
+    );
   };
 }
 
@@ -244,12 +259,19 @@ function removeGlobalContexts(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to add global contexts
  */
-function addGlobalContexts(namespace:string) {
+function addGlobalContexts(namespace: string) {
   return function (gc: GlobalContext): Promise<void> {
     if (!isValidGC(gc)) {
-      return Promise.reject(new Error(`${logMessages.addGlobalContexts} ${logMessages.gcType}`));
+      return Promise.reject(
+        new Error(`${logMessages.addGlobalContexts} ${logMessages.gcType}`)
+      );
     }
-    return <Promise<void>>Promise.resolve(RNSnowplowTracker.addGlobalContexts({tracker:namespace, addGlobalContext: gc}));
+    return Promise.resolve(
+      RNSnowplowTracker.addGlobalContexts({
+        tracker: namespace,
+        addGlobalContext: gc,
+      })
+    );
   };
 }
 
@@ -259,7 +281,7 @@ function addGlobalContexts(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the userId
  */
-function setUserId(namespace:string) {
+function setUserId(namespace: string) {
   return function (newUid: string | null): Promise<void> {
     return subject.setUserId(namespace, newUid);
   };
@@ -271,7 +293,7 @@ function setUserId(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the networkUserId
  */
-function setNetworkUserId(namespace:string) {
+function setNetworkUserId(namespace: string) {
   return function (newNuid: string | null): Promise<void> {
     return subject.setNetworkUserId(namespace, newNuid);
   };
@@ -283,7 +305,7 @@ function setNetworkUserId(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the domainUserId
  */
-function setDomainUserId(namespace:string) {
+function setDomainUserId(namespace: string) {
   return function (newDuid: string | null): Promise<void> {
     return subject.setDomainUserId(namespace, newDuid);
   };
@@ -295,7 +317,7 @@ function setDomainUserId(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the ipAddress
  */
-function setIpAddress(namespace:string) {
+function setIpAddress(namespace: string) {
   return function (newIp: string | null): Promise<void> {
     return subject.setIpAddress(namespace, newIp);
   };
@@ -307,7 +329,7 @@ function setIpAddress(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the useragent
  */
-function setUseragent(namespace:string) {
+function setUseragent(namespace: string) {
   return function (newUagent: string | null): Promise<void> {
     return subject.setUseragent(namespace, newUagent);
   };
@@ -319,7 +341,7 @@ function setUseragent(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the timezone
  */
-function setTimezone(namespace:string) {
+function setTimezone(namespace: string) {
   return function (newTz: string | null): Promise<void> {
     return subject.setTimezone(namespace, newTz);
   };
@@ -331,7 +353,7 @@ function setTimezone(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the language
  */
-function setLanguage(namespace:string) {
+function setLanguage(namespace: string) {
   return function (newLang: string | null): Promise<void> {
     return subject.setLanguage(namespace, newLang);
   };
@@ -343,7 +365,7 @@ function setLanguage(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the screenResolution
  */
-function setScreenResolution(namespace:string) {
+function setScreenResolution(namespace: string) {
   return function (newRes: ScreenSize | null): Promise<void> {
     return subject.setScreenResolution(namespace, newRes);
   };
@@ -355,7 +377,7 @@ function setScreenResolution(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the screenViewport
  */
-function setScreenViewport(namespace:string) {
+function setScreenViewport(namespace: string) {
   return function (newView: ScreenSize | null): Promise<void> {
     return subject.setScreenViewport(namespace, newView);
   };
@@ -367,7 +389,7 @@ function setScreenViewport(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set the colorDepth
  */
-function setColorDepth(namespace:string) {
+function setColorDepth(namespace: string) {
   return function (newColorD: number | null): Promise<void> {
     return subject.setColorDepth(namespace, newColorD);
   };
@@ -379,7 +401,7 @@ function setColorDepth(namespace:string) {
  * @param namespace {string} - The tracker namespace
  * @returns - A function to set subject data
  */
-function setSubjectData(namespace:string) {
+function setSubjectData(namespace: string) {
   return function (config: SubjectConfiguration): Promise<void> {
     return subject.setSubjectData(namespace, config);
   };
@@ -393,8 +415,11 @@ function setSubjectData(namespace:string) {
  */
 function getSessionUserId(namespace: string) {
   return function (): Promise<string> {
-    return <Promise<string>>Promise
-      .resolve(RNSnowplowTracker.getSessionUserId({tracker: namespace}));
+    return <Promise<string>>(
+      Promise.resolve(
+        RNSnowplowTracker.getSessionUserId({ tracker: namespace })
+      )
+    );
   };
 }
 
@@ -406,8 +431,9 @@ function getSessionUserId(namespace: string) {
  */
 function getSessionId(namespace: string) {
   return function (): Promise<string> {
-    return <Promise<string>>Promise
-      .resolve(RNSnowplowTracker.getSessionId({tracker: namespace}));
+    return <Promise<string>>(
+      Promise.resolve(RNSnowplowTracker.getSessionId({ tracker: namespace }))
+    );
   };
 }
 
@@ -419,8 +445,9 @@ function getSessionId(namespace: string) {
  */
 function getSessionIndex(namespace: string) {
   return function (): Promise<number> {
-    return <Promise<number>>Promise
-      .resolve(RNSnowplowTracker.getSessionIndex({tracker: namespace}));
+    return <Promise<number>>(
+      Promise.resolve(RNSnowplowTracker.getSessionIndex({ tracker: namespace }))
+    );
   };
 }
 
@@ -432,8 +459,11 @@ function getSessionIndex(namespace: string) {
  */
 function getIsInBackground(namespace: string) {
   return function (): Promise<boolean> {
-    return <Promise<boolean>>Promise
-      .resolve(RNSnowplowTracker.getIsInBackground({tracker: namespace}));
+    return <Promise<boolean>>(
+      Promise.resolve(
+        RNSnowplowTracker.getIsInBackground({ tracker: namespace })
+      )
+    );
   };
 }
 
@@ -445,8 +475,11 @@ function getIsInBackground(namespace: string) {
  */
 function getBackgroundIndex(namespace: string) {
   return function (): Promise<number> {
-    return <Promise<number>>Promise
-      .resolve(RNSnowplowTracker.getBackgroundIndex({tracker: namespace}));
+    return <Promise<number>>(
+      Promise.resolve(
+        RNSnowplowTracker.getBackgroundIndex({ tracker: namespace })
+      )
+    );
   };
 }
 
@@ -458,8 +491,11 @@ function getBackgroundIndex(namespace: string) {
  */
 function getForegroundIndex(namespace: string) {
   return function (): Promise<number> {
-    return <Promise<number>>Promise
-      .resolve(RNSnowplowTracker.getForegroundIndex({tracker: namespace}));
+    return <Promise<number>>(
+      Promise.resolve(
+        RNSnowplowTracker.getForegroundIndex({ tracker: namespace })
+      )
+    );
   };
 }
 

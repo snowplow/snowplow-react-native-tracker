@@ -6,132 +6,85 @@ on:
 jobs:
   e2e:
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
+    env:
+      TURBO_CACHE_DIR: .turbo/ios-e2e
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    # -- Setup --
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
+      - name: Setup
+        uses: ./.github/actions/setup
 
-    # -- Micro --
-    - name: Cache Micro
-      id: cache-micro
-      uses: actions/cache@v2
-      with:
-        path: micro.jar
-        key: ${{ runner.os }}-micro
+      - name: Cache turborepo for iOS
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.TURBO_CACHE_DIR }}
+          key: ${{ runner.os }}-turborepo-e2e-ios-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-turborepo-e2e-ios-
 
-    - name: Get micro
-      if: steps.cache-micro.outputs.cache-hit != 'true'
-      run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.4.0/snowplow-micro-1.4.0.jar
+      - name: Check turborepo cache for iOS
+        run: |
+          TURBO_CACHE_STATUS=$(node -p "($(yarn --silent turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:ios').cache.status")
 
-    - name: Run Micro in background
-      run: java -jar micro.jar --collector-config DemoApp/tests/micro/micro.conf --iglu DemoApp/tests/micro/iglu.json &
+          if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
+            echo "turbo_cache_hit=1" >> $GITHUB_ENV
+          fi
 
-    - name: Wait on Micro endpoint
-      timeout-minutes: 2
-      run: while ! nc -z '0.0.0.0' 9090; do sleep 1; done
+      # -- Micro --
+      - name: Cache Micro
+        id: cache-micro
+        uses: actions/cache@v3
+        with:
+          path: micro.jar
+          key: ${{ runner.os }}-micro
 
-    - name: Prepare DemoApp for Micro
-      working-directory: DemoApp
-      run: perl -i -pe "s/^.*collectorEndpoint =\K.*/ \'http:\/\/0.0.0.0:9090\'\;/" App.js
+      - name: Get micro
+        if: steps.cache-micro.outputs.cache-hit != 'true'
+        run: curl -o micro.jar -L https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.7.2/snowplow-micro-1.7.2.jar
 
-    # -- Tracker --
-    - name: Use npm cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Run Micro in background
+        run: java -jar micro.jar &
 
-    - name: Install node modules
-      run: npm ci
+      - name: Wait on Micro endpoint
+        timeout-minutes: 2
+        run: while ! nc -z '0.0.0.0' 9090; do sleep 1; done
 
-    - name: Build Tracker
-      run: npm run build
+      - name: Prepare example for Micro
+        working-directory: example/src
+        run: perl -i -pe "s/^.*collectorEndpoint =\K.*/ \'http:\/\/0.0.0.0:9090\'\;/" App.js
 
-    # -- App --
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
+      # -- Simulator --
+      - name: Install applesimutils
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
 
-    - name: Use yarn cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+      # -- Bootstrap --
+      - name: Bootstrap project
+        run: |
+          yarn turbo run bootstrap --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
-    - name: Install node modules for DemoApp
-      working-directory: DemoApp
-      run: yarn install --frozen-lockfile --network-timeout 100000
+      # -- Test --
+      - name: Detox Jest ios
+        id: dj
+        run: |
+          yarn turbo run e2e:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
-    # -- Simulator --
-    - name: Install applesimutils
-      run: |
-        brew tap wix/brew
-        brew install applesimutils
+      - name: Log events if Detox-Jest failed
+        id: eventlog
+        if: ${{ failure() && steps.dj.outcome == 'failure' }}
+        run: |
+          echo "{ \"all\": $(curl -s -o - 'http://0.0.0.0:9090/micro/all'), \
+                  \"bad\": $(curl -s -o - 'http://0.0.0.0:9090/micro/bad'), \
+                  \"good\": $(curl -s -o - 'http://0.0.0.0:9090/micro/good') }"\
+                  | jq '.' > ios-events-micro.json
 
-    # -- Build --
-    - name: Use pods cache
-      uses: actions/cache@v2
-      with:
-        path: DemoApp/ios/Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
-
-    - name: Use build cache
-      uses: mikehardy/buildcache-action@v1
-
-    - name: Install Pods
-      working-directory: DemoApp/ios
-      run: |
-        pod install
-
-    - name: Detox build ios
-      working-directory: DemoApp
-      run: yarn detox-build-ios
-
-    - name: Start Metro
-      working-directory: DemoApp
-      run: yarn start &
-
-    - name: Wait on metro endpoint
-      timeout-minutes: 2
-      run: while ! nc -z '0.0.0.0' 8081; do sleep 1; done
-
-    # -- Test --
-    - name: Detox Jest ios
-      id: dj
-      uses: nick-invision/retry@v2
-      with:
-        timeout_minutes: 15
-        max_attempts: 2
-        command: |
-          cd DemoApp
-          yarn detox-test-ios
-          yarn test
-
-    - name: Log events if Detox-Jest failed
-      id: eventlog
-      if: ${{ failure() && steps.dj.outcome == 'failure' }}
-      run: |
-        echo "{ \"all\": $(curl -s -o - 'http://0.0.0.0:9090/micro/all'), \
-                \"bad\": $(curl -s -o - 'http://0.0.0.0:9090/micro/bad'), \
-                \"good\": $(curl -s -o - 'http://0.0.0.0:9090/micro/good') }"\
-                | jq '.' > ios-events-micro.json
-
-    - name: Upload events artifact if Detox-Jest failed
-      if: ${{ failure() && steps.dj.outcome == 'failure' && steps.eventlog.outcome == 'success' }}
-      uses: actions/upload-artifact@v2
-      with:
-        name: ios-events-artifact
-        path: ios-events-micro.json
+      - name: Upload events artifact if Detox-Jest failed
+        if: ${{ failure() && steps.dj.outcome == 'failure' && steps.eventlog.outcome == 'success' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-events-artifact
+          path: ios-events-micro.json

@@ -37,9 +37,7 @@ import type {
  * @returns - boolean
  */
 function isValidSD(sd: SelfDescribing | EventContext): boolean {
-  return isObject(sd)
-    && typeof sd.schema === 'string'
-    && isObject(sd.data);
+  return isObject(sd) && typeof sd.schema === 'string' && isObject(sd.data);
 }
 
 /**
@@ -49,10 +47,11 @@ function isValidSD(sd: SelfDescribing | EventContext): boolean {
  * @returns - boolean promise
  */
 function validateContexts(contexts: EventContext[]): Promise<boolean> {
-  const isValid = Object.prototype.toString.call(contexts) === '[object Array]'
-    && contexts
+  const isValid =
+    Object.prototype.toString.call(contexts) === '[object Array]' &&
+    contexts
       .map((c) => isValidSD(c))
-      .reduce((acc,curr) => acc !== false && curr, true);
+      .reduce((acc, curr) => acc !== false && curr, true);
 
   if (!isValid) {
     return Promise.reject(new Error(logMessages.context));
@@ -67,7 +66,7 @@ function validateContexts(contexts: EventContext[]): Promise<boolean> {
  * @param argmap {Object} - the object to validate
  * @returns - boolean promise
  */
-function validateSelfDesc(argmap: SelfDescribing,): Promise<boolean> {
+function validateSelfDesc(argmap: SelfDescribing): Promise<boolean> {
   if (!isValidSD(argmap)) {
     return Promise.reject(new Error(logMessages.selfDesc));
   }
@@ -107,8 +106,8 @@ function validateStructured(argmap: StructuredProps): Promise<boolean> {
   }
   // validate required props
   if (
-    typeof argmap.category !== 'string'
-      || typeof argmap.action !== 'string'
+    typeof argmap.category !== 'string' ||
+    typeof argmap.action !== 'string'
   ) {
     return Promise.reject(new Error(logMessages.structuredReq));
   }
@@ -148,9 +147,9 @@ function validateTiming(argmap: TimingProps): Promise<boolean> {
   }
   // validate required props
   if (
-    typeof argmap.category !== 'string'
-      || typeof argmap.variable !== 'string'
-      || typeof argmap.timing !== 'number'
+    typeof argmap.category !== 'string' ||
+    typeof argmap.variable !== 'string' ||
+    typeof argmap.timing !== 'number'
   ) {
     return Promise.reject(new Error(logMessages.timingReq));
   }
@@ -171,9 +170,9 @@ function validateConsentGranted(argmap: ConsentGrantedProps): Promise<boolean> {
   }
   // validate required props
   if (
-    typeof argmap.expiry !== 'string'
-      || typeof argmap.documentId !== 'string'
-      || typeof argmap.version !== 'string'
+    typeof argmap.expiry !== 'string' ||
+    typeof argmap.documentId !== 'string' ||
+    typeof argmap.version !== 'string'
   ) {
     return Promise.reject(new Error(logMessages.consentGReq));
   }
@@ -187,16 +186,18 @@ function validateConsentGranted(argmap: ConsentGrantedProps): Promise<boolean> {
  * @param argmap {Object} - the object to validate
  * @returns - boolean promise
  */
-function validateConsentWithdrawn(argmap: ConsentWithdrawnProps): Promise<boolean> {
+function validateConsentWithdrawn(
+  argmap: ConsentWithdrawnProps
+): Promise<boolean> {
   // validate type
   if (!isObject(argmap)) {
     return Promise.reject(new Error(logMessages.evType));
   }
   // validate required props
   if (
-    typeof argmap.all !== 'boolean'
-      || typeof argmap.documentId !== 'string'
-      || typeof argmap.version !== 'string'
+    typeof argmap.all !== 'boolean' ||
+    typeof argmap.documentId !== 'string' ||
+    typeof argmap.version !== 'string'
   ) {
     return Promise.reject(new Error(logMessages.consentWReq));
   }
@@ -210,15 +211,15 @@ function validateConsentWithdrawn(argmap: ConsentWithdrawnProps): Promise<boolea
  * @param argmap {Object} - the object to validate
  * @returns - boolean promise
  */
-function validateDeepLinkReceived(argmap: DeepLinkReceivedProps): Promise<boolean> {
+function validateDeepLinkReceived(
+  argmap: DeepLinkReceivedProps
+): Promise<boolean> {
   // validate type
   if (!isObject(argmap)) {
     return Promise.reject(new Error(logMessages.evType));
   }
   // validate required props
-  if (
-    typeof argmap.url !== 'string'
-  ) {
+  if (typeof argmap.url !== 'string') {
     return Promise.reject(new Error(logMessages.deepLinkReq));
   }
 
@@ -231,17 +232,21 @@ function validateDeepLinkReceived(argmap: DeepLinkReceivedProps): Promise<boolea
  * @param argmap {Object} - the object to validate
  * @returns - boolean promise
  */
-function validateMessageNotification(argmap: MessageNotificationProps): Promise<boolean> {
+function validateMessageNotification(
+  argmap: MessageNotificationProps
+): Promise<boolean> {
   // validate type
   if (!isObject(argmap)) {
     return Promise.reject(new Error(logMessages.evType));
   }
   // validate required props
   if (
-    typeof argmap.title !== 'string'
-    || typeof argmap.body !== 'string'
-    || typeof argmap.trigger !== 'string'
-    || !['push', 'location', 'calendar', 'timeInterval', 'other'].includes(argmap.trigger)
+    typeof argmap.title !== 'string' ||
+    typeof argmap.body !== 'string' ||
+    typeof argmap.trigger !== 'string' ||
+    !['push', 'location', 'calendar', 'timeInterval', 'other'].includes(
+      argmap.trigger
+    )
   ) {
     return Promise.reject(new Error(logMessages.messageNotificationReq));
   }
@@ -257,10 +262,10 @@ function validateMessageNotification(argmap: MessageNotificationProps): Promise<
  */
 function isValidEcomItem(item: EcommerceItem): boolean {
   if (
-    isObject(item)
-      && typeof item.sku === 'string'
-      && typeof item.price === 'number'
-      && typeof item.quantity === 'number'
+    isObject(item) &&
+    typeof item.sku === 'string' &&
+    typeof item.price === 'number' &&
+    typeof item.quantity === 'number'
   ) {
     return true;
   }
@@ -274,10 +279,12 @@ function isValidEcomItem(item: EcommerceItem): boolean {
  * @returns - boolean promise
  */
 function validItemsArg(items: EcommerceItem[]): boolean {
-  return Object.prototype.toString.call(items) === '[object Array]'
-    && items
+  return (
+    Object.prototype.toString.call(items) === '[object Array]' &&
+    items
       .map((i) => isValidEcomItem(i))
-      .reduce((acc,curr) => acc !== false && curr, true);
+      .reduce((acc, curr) => acc !== false && curr, true)
+  );
 }
 
 /**
@@ -286,16 +293,18 @@ function validItemsArg(items: EcommerceItem[]): boolean {
  * @param argmap {Object} - the object to validate
  * @returns - boolean promise
  */
-function validateEcommerceTransaction(argmap: EcommerceTransactionProps): Promise<boolean> {
+function validateEcommerceTransaction(
+  argmap: EcommerceTransactionProps
+): Promise<boolean> {
   // validate type
   if (!isObject(argmap)) {
     return Promise.reject(new Error(logMessages.evType));
   }
   // validate required props
   if (
-    typeof argmap.orderId !== 'string'
-      || typeof argmap.totalValue !== 'number'
-      || !validItemsArg(argmap.items)
+    typeof argmap.orderId !== 'string' ||
+    typeof argmap.totalValue !== 'number' ||
+    !validItemsArg(argmap.items)
   ) {
     return Promise.reject(new Error(logMessages.ecomReq));
   }
@@ -317,5 +326,5 @@ export {
   validItemsArg,
   validateEcommerceTransaction,
   validateDeepLinkReceived,
-  validateMessageNotification
+  validateMessageNotification,
 };
