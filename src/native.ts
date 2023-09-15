@@ -18,7 +18,7 @@ import { JSSnowplowTracker } from './jsCore';
 import type { Native } from './types';
 import { errorHandler } from './utils';
 
-const isAvailable = NativeModules.RNSnowplowTracker != null;
+const isAvailable = NativeModules.ReactNativeTracker != null;
 if (!isAvailable) {
   errorHandler(
     new Error(
@@ -27,8 +27,8 @@ if (!isAvailable) {
   );
 }
 
-const RNSnowplowTracker: Native = isAvailable ? NativeModules.RNSnowplowTracker as Native : JSSnowplowTracker;
+const RNSnowplowTracker: Native = isAvailable
+  ? (NativeModules.ReactNativeTracker as Native)
+  : JSSnowplowTracker;
 
-export {
-  RNSnowplowTracker
-};
+export { RNSnowplowTracker };

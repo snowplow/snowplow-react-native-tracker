@@ -1,41 +1,28 @@
 {
   "compilerOptions": {
-    /* Basic Options */
-    "target": "esnext",
-    "lib": ["esnext"],
-    "jsx": "react-native",
-    "types": ["react", "react-native"],
-    "declaration": true,
-    "sourceMap": true,
-    "noEmitOnError": true,
-
-    /* Strict Type-Checking */
-    "strict": true,
-
-    /* Additional Checks */
+    "baseUrl": "./",
+    "paths": {
+      "@snowplow/react-native-tracker": ["./src/index"]
+    },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noUncheckedIndexedAccess": true,
-
-    /* Module Resolution Options */
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "importsNotUsedAsValues": "error",
+    "jsx": "react",
+    "lib": ["esnext"],
+    "module": "esnext",
     "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "resolveJsonModule": true,
-
-    "outDir": "./dist/tmp"
-  },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "verbatimModuleSyntax": true
+  }
 }

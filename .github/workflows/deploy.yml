@@ -1,61 +1,38 @@
 name: Deploy
 
 on:
-  push:
-    tags:
-    - '*.*.*'
+  workflow_run:
+    workflows: [Build]
+    branches: [master, next]
+    types: [completed]
 
 jobs:
-  test:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-
-    - name: Install node modules
-      run: npm ci
-
-    - name: Compile TypeScript
-      run: npm run compile
-
-    - name: Lint
-      run: npm run lint
-
-    - name: Tests
-      run: npm run test
 
   version_check:
-    runs-on: ubuntu-20.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} && startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
     outputs:
       v_tracker: ${{ steps.version.outputs.RN_TRACKER_VERSION}}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
+    - name: Setup
+      uses: ./.github/actions/setup
 
     - name: Get tag and tracker versions
       id: version
       env:
-        IOS_VER_FILEPATH: 'ios/Util/RNTrackerVersion.m'
-        ANDR_VER_FILEPATH: 'android/src/main/java/com/snowplowanalytics/react/util/TrackerVersion.java'
+        IOS_VER_FILEPATH: 'ios/Util/TrackerVersion.swift'
+        ANDR_VER_FILEPATH: 'android/src/main/java/com/snowplow/reactnativetracker/util/TrackerVersion.kt'
         JS_VER_FILEPATH: 'src/jsCore.ts'
       run: |
-        echo ::set-output name=TAG_VERSION::${GITHUB_REF#refs/*/}
-        echo "##[set-output name=RN_TRACKER_VERSION;]$(node -p "require('./package.json').version")"
-        echo "##[set-output name=RN_IOS_TRACKER_VERSION;]$(cat "${IOS_VER_FILEPATH}" | sed -n -e 's/^.*kRNTrackerVersion = @"rn-\(.*\)";/\1/p')"
-        echo "##[set-output name=RN_ANDROID_TRACKER_VERSION;]$(cat "${ANDR_VER_FILEPATH}" | sed -n -e 's/^.*RN_TRACKER_VERSION = "rn-\(.*\)";/\1/p')"
-        echo "##[set-output name=RN_JS_TRACKER_VERSION;]$(cat "${JS_VER_FILEPATH}" | sed -n -e 's/^.*trackerVersion = '\''rn-\(.*\)'\'';/\1/p')"
+        echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+        echo "RN_TRACKER_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        echo "RN_IOS_TRACKER_VERSION=$(cat "${IOS_VER_FILEPATH}" | sed -n -e 's/^.*kRNTrackerVersion = "rn-\(.*\)"/\1/p')" >> $GITHUB_OUTPUT
+        echo "RN_ANDROID_TRACKER_VERSION=$(cat "${ANDR_VER_FILEPATH}" | sed -n -e 's/^.*RN_TRACKER_VERSION = "rn-\(.*\)"/\1/p')" >> $GITHUB_OUTPUT
+        echo "RN_JS_TRACKER_VERSION=$(cat "${JS_VER_FILEPATH}" | sed -n -e 's/^.*trackerVersion = '\''rn-\(.*\)'\'';/\1/p')" >> $GITHUB_OUTPUT
 
     - name: Fail if version mismatch
       run: |
@@ -76,114 +53,35 @@ jobs:
           exit 1
         fi
 
-  build_android:
-    needs: ["test", "version_check"]
-    runs-on: ubuntu-20.04
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Validate Gradle Wrapper
-      uses: gradle/wrapper-validation-action@v1
-
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-
-    - name: Build dist files
-      run: |
-        npm ci
-        npm run build
-
-    - name: Install node_modules
-      working-directory: DemoApp
-      run: |
-        yarn install --frozen-lockfile --network-timeout 100000
-
-    - name: Lint DemoApp
-      working-directory: DemoApp
-      run: yarn lint
-
-    - name: Build DemoApp
-      working-directory: DemoApp/android
-      run: |
-        ./gradlew assembleDebug
-
-  build_ios:
-    needs: ["test", "version_check"]
-    runs-on: macos-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-
-    - name: Build dist files
-      run: |
-        npm ci
-        npm run build
-
-    - name: Install node_modules
-      working-directory: DemoApp
-      run: |
-        yarn install --frozen-lockfile --network-timeout 100000
-
-    - name: Install Pods
-      working-directory: DemoApp/ios
-      run: |
-        pod install
-
-    - name: Build DemoApp
-      working-directory: DemoApp/ios
-      run: |
-        xcodebuild \
-          -workspace DemoApp.xcworkspace \
-          -scheme DemoApp \
-          -sdk iphonesimulator \
-          -configuration Debug \
-          -destination 'platform=iOS Simulator,name=iPhone 12' \
-          -derivedDataPath ios/build -UseModernBuildSystem=YES \
-          clean build \
-          CODE_SIGNING_ALLOWED=NO
-
   publish_npm:
-    needs: ["build_android", "build_ios", "version_check"]
-    runs-on: ubuntu-20.04
+    needs: ["version_check"]
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-        registry-url: 'https://registry.npmjs.org'
+    - name: Setup
+      uses: ./.github/actions/setup
 
     - name: Build dist files
       run: |
-        npm ci
-        npm run build
+        yarn
+        yarn prepack
 
     - name: NPM Publish
       run: |
         if [[ "${{ needs.version_check.outputs.v_tracker }}" = *-* ]] ; then
-          npm publish --access public --tag next
+          yarn publish --access public --tag next
         else
-          npm publish --access public
+          yarn publish --access public
         fi
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release:
     needs: ["publish_npm", "version_check"]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code

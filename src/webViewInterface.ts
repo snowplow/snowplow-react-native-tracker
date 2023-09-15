@@ -42,64 +42,64 @@ function forEachTracker(
 /**
  * Enables tracking events from apps rendered in react-native-webview components.
  * The apps need to use the Snowplow WebView tracker to track the events.
- * 
+ *
  * To subscribe for the events, set the `onMessage` attribute:
  * <WebView onMessage={getWebViewCallback()} ... />
- * 
+ *
  * @returns Callback to subscribe for events from Web views tracked using the Snowplow WebView tracker.
  */
 export function getWebViewCallback() {
   return (message: { nativeEvent: { data: string } }): void => {
     const data = JSON.parse(message.nativeEvent.data) as WebViewMessage;
     switch (data.command) {
-    case 'trackSelfDescribingEvent':
-      forEachTracker(data.trackers, (namespace) => {
-        trackSelfDescribingEvent(
-          namespace,
+      case 'trackSelfDescribingEvent':
+        forEachTracker(data.trackers, (namespace) => {
+          trackSelfDescribingEvent(
+            namespace,
             data.event as SelfDescribing,
             data.context || []
-        ).catch((error) => {
-          errorHandler(error);
+          ).catch((error) => {
+            errorHandler(error);
+          });
         });
-      });
-      break;
+        break;
 
-    case 'trackStructEvent':
-      forEachTracker(data.trackers, (namespace) => {
-        trackStructuredEvent(
-          namespace,
+      case 'trackStructEvent':
+        forEachTracker(data.trackers, (namespace) => {
+          trackStructuredEvent(
+            namespace,
             data.event as StructuredProps,
             data.context || []
-        ).catch((error) => {
-          errorHandler(error);
+          ).catch((error) => {
+            errorHandler(error);
+          });
         });
-      });
-      break;
+        break;
 
-    case 'trackPageView':
-      forEachTracker(data.trackers, (namespace) => {
-        const event = data.event as WebViewPageViewEvent;
-        trackPageViewEvent(namespace, {
-          pageTitle: event.title ?? '',
-          pageUrl: event.url ?? '',
-          referrer: event.referrer,
-        }).catch((error) => {
-          errorHandler(error);
+      case 'trackPageView':
+        forEachTracker(data.trackers, (namespace) => {
+          const event = data.event as WebViewPageViewEvent;
+          trackPageViewEvent(namespace, {
+            pageTitle: event.title ?? '',
+            pageUrl: event.url ?? '',
+            referrer: event.referrer,
+          }).catch((error) => {
+            errorHandler(error);
+          });
         });
-      });
-      break;
+        break;
 
-    case 'trackScreenView':
-      forEachTracker(data.trackers, (namespace) => {
-        trackScreenViewEvent(
-          namespace,
+      case 'trackScreenView':
+        forEachTracker(data.trackers, (namespace) => {
+          trackScreenViewEvent(
+            namespace,
             data.event as ScreenViewProps,
             data.context || []
-        ).catch((error) => {
-          errorHandler(error);
+          ).catch((error) => {
+            errorHandler(error);
+          });
         });
-      });
-      break;
+        break;
     }
   };
 }
