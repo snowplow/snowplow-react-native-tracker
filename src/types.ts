@@ -170,7 +170,7 @@ export interface TrackerConfiguration {
    */
   screenContext?: boolean;
   /**
-   * Whether enable automatic tracking of ScreenView events from the native side.
+   * Whether to enable automatic tracking of ScreenView events from the native side.
    * Only tracking UIKit views on iOS and Activity on Android are supported.
    * For tracking React Native views, see the tracker docs for manual and auto-tracking options.
    * @defaultValue false
