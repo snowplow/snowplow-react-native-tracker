@@ -86,7 +86,6 @@ const App = () => {
         appId: 'DemoAppId',
         base64Encoding: false,
         devicePlatform: 'iot',
-        screenViewAutotracking: false, // for tests predictability
         installAutotracking: false,
       },
       sessionConfig: {

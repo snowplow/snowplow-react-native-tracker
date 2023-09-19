@@ -16,13 +16,15 @@ import java.util.concurrent.TimeUnit
 
 object ConfigUtil {
   fun mkTrackerConfiguration(
-    trackerConfig: ReadableMap,
+    trackerConfig: ReadableMap?,
     context: ReactApplicationContext
   ): TrackerConfiguration {
-    val appId: String =
-      if (trackerConfig.hasKey("appId")) trackerConfig.getString("appId")!! else context.getPackageName()
+    val appId = trackerConfig?.getString("appId") ?: context.packageName
     val trackerConfiguration = TrackerConfiguration(appId)
       .trackerVersionSuffix(TrackerVersion.RN_TRACKER_VERSION)
+      .screenViewAutotracking(false)
+
+    val trackerConfig = trackerConfig ?: run { return trackerConfiguration }
     if (trackerConfig.hasKey("devicePlatform")) {
       val devicePlatform = mkDevicePlatform(trackerConfig.getString("devicePlatform")!!)
       trackerConfiguration.devicePlatform(devicePlatform)
