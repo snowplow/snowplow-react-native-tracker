@@ -490,7 +490,7 @@ PODS:
     - React-jsi (= 0.72.4)
     - React-logger (= 0.72.4)
     - React-perflogger (= 0.72.4)
-  - snowplow-react-native-tracker (1.4.0):
+  - snowplow-react-native-tracker (2.0.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - SnowplowTracker (~> 5.4)
@@ -726,7 +726,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 4941cc1b3cf08b792fbf666342c9fc95f1969035
   React-utils: b79f2411931f9d3ea5781404dcbb2fa8a837e13a
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
-  snowplow-react-native-tracker: d3ec9b0cb178d6d8db96fd45c7f0f296fbd98d7a
+  snowplow-react-native-tracker: e0acb614d407ecd3670d758085bb01b4029723c8
   SnowplowTracker: f954f5fe985411819ccdadd50ce142b7ad17efe2
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981

@@ -1,3 +1,9 @@
+Version 2.0.0 (2023-09-29)
+--------------------------
+Upgrade project structure and update native trackers to version 5 (#199)
+Disable automatic screen view tracking in the iOS and Android tracker by default (#198)
+Fix buffer option in emitter configuration on Android to set correct value for large setting (#197)
+
 Version 1.4.0 (2022-02-04)
 --------------------------
 Add JavaScript tracker core to be used in Expo managed workflow when native trackers are not available (#188)
