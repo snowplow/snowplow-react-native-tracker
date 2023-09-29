@@ -1,3 +1,3 @@
 import Foundation
 
-let kRNTrackerVersion = "rn-1.4.0"
+let kRNTrackerVersion = "rn-2.0.0"
