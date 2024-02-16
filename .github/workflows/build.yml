@@ -108,6 +108,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: setup-cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1
+        with:
+          version: 1.15.2
+
       - name: Setup
         uses: ./.github/actions/setup
 
