@@ -389,7 +389,7 @@ describe('test isValidEmitterConf', () => {
 
   test('invalid - invalid props', () => {
     const testConf = {
-      bufferOption: 'default',
+      bufferOption: 'small',
       invalid: true,
     } as any;
     expect(c.isValidEmitterConf(testConf)).toBe(false);

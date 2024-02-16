@@ -48,7 +48,7 @@ export type Basis =
 /**
  * BufferOption
  */
-export type BufferOption = 'single' | 'default' | 'large';
+export type BufferOption = 'single' | 'small' | 'large';
 
 /**
  * Trigger for MessageNotification event
