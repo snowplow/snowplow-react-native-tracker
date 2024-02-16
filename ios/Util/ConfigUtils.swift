@@ -50,6 +50,9 @@ class ConfigUtils {
         } else {
             trackerConfiguration.screenViewAutotracking = false
         }
+        if let screenEngagementAutotracking = trackerConfig.object(forKey: "screenEngagementAutotracking") as? NSNumber {
+            trackerConfiguration.screenEngagementAutotracking = screenEngagementAutotracking.boolValue
+        }
         if let lifecycleAutotracking = trackerConfig.object(forKey: "lifecycleAutotracking") as? NSNumber {
             trackerConfiguration.lifecycleAutotracking = lifecycleAutotracking.boolValue
         }

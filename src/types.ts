@@ -177,8 +177,14 @@ export interface TrackerConfiguration {
    */
   screenViewAutotracking?: boolean;
   /**
+   * Whether to enable tracking of the screen end event and the screen summary context entity.
+   * Make sure that you have lifecycle autotracking enabled for screen summary to have complete information.
+   * @defaultValue true
+   */
+  screenEngagementAutotracking?: boolean;
+  /**
    * Whether enable automatic tracking of background and foreground transitions.
-   * @defaultValue false
+   * @defaultValue true
    */
   lifecycleAutotracking?: boolean;
   /**
