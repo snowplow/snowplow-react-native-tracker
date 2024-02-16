@@ -50,6 +50,26 @@ object EventUtil {
     return event
   }
 
+  fun createScrollChangedEvent(argmap: ReadableMap): ScrollChanged {
+    val event = ScrollChanged(
+      yOffset = if (argmap.hasKey("yOffset")) { argmap.getDouble("yOffset").toInt() } else { null },
+      xOffset = if (argmap.hasKey("xOffset")) { argmap.getDouble("xOffset").toInt() } else { null },
+      viewHeight = if (argmap.hasKey("viewHeight")) { argmap.getDouble("viewHeight").toInt() } else { null },
+      viewWidth = if (argmap.hasKey("viewWidth")) { argmap.getDouble("viewWidth").toInt() } else { null },
+      contentHeight = if (argmap.hasKey("contentHeight")) { argmap.getDouble("contentHeight").toInt() } else { null },
+      contentWidth = if (argmap.hasKey("contentWidth")) { argmap.getDouble("contentWidth").toInt() } else { null },
+    )
+    return event
+  }
+
+  fun createListItemViewEvent(argmap: ReadableMap): ListItemView {
+    val event = ListItemView(
+      index = argmap.getDouble("index").toInt(),
+      itemsCount = if (argmap.hasKey("itemsCount")) { argmap.getDouble("itemsCount").toInt() } else { null },
+    )
+    return event
+  }
+
   fun createPageViewEvent(argmap: ReadableMap): PageView {
     val event = PageView(argmap.getString("pageUrl")!!)
     argmap.getString("pageTitle")?.let { event.pageTitle(it) }

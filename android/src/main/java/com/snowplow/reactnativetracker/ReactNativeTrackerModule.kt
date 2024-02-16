@@ -226,6 +226,46 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun trackScrollChangedEvent(
+    details: ReadableMap,
+    promise: Promise
+  ) {
+    try {
+      val namespace = details.getString("tracker")
+      val argmap = details.getMap("eventData")!!
+      val contexts = details.getArray("contexts")!!
+      val trackerController = getTracker(namespace)
+      val event: ScrollChanged = EventUtil.createScrollChangedEvent(argmap)
+      val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
+      event.entities.addAll(evCtxts)
+      trackerController.track(event)
+      promise.resolve(true)
+    } catch (t: Throwable) {
+      promise.reject("ERROR", t.message)
+    }
+  }
+
+  @ReactMethod
+  fun trackListItemViewEvent(
+    details: ReadableMap,
+    promise: Promise
+  ) {
+    try {
+      val namespace = details.getString("tracker")
+      val argmap = details.getMap("eventData")!!
+      val contexts = details.getArray("contexts")!!
+      val trackerController = getTracker(namespace)
+      val event: ListItemView = EventUtil.createListItemViewEvent(argmap)
+      val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
+      event.entities.addAll(evCtxts)
+      trackerController.track(event)
+      promise.resolve(true)
+    } catch (t: Throwable) {
+      promise.reject("ERROR", t.message)
+    }
+  }
+
+  @ReactMethod
   fun trackPageViewEvent(
     details: ReadableMap,
     promise: Promise

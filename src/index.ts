@@ -55,6 +55,12 @@ function createTracker(
     api.trackSelfDescribingEvent(namespace)
   );
   const trackScreenViewEvent = mkMethod(api.trackScreenViewEvent(namespace));
+  const trackScrollChangedEvent = mkMethod(
+    api.trackScrollChangedEvent(namespace)
+  );
+  const trackListItemViewEvent = mkMethod(
+    api.trackListItemViewEvent(namespace)
+  );
   const trackStructuredEvent = mkMethod(api.trackStructuredEvent(namespace));
   const trackPageViewEvent = mkMethod(api.trackPageViewEvent(namespace));
   const trackTimingEvent = mkMethod(api.trackTimingEvent(namespace));
@@ -100,6 +106,8 @@ function createTracker(
   return Object.freeze({
     trackSelfDescribingEvent,
     trackScreenViewEvent,
+    trackScrollChangedEvent,
+    trackListItemViewEvent,
     trackStructuredEvent,
     trackPageViewEvent,
     trackTimingEvent,

@@ -411,6 +411,56 @@ export type ScreenViewProps = {
 };
 
 /**
+ * Event tracked when a scroll view's scroll position changes.
+ * If screen engagement tracking is enabled, the scroll changed events will be aggregated into a `screen_summary` entity.
+ *
+ * Schema: `iglu:com.snowplowanalytics.mobile/scroll_changed/jsonschema/1-0-0`
+ */
+export type ScrollChangedProps = {
+  /**
+   * Vertical scroll offset in pixels
+   */
+  yOffset?: number;
+  /**
+   * Horizontal scroll offset in pixels.
+   */
+  xOffset?: number;
+  /**
+   * The height of the scroll view in pixels
+   */
+  viewHeight?: number;
+  /**
+   * The width of the scroll view in pixels
+   */
+  viewWidth?: number;
+  /**
+   * The height of the content in the scroll view in pixels
+   */
+  contentHeight?: number;
+  /**
+   * The width of the content in the scroll view in pixels
+   */
+  contentWidth?: number;
+};
+
+/**
+ * Event tracking the view of an item in a list.
+ * If screen engagement tracking is enabled, the list item view events will be aggregated into a `screen_summary` entity.
+ *
+ * Schema: `iglu:com.snowplowanalytics.mobile/list_item_view/jsonschema/1-0-0`
+ */
+export type ListItemViewProps = {
+  /**
+   * Index of the item in the list
+   */
+  index: number;
+  /**
+   * Total number of items in the list
+   */
+  itemsCount?: number;
+};
+
+/**
  * Structured event properties
  */
 export type StructuredProps = {
@@ -731,6 +781,28 @@ export type ReactNativeTracker = {
   ) => Promise<void>;
 
   /**
+   * Tracks a scroll changed event
+   *
+   * @param argmap - The scroll changed event's properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackScrollChangedEvent: (
+    argmap: ScrollChangedProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
+   * Tracks a list item view event
+   *
+   * @param argmap - The list item view event's properties
+   * @param contexts - The array of event contexts
+   */
+  readonly trackListItemViewEvent: (
+    argmap: ListItemViewProps,
+    contexts?: EventContext[]
+  ) => Promise<void>;
+
+  /**
    * Tracks a structured event
    *
    * @param argmap - The structured event properties
@@ -999,6 +1071,16 @@ export interface Native {
   trackScreenViewEvent: (details: {
     tracker: string | null;
     eventData: ScreenViewProps;
+    contexts: EventContext[];
+  }) => Promise<void>;
+  trackScrollChangedEvent: (details: {
+    tracker: string | null;
+    eventData: ScrollChangedProps;
+    contexts: EventContext[];
+  }) => Promise<void>;
+  trackListItemViewEvent: (details: {
+    tracker: string | null;
+    eventData: ListItemViewProps;
     contexts: EventContext[];
   }) => Promise<void>;
   trackPageViewEvent: (details: {

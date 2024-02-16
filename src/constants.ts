@@ -31,6 +31,8 @@ const logMessages = {
     'selfDescribing event requires schema and data parameters to be set',
   evType: 'event argument can only be an object',
   screenViewReq: 'screenView event requires name as string parameter to be set',
+  listItemViewReq:
+    'listItemView event requires index asn integer parameter to be set',
   structuredReq:
     'structured event requires category and action parameters to be set',
   pageviewReq: 'pageView event requires pageUrl parameter to be set',
@@ -57,6 +59,8 @@ const logMessages = {
   // methods
   trackSelfDesc: 'trackSelfDescribingEvent:',
   trackScreenView: 'trackScreenViewEvent:',
+  trackScrollChanged: 'trackScrollChangedEvent:',
+  trackListItemView: 'trackListItemViewEvent:',
   trackStructured: 'trackStructuredEvent:',
   trackPageView: 'trackPageViewEvent:',
   trackTiming: 'trackTimingEvent:',
@@ -97,6 +101,10 @@ const schemas = {
     'iglu:com.snowplowanalytics.mobile/message_notification/jsonschema/1-0-0',
   screenViewSchema:
     'iglu:com.snowplowanalytics.mobile/screen_view/jsonschema/1-0-0',
+  scrollChangedSchema:
+    'iglu:com.snowplowanalytics.mobile/scroll_changed/jsonschema/1-0-0',
+  listItemViewSchema:
+    'iglu:com.snowplowanalytics.mobile/list_item_view/jsonschema/1-0-0',
 };
 
 export { logMessages, schemas };

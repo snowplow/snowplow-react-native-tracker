@@ -28,6 +28,8 @@ import type {
   DeepLinkReceivedProps,
   MessageNotificationProps,
   NetworkConfiguration,
+  ScrollChangedProps,
+  ListItemViewProps,
 } from './types';
 
 import {
@@ -259,6 +261,65 @@ function trackScreenViewEvent(details: {
     tracker: details.tracker,
     eventData: {
       schema: schemas.screenViewSchema,
+      data: data,
+    },
+    contexts: details.contexts,
+  });
+}
+
+function trackScrollChangedEvent(details: {
+  tracker: string | null;
+  eventData: ScrollChangedProps;
+  contexts: EventContext[];
+}): Promise<void> {
+  const data: Record<string, number> = {};
+
+  if (details.eventData.yOffset != null) {
+    data.y_offset = details.eventData.yOffset;
+  }
+  if (details.eventData.xOffset != null) {
+    data.x_offset = details.eventData.xOffset;
+  }
+  if (details.eventData.viewHeight != null) {
+    data.view_height = details.eventData.viewHeight;
+  }
+  if (details.eventData.viewWidth != null) {
+    data.view_width = details.eventData.viewWidth;
+  }
+  if (details.eventData.contentHeight != null) {
+    data.content_height = details.eventData.contentHeight;
+  }
+  if (details.eventData.contentWidth != null) {
+    data.content_width = details.eventData.contentWidth;
+  }
+
+  return trackSelfDescribingEvent({
+    tracker: details.tracker,
+    eventData: {
+      schema: schemas.scrollChangedSchema,
+      data: data,
+    },
+    contexts: details.contexts,
+  });
+}
+
+function trackListItemViewEvent(details: {
+  tracker: string | null;
+  eventData: ListItemViewProps;
+  contexts: EventContext[];
+}): Promise<void> {
+  const data: Record<string, number> = {
+    index: details.eventData.index,
+  };
+
+  if (details.eventData.itemsCount != null) {
+    data.items_count = details.eventData.itemsCount;
+  }
+
+  return trackSelfDescribingEvent({
+    tracker: details.tracker,
+    eventData: {
+      schema: schemas.listItemViewSchema,
       data: data,
     },
     contexts: details.contexts,
@@ -523,6 +584,8 @@ const JSSnowplowTracker = Object.freeze({
   trackSelfDescribingEvent,
   trackStructuredEvent,
   trackScreenViewEvent,
+  trackScrollChangedEvent,
+  trackListItemViewEvent,
   trackPageViewEvent,
   trackTimingEvent,
   trackConsentGrantedEvent,

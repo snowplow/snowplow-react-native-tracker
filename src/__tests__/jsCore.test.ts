@@ -85,6 +85,49 @@ describe('test jsCore', () => {
     expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"name":"screen"');
   });
 
+  test('tracks scroll changed event with default tracker', async () => {
+    const trackedPayloads = await createTracker(
+      {
+        namespace: 'ns',
+        networkConfig: { endpoint: 'http://localhost' },
+      },
+      async () => {
+        await JSSnowplowTracker.trackScrollChangedEvent({
+          tracker: null,
+          eventData: { viewHeight: 100, contentHeight: 200, yOffset: 50 },
+          contexts: [],
+        });
+      }
+    );
+
+    expect(trackedPayloads.length).toBe(1);
+    expect(trackedPayloads[0]?.tna).toEqual('ns');
+    expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"view_height":100');
+    expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"content_height":200');
+    expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"y_offset":50');
+  });
+
+  test('tracks list item view event with default tracker', async () => {
+    const trackedPayloads = await createTracker(
+      {
+        namespace: 'ns',
+        networkConfig: { endpoint: 'http://localhost' },
+      },
+      async () => {
+        await JSSnowplowTracker.trackListItemViewEvent({
+          tracker: null,
+          eventData: { index: 2, itemsCount: 10 },
+          contexts: [],
+        });
+      }
+    );
+
+    expect(trackedPayloads.length).toBe(1);
+    expect(trackedPayloads[0]?.tna).toEqual('ns');
+    expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"index":2');
+    expect(trackedPayloads[0]?.ue_pr ?? '').toContain('"items_count":10');
+  });
+
   test('works with multiple trackers', async () => {
     const tracker1Payloads = await createTracker({
       namespace: 'ns1',
