@@ -252,8 +252,9 @@ object ConfigUtil {
   private fun mkBufferOption(bufferOpt: String): BufferOption? {
     return when (bufferOpt) {
       "single" -> BufferOption.Single
-      "default" -> BufferOption.DefaultGroup
-      "large" -> BufferOption.HeavyGroup
+      "default" -> BufferOption.SmallGroup
+      "small" -> BufferOption.SmallGroup
+      "large" -> BufferOption.LargeGroup
       else -> null
     }
   }

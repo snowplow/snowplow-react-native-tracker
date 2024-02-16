@@ -38,5 +38,5 @@ Pod::Spec.new do |s|
     s.dependency "ReactCommon/turbomodule/core"
    end
   end    
-  s.dependency "SnowplowTracker", "~> 5.4"
+  s.dependency "SnowplowTracker", "~> 6.0"
 end

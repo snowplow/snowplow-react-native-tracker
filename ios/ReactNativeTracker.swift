@@ -58,12 +58,8 @@ class ReactNativeTracker: NSObject {
             controllers.append(gcConfiguration)
         }
 
-        if let tracker = Snowplow.createTracker(namespace: trackerNs, network: networkConfiguration, configurations: controllers) {
-            resolve(true)
-        } else {
-            let error = NSError(domain: "SnowplowTracker", code: 200)
-            reject("ERROR", "tracker intialization failed", error)
-        }
+        _ = Snowplow.createTracker(namespace: trackerNs, network: networkConfiguration, configurations: controllers)
+        resolve(true)
     }
     
     @objc(removeTracker:resolver:rejecter:)

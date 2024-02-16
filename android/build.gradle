@@ -97,7 +97,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation "com.snowplowanalytics:snowplow-android-tracker:5.4.4"
+  implementation "com.snowplowanalytics:snowplow-android-tracker:6.0.+"
   implementation "com.squareup.okhttp3:okhttp:4.10.0"
 }
 

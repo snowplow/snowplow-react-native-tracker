@@ -68,9 +68,6 @@ PODS:
   - FlipperKit/SKIOSNetworkPlugin (0.182.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - fmt (6.2.1)
   - glog (0.3.5)
   - hermes-engine (0.72.4):
@@ -493,9 +490,8 @@ PODS:
   - snowplow-react-native-tracker (2.0.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - SnowplowTracker (~> 5.4)
-  - SnowplowTracker (5.4.2):
-    - FMDB (~> 2.7)
+    - SnowplowTracker (~> 6.0)
+  - SnowplowTracker (6.0.1)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -526,7 +522,6 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitReactPlugin (= 0.182.0)
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.182.0)
   - FlipperKit/SKIOSNetworkPlugin (= 0.182.0)
-  - FMDB
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
@@ -580,7 +575,6 @@ SPEC REPOS:
     - Flipper-Glog
     - Flipper-PeerTalk
     - FlipperKit
-    - FMDB
     - fmt
     - libevent
     - OpenSSL-Universal
@@ -687,7 +681,6 @@ SPEC CHECKSUMS:
   Flipper-Glog: 70c50ce58ddaf67dc35180db05f191692570f446
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
   FlipperKit: 2efad7007d6745a3f95e4034d547be637f89d3f6
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 81191603c4eaa01f5e4ae5737a9efcf64756c7b2
@@ -726,12 +719,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 4941cc1b3cf08b792fbf666342c9fc95f1969035
   React-utils: b79f2411931f9d3ea5781404dcbb2fa8a837e13a
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
-  snowplow-react-native-tracker: e0acb614d407ecd3670d758085bb01b4029723c8
-  SnowplowTracker: f954f5fe985411819ccdadd50ce142b7ad17efe2
+  snowplow-react-native-tracker: ddd61c4e8716d969cac41e1b24da1b8530754bf7
+  SnowplowTracker: 6b19c331d5b765bda8b97b1c70ab52491524da60
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 29cd18006247e70f8bfa782a3bf063fcdb99d7db
+PODFILE CHECKSUM: 3b739a495d6e28fa9459a36ce75470840caf7c79
 
 COCOAPODS: 1.15.2

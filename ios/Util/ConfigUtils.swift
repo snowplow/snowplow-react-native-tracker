@@ -80,8 +80,8 @@ class ConfigUtils {
     static func mkEmitterConfig(_ emitterConfig: NSDictionary) -> EmitterConfiguration? {
         let emitterConfiguration = EmitterConfiguration()
         if let bufferOption = emitterConfig.object(forKey: "bufferOption") as? String {
-            if bufferOption == "default" {
-                emitterConfiguration.bufferOption = .defaultGroup;
+            if bufferOption == "default" || bufferOption == "small" {
+                emitterConfiguration.bufferOption = .smallGroup;
             } else if bufferOption == "large" {
                 emitterConfiguration.bufferOption = .largeGroup;
             } else {

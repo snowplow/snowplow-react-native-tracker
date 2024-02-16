@@ -20,7 +20,11 @@ describe('test 0', () => {
   test('test 0 1', () => {
     const mockApi = api as jest.Mocked<typeof api>;
 
-    main.createTracker('sp1', { endpoint: 'http://0.0.0.0:9090' });
+    const tracker = main.createTracker('sp1', { endpoint: 'http://0.0.0.0:9090' });
+    tracker.trackSelfDescribingEvent({
+      schema: 'iglu:com.snowplowanalytics.snowplow/link_click/jsonschema/1-0-1',
+      data: { targetUrl: 'http://a-target-url.com' },
+    });
 
     expect(mockApi.createTracker).toHaveBeenCalled();
   });
