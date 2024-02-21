@@ -1,3 +1,13 @@
+Version 2.1.0 (2024-02-21)
+--------------------------
+Upgrade to mobile trackers version 6 and add screen engagement tracking (close #90)
+Fix SelfDescribing extension type (close #204)
+Update JavaScript tracker core version to 3.21.0
+Fix running deploy action only on new tags
+Update cocoapods version
+Lock yarn version to 1.22.19
+Update copyright headers
+
 Version 2.0.0 (2023-09-29)
 --------------------------
 Upgrade project structure and update native trackers to version 5 (#199)
