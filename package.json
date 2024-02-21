@@ -64,7 +64,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@snowplow/tracker-core": "3.8.0",
+    "@snowplow/tracker-core": "3.21.0",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
