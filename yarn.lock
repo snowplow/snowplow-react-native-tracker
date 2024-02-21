@@ -2036,10 +2036,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@snowplow/tracker-core@3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@snowplow/tracker-core/-/tracker-core-3.8.0.tgz#bedcd84cdede8df4b8275f6031d57342e0d87769"
-  integrity sha512-fBQhHetV5c5s+Ea5bqaWrAcwG7C7Fdo0ztHKxvoVECwxMocWuTuiau0oM+dzkcjNyMoCa7bvX8BUNySvwwSrZA==
+"@snowplow/tracker-core@3.21.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@snowplow/tracker-core/-/tracker-core-3.21.0.tgz#c1241ff06d59550e4a97aeb12a023d22baa3a316"
+  integrity sha512-zNxEZgibTofk29vklbasPv0GP2R7URPyhB+Vd3q5d5gPPTwjZXQ6X/EDHHCK9YFC9u0I+NAcgDm7GEGMm6ib4A==
   dependencies:
     tslib "^2.3.1"
     uuid "^3.4.0"
