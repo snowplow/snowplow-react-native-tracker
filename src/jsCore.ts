@@ -37,7 +37,7 @@ import { schemas } from './constants';
 import { v4 as uuid } from 'uuid';
 
 // Tracker version added to the events
-const trackerVersion = 'rn-2.0.0';
+const trackerVersion = 'rn-2.1.0';
 
 interface Tracker extends TrackerCore {
   setDomainUserId: (duid: string | undefined) => void;
@@ -49,7 +49,7 @@ let trackers: { [namespace: string]: Tracker } = {};
 function preparePayload(payload: Payload): Record<string, string> {
   const stringifiedPayload: Record<string, string> = {};
 
-  payload['stm'] = new Date().getTime().toString();
+  payload.stm = new Date().getTime().toString();
 
   for (const key in payload) {
     if (Object.prototype.hasOwnProperty.call(payload, key)) {
