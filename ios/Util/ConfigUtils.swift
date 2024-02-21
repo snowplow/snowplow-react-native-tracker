@@ -50,6 +50,9 @@ class ConfigUtils {
         } else {
             trackerConfiguration.screenViewAutotracking = false
         }
+        if let screenEngagementAutotracking = trackerConfig.object(forKey: "screenEngagementAutotracking") as? NSNumber {
+            trackerConfiguration.screenEngagementAutotracking = screenEngagementAutotracking.boolValue
+        }
         if let lifecycleAutotracking = trackerConfig.object(forKey: "lifecycleAutotracking") as? NSNumber {
             trackerConfiguration.lifecycleAutotracking = lifecycleAutotracking.boolValue
         }
@@ -80,8 +83,8 @@ class ConfigUtils {
     static func mkEmitterConfig(_ emitterConfig: NSDictionary) -> EmitterConfiguration? {
         let emitterConfiguration = EmitterConfiguration()
         if let bufferOption = emitterConfig.object(forKey: "bufferOption") as? String {
-            if bufferOption == "default" {
-                emitterConfiguration.bufferOption = .defaultGroup;
+            if bufferOption == "small" {
+                emitterConfiguration.bufferOption = .smallGroup;
             } else if bufferOption == "large" {
                 emitterConfiguration.bufferOption = .largeGroup;
             } else {

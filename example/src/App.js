@@ -155,6 +155,15 @@ const App = () => {
 
   const onPressTrackScreenViewEvent = () => {
     tracker.trackScreenViewEvent({ name: 'onlyRequired' });
+    tracker.trackScrollChangedEvent({
+      yOffset: 20,
+      contentHeight: 100,
+      viewHeight: 50,
+    });
+    tracker.trackListItemViewEvent({
+      index: 1,
+      itemsCount: 10,
+    });
     tracker.trackScreenViewEvent({
       name: 'allPopulated',
       type: 'allPopulated',

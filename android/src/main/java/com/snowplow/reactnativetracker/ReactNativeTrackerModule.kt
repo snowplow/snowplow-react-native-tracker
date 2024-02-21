@@ -177,7 +177,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val sdj: SelfDescribingJson = EventUtil.createSelfDescribingJson(argmap)
       val event = SelfDescribing(sdj)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -197,7 +197,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: Structured = EventUtil.createStructuredEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -217,7 +217,47 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: ScreenView = EventUtil.createScreenViewEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
+      trackerController.track(event)
+      promise.resolve(true)
+    } catch (t: Throwable) {
+      promise.reject("ERROR", t.message)
+    }
+  }
+
+  @ReactMethod
+  fun trackScrollChangedEvent(
+    details: ReadableMap,
+    promise: Promise
+  ) {
+    try {
+      val namespace = details.getString("tracker")
+      val argmap = details.getMap("eventData")!!
+      val contexts = details.getArray("contexts")!!
+      val trackerController = getTracker(namespace)
+      val event: ScrollChanged = EventUtil.createScrollChangedEvent(argmap)
+      val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
+      event.entities.addAll(evCtxts)
+      trackerController.track(event)
+      promise.resolve(true)
+    } catch (t: Throwable) {
+      promise.reject("ERROR", t.message)
+    }
+  }
+
+  @ReactMethod
+  fun trackListItemViewEvent(
+    details: ReadableMap,
+    promise: Promise
+  ) {
+    try {
+      val namespace = details.getString("tracker")
+      val argmap = details.getMap("eventData")!!
+      val contexts = details.getArray("contexts")!!
+      val trackerController = getTracker(namespace)
+      val event: ListItemView = EventUtil.createListItemViewEvent(argmap)
+      val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -237,7 +277,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: PageView = EventUtil.createPageViewEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -257,7 +297,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: Timing = EventUtil.createTimingEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -277,7 +317,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: ConsentGranted = EventUtil.createConsentGrantedEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -297,7 +337,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: ConsentWithdrawn = EventUtil.createConsentWithdrawnEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -317,7 +357,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: EcommerceTransaction = EventUtil.createEcommerceTransactionEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -337,7 +377,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: DeepLinkReceived = EventUtil.createDeepLinkReceivedEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {
@@ -357,7 +397,7 @@ class ReactNativeTrackerModule(val reactContext: ReactApplicationContext) :
       val trackerController = getTracker(namespace)
       val event: MessageNotification = EventUtil.createMessageNotificationEvent(argmap)
       val evCtxts: List<SelfDescribingJson> = EventUtil.createContexts(contexts)
-      event.customContexts.addAll(evCtxts)
+      event.entities.addAll(evCtxts)
       trackerController.track(event)
       promise.resolve(true)
     } catch (t: Throwable) {

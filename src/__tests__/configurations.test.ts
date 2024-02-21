@@ -252,7 +252,8 @@ describe('test initValidate resolves', () => {
         deepLinkContext: true,
         screenContext: true,
         screenViewAutotracking: false,
-        lifecycleAutotracking: false,
+        screenEngagementAutotracking: true,
+        lifecycleAutotracking: true,
         installAutotracking: true,
         exceptionAutotracking: true,
         diagnosticAutotracking: false,
@@ -389,7 +390,7 @@ describe('test isValidEmitterConf', () => {
 
   test('invalid - invalid props', () => {
     const testConf = {
-      bufferOption: 'default',
+      bufferOption: 'small',
       invalid: true,
     } as any;
     expect(c.isValidEmitterConf(testConf)).toBe(false);

@@ -19,6 +19,8 @@ import {
   validateContexts,
   validateSelfDesc,
   validateScreenView,
+  validateScrollChanged,
+  validateListItemView,
   validateStructured,
   validatePageView,
   validateTiming,
@@ -40,6 +42,8 @@ import type {
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
   MessageNotificationProps,
+  ScrollChangedProps,
+  ListItemViewProps,
 } from './types';
 
 /**
@@ -93,6 +97,60 @@ function trackScreenViewEvent(
     )
     .catch((error) => {
       throw new Error(`${logMessages.trackScreenView} ${error.message}`);
+    });
+}
+
+/**
+ * Tracks a scroll-changed event
+ *
+ * @param namespace {string} - the tracker namespace
+ * @param argmap {Object} - the event data
+ * @param contexts {Array}- the event contexts
+ * @returns {Promise}
+ */
+function trackScrollChangedEvent(
+  namespace: string | null,
+  argmap: ScrollChangedProps,
+  contexts: EventContext[] = []
+): Promise<void> {
+  return <Promise<void>>validateScrollChanged(argmap)
+    .then(() => validateContexts(contexts))
+    .then(
+      () => <Promise<void>>RNSnowplowTracker.trackScrollChangedEvent({
+          tracker: namespace,
+          eventData: argmap,
+          contexts: contexts,
+        })
+    )
+    .catch((error) => {
+      throw new Error(`${logMessages.trackScrollChanged} ${error.message}`);
+    });
+}
+
+/**
+ * Tracks a list item view event
+ *
+ * @param namespace {string} - the tracker namespace
+ * @param argmap {Object} - the event data
+ * @param contexts {Array}- the event contexts
+ * @returns {Promise}
+ */
+function trackListItemViewEvent(
+  namespace: string | null,
+  argmap: ListItemViewProps,
+  contexts: EventContext[] = []
+): Promise<void> {
+  return <Promise<void>>validateListItemView(argmap)
+    .then(() => validateContexts(contexts))
+    .then(
+      () => <Promise<void>>RNSnowplowTracker.trackListItemViewEvent({
+          tracker: namespace,
+          eventData: argmap,
+          contexts: contexts,
+        })
+    )
+    .catch((error) => {
+      throw new Error(`${logMessages.trackListItemView} ${error.message}`);
     });
 }
 
@@ -319,6 +377,8 @@ function trackMessageNotificationEvent(
 export {
   trackSelfDescribingEvent,
   trackScreenViewEvent,
+  trackScrollChangedEvent,
+  trackListItemViewEvent,
   trackStructuredEvent,
   trackPageViewEvent,
   trackTimingEvent,

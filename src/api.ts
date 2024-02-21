@@ -35,6 +35,8 @@ import type {
   ScreenSize,
   DeepLinkReceivedProps,
   MessageNotificationProps,
+  ScrollChangedProps,
+  ListItemViewProps,
 } from './types';
 
 /**
@@ -106,6 +108,36 @@ function trackScreenViewEvent(namespace: string) {
     contexts: EventContext[] = []
   ): Promise<void> {
     return tracker.trackScreenViewEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track a ScrollChanged event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a ScrollChanged event
+ */
+function trackScrollChangedEvent(namespace: string) {
+  return function (
+    argmap: ScrollChangedProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackScrollChangedEvent(namespace, argmap, contexts);
+  };
+}
+
+/**
+ * Returns a function to track a ListItemView event by a tracker
+ *
+ * @param namespace {string} - The tracker namespace
+ * @returns - A function to track a ListItemView event
+ */
+function trackListItemViewEvent(namespace: string) {
+  return function (
+    argmap: ListItemViewProps,
+    contexts: EventContext[] = []
+  ): Promise<void> {
+    return tracker.trackListItemViewEvent(namespace, argmap, contexts);
   };
 }
 
@@ -505,6 +537,8 @@ export {
   removeAllTrackers,
   trackSelfDescribingEvent,
   trackScreenViewEvent,
+  trackScrollChangedEvent,
+  trackListItemViewEvent,
   trackStructuredEvent,
   trackPageViewEvent,
   trackTimingEvent,

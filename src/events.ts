@@ -28,6 +28,8 @@ import type {
   EcommerceTransactionProps,
   DeepLinkReceivedProps,
   MessageNotificationProps,
+  ScrollChangedProps,
+  ListItemViewProps,
 } from './types';
 
 /**
@@ -88,6 +90,40 @@ function validateScreenView(argmap: ScreenViewProps): Promise<boolean> {
   // validate required props
   if (typeof argmap.name !== 'string') {
     return Promise.reject(new Error(logMessages.screenViewReq));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
+ * Validates a scroll changed event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateScrollChanged(argmap: ScrollChangedProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+
+  return Promise.resolve(true);
+}
+
+/**
+ * Validates a list item view event
+ *
+ * @param argmap {Object} - the object to validate
+ * @returns - boolean promise
+ */
+function validateListItemView(argmap: ListItemViewProps): Promise<boolean> {
+  // validate type
+  if (!isObject(argmap)) {
+    return Promise.reject(new Error(logMessages.evType));
+  }
+  // validate required props
+  if (typeof argmap.index !== 'number') {
+    return Promise.reject(new Error(logMessages.listItemViewReq));
   }
 
   return Promise.resolve(true);
@@ -317,6 +353,8 @@ export {
   validateContexts,
   validateSelfDesc,
   validateScreenView,
+  validateScrollChanged,
+  validateListItemView,
   validateStructured,
   validatePageView,
   validateTiming,

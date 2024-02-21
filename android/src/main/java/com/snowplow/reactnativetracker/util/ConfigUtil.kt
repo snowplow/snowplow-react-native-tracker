@@ -54,6 +54,9 @@ object ConfigUtil {
     if (trackerConfig.hasKey("screenViewAutotracking")) {
       trackerConfiguration.screenViewAutotracking(trackerConfig.getBoolean("screenViewAutotracking"))
     }
+    if (trackerConfig.hasKey("screenEngagementAutotracking")) {
+      trackerConfiguration.screenEngagementAutotracking(trackerConfig.getBoolean("screenEngagementAutotracking"))
+    }
     if (trackerConfig.hasKey("lifecycleAutotracking")) {
       trackerConfiguration.lifecycleAutotracking(trackerConfig.getBoolean("lifecycleAutotracking"))
     }
@@ -252,8 +255,8 @@ object ConfigUtil {
   private fun mkBufferOption(bufferOpt: String): BufferOption? {
     return when (bufferOpt) {
       "single" -> BufferOption.Single
-      "default" -> BufferOption.DefaultGroup
-      "large" -> BufferOption.HeavyGroup
+      "small" -> BufferOption.SmallGroup
+      "large" -> BufferOption.LargeGroup
       else -> null
     }
   }

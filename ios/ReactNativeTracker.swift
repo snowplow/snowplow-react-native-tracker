@@ -58,12 +58,8 @@ class ReactNativeTracker: NSObject {
             controllers.append(gcConfiguration)
         }
 
-        if let tracker = Snowplow.createTracker(namespace: trackerNs, network: networkConfiguration, configurations: controllers) {
-            resolve(true)
-        } else {
-            let error = NSError(domain: "SnowplowTracker", code: 200)
-            reject("ERROR", "tracker intialization failed", error)
-        }
+        _ = Snowplow.createTracker(namespace: trackerNs, network: networkConfiguration, configurations: controllers)
+        resolve(true)
     }
     
     @objc(removeTracker:resolver:rejecter:)
@@ -179,6 +175,75 @@ class ReactNativeTracker: NSObject {
             }
             _ = trackerController.track(event)
             resolve(true)
+        } else {
+            let error = NSError(domain: "SnowplowTracker", code: 200)
+            reject("ERROR", "tracker with given namespace not found", error)
+        }
+    }
+    
+    @objc(trackScrollChangedEvent:resolver:rejecter:)
+    func trackScrollChangedEvent(details:NSDictionary, resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
+        
+        let namespace = details.object(forKey: "tracker") as? String
+        if let trackerController = trackerByNamespace(namespace),
+           let argmap = details.object(forKey: "eventData") as? NSDictionary {
+            
+            let event = ScrollChanged()
+
+            if let contentHeight = argmap.object(forKey: "contentHeight") as? NSNumber {
+                event.contentHeight = contentHeight.intValue
+            }
+            if let contentWidth = argmap.object(forKey: "contentWidth") as? NSNumber {
+                event.contentWidth = contentWidth.intValue
+            }
+            if let viewWidth = argmap.object(forKey: "viewWidth") as? NSNumber {
+                event.viewWidth = viewWidth.intValue
+            }
+            if let viewHeight = argmap.object(forKey: "viewHeight") as? NSNumber {
+                event.viewHeight = viewHeight.intValue
+            }
+            if let xOffset = argmap.object(forKey: "xOffset") as? NSNumber {
+                event.xOffset = xOffset.intValue
+            }
+            if let yOffset = argmap.object(forKey: "yOffset") as? NSNumber {
+                event.yOffset = yOffset.intValue
+            }
+
+            if let contexts = details.object(forKey: "contexts") as? NSArray {
+                event.entities = Utilities.mkSDJArray(contexts)
+            }
+            _ = trackerController.track(event)
+            resolve(true)
+        } else {
+            let error = NSError(domain: "SnowplowTracker", code: 200)
+            reject("ERROR", "tracker with given namespace not found", error)
+        }
+    }
+    
+    @objc(trackListItemViewEvent:resolver:rejecter:)
+    func trackListItemViewEvent(details:NSDictionary, resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
+        
+        let namespace = details.object(forKey: "tracker") as? String
+        if let trackerController = trackerByNamespace(namespace),
+           let argmap = details.object(forKey: "eventData") as? NSDictionary {
+            
+            if let index = argmap.object(forKey: "index") as? NSNumber {
+                let event = ListItemView(index: index.intValue)
+                
+                if let itemsCount = argmap.object(forKey: "itemsCount") as? NSNumber {
+                    event.itemsCount = itemsCount.intValue
+                }
+                
+                if let contexts = details.object(forKey: "contexts") as? NSArray {
+                    event.entities = Utilities.mkSDJArray(contexts)
+                }
+                _ = trackerController.track(event)
+                resolve(true)
+            } else {
+                let error = NSError(domain: "SnowplowTracker", code: 200)
+                reject("ERROR", "index has to be a valid integer", error)
+                return
+            }
         } else {
             let error = NSError(domain: "SnowplowTracker", code: 200)
             reject("ERROR", "tracker with given namespace not found", error)

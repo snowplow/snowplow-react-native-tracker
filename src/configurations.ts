@@ -44,6 +44,7 @@ const trackerProps = [
   'deepLinkContext',
   'screenContext',
   'screenViewAutotracking',
+  'screenEngagementAutotracking',
   'lifecycleAutotracking',
   'installAutotracking',
   'exceptionAutotracking',

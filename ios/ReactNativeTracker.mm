@@ -32,6 +32,16 @@ RCT_EXTERN_METHOD(trackScreenViewEvent:
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(trackScrollChangedEvent:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(trackListItemViewEvent:
+                  (NSDictionary *)details
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(trackPageViewEvent:
                   (NSDictionary *)details
                   resolver:(RCTPromiseResolveBlock)resolve
