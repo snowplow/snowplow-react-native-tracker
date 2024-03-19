@@ -48,7 +48,7 @@ tracker.trackScreenViewEvent({ name: 'myScreenName' });
 
 The Snowplow React Native Tracker also provides first-class support for TypeScript, as it is fully typed.
 
-See also our [DemoApp][demoapp] for an example implementation.
+See also our [DemoApp](example) for an example implementation.
 
 ## Find out more
 
