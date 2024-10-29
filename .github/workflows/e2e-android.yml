@@ -111,7 +111,7 @@ jobs:
 
       - name: Upload events artifact if Detox-Jest failed
         if: ${{ failure() && steps.dj.outcome == 'failure' && steps.eventlog.outcome == 'success' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: android-events-artifact
           path: android-events-micro.json
