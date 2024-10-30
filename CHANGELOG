@@ -1,3 +1,7 @@
+Version 2.1.2 (2024-10-31)
+--------------------------
+Fix crash on iOS on React Native new architecture (#212)
+
 Version 2.1.1 (2024-07-03)
 --------------------------
 Update tracker and example app dependencies

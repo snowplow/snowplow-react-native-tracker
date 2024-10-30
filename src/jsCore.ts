@@ -37,7 +37,7 @@ import { schemas } from './constants';
 import { v4 as uuid } from 'uuid';
 
 // Tracker version added to the events
-const trackerVersion = 'rn-2.1.1';
+const trackerVersion = 'rn-2.1.2';
 
 interface Tracker extends TrackerCore {
   setDomainUserId: (duid: string | undefined) => void;
