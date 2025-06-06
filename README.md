@@ -1,5 +1,8 @@
 # @snowplow/react-native-tracker
 
+> [!warning]
+> The React Native tracker **has moved** upstream to [**snowplow/snowplow-javascript-tracker**](https://github.com/snowplow/snowplow-javascript-tracker).
+
 [![actively-maintained]][tracker-classification]
 [![Build Status][gh-actions-image]][gh-actions]
 [![License][license-image]][license]
